@@ -4,11 +4,14 @@ const User = require('../models/userModel')
 const Role = require('../models/roleModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 
 
-const getUsers = asyncHandler( async (req, res) => {
-    res.status(200).json({ message: 'Get users' })
+const getUsers = asyncHandler(async (req, res) => {
+    let users = User.find()
+    console.log(users.array())
+    res.status(200).json({ users : users.array()})
 })
 
 const getUser = asyncHandler( async (req, res)=>{
@@ -66,10 +69,38 @@ const deleteUser = asyncHandler( async (req, res) => {
     res.status(200).json({ message: `Delete user ${req.params.id}` })
 })
 
+const loginUser = asyncHandler(async (req, res) => {
+    const {username, email, password} = req.body
+    let user = await User.findOne({
+        $or: [
+            { username: username }, { email: email }
+    ] })
+    
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            _id: user.id,
+            username: user.username,
+            email: user.email,
+            token: generateToken(user._id)
+        })
+    } else {
+        res.status(400)
+        throw new Error('Invalid Credentials')
+    }
+   
+})
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
+
 module.exports = {
     getUsers,
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 }
