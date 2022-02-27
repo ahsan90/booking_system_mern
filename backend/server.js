@@ -7,7 +7,7 @@ const { roleSeedDb } = require('./helper/roleHelper')
 const port = process.env.PORT || 5000
 
 connectDB()
-roleSeedDb()
+//roleSeedDb()
 const app = express()
 
 app.use(express.json())
