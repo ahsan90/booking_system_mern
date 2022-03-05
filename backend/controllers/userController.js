@@ -5,17 +5,22 @@ const Role = require('../models/roleModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { use } = require('../routes/userRoutes')
 
 
 
 const getUsers = asyncHandler(async (req, res) => {
-    let users = User.find()
-    console.log(users.array())
-    res.status(200).json({ users : users.array()})
+    let users = await User.find()
+    //console.log(users)
+    res.status(200).json(users)
 })
 
-const getUser = asyncHandler( async (req, res)=>{
-    res.status(200).json({message: `Get user ${req.params.id}`})
+const getUser = asyncHandler(async (req, res) => {
+    let user = await User.findById(req.params.id)
+    if (!user) {
+        res.status(400).json({ message: 'User not found' })
+    }
+    res.status(200).json(user)
 })
 const createUser = asyncHandler( async (req, res) => {
     const errors = validationResult(req);
@@ -61,11 +66,28 @@ const createUser = asyncHandler( async (req, res) => {
     }
 })
 
-const updateUser = asyncHandler( async (req, res) => {
-    res.status(200).json({ message: `Update user ${req.params.id}` })
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+
+    if (!user) {
+        res.status(400)
+        throw new Error('User not found')
+    }
+    const { role } = req.body
+    let userRole = await Role.findOne({ roletype: role })
+    if (!userRole) {
+        let { role } = await User.findById(req.params.id)
+        userRole = await Role.findOne({ _id: role })
+    }
+    
+    let userData = {role: userRole, username: req.body.username, email: req.body.email}
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, userData, {new: true} )
+    res.status(200).json({updatedUser})
 })
 
-const deleteUser = asyncHandler( async (req, res) => {
+const deleteUser = asyncHandler(async (req, res) => {
+    let user = await User.findOneAndDelete(req.params.id)
+    res.status(200).json(user)
     res.status(200).json({ message: `Delete user ${req.params.id}` })
 })
 
@@ -87,12 +109,11 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Invalid Credentials')
     }
-   
 })
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
+        expiresIn: '100d'
     })
 }
 
