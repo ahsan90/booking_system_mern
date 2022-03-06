@@ -5,7 +5,6 @@ const Role = require('../models/roleModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { use } = require('../routes/userRoutes')
 
 
 
