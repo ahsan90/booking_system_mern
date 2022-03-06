@@ -15,7 +15,7 @@ const getClients = asyncHandler(async (req, res) => {
     //let specificData = clients.map(x => { return [{ lastname: x.lastName }, {firstname: x.firstName }] })
     
     //console.log(user)
-    res.status(200).json(clients)
+    res.status(200).json({ clients: clients })
 })
 
 const getClient = asyncHandler(async (req, res) => {
@@ -103,7 +103,16 @@ const updateClient = asyncHandler(async (req, res) => {
 })
 
 const deleteClient = asyncHandler(async (req, res) => {
-    res.status(200).json({messsage: `Delete client ${req.params.id}`})
+    const client = await Client.findById(req.params.id)
+    if (!client) {
+        res.status(400)
+        throw new Error('Client not found')
+    }
+    console.log(client._id)
+    await Client.findByIdAndDelete(client._id)
+    await User.findByIdAndDelete(client.user._id)
+    console.log(client._id)
+    res.status(200).json({messsage: `Client profile associated with an email ${client.email} has been successfully deleted!`})
 })
 
 module.exports={
