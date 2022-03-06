@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const { check, validationResult } = require('express-validator')
-const res = require('express/lib/response')
-const { validateClient, v, test } = require('../helper/clientHelper')
+const { validateClient } = require('../helper/clientHelper')
 const clientHelper = require('../config/predefinedRoles') 
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
@@ -78,7 +77,29 @@ const registerClient = asyncHandler(async (req, res) => {
 })
 
 const updateClient = asyncHandler(async (req, res) => {
-    res.status(200).json({messsage: `Update client ${req.params.id}`})
+    const client = await Client.findOne({ _id: req.params.id })
+    //console.log(client)
+    if (!client) {
+        res.status(400).json({message: 'Client profile not found'})
+    } else {
+        let {firstName, lastName, email, phone } = req.body
+        const clientData = {
+            firstName, lastName, email, phone
+        }
+        //console.log(clientData)
+        const updatedClient = await Client.findByIdAndUpdate(client._id, clientData, { new: true })
+        let latestUserInfo = await User.findById(client.user._id)
+        if (email) {
+            //const {user} = client
+            const user = await User.findById(client.user._id)
+            //console.log(user)
+            latestUserInfo = await User.findByIdAndUpdate(user._id, {email}, {new: true})
+        }
+        //console.log(updatedClient, latestUserInfo)
+
+        res.status(200).json({ client: updatedClient, user: latestUserInfo })
+    }
+    
 })
 
 const deleteClient = asyncHandler(async (req, res) => {
