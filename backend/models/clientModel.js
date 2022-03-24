@@ -6,13 +6,9 @@ const clientSchema = mongoose.Schema({
         required: false, 
         ref: 'user'
     },
-    firstName: {
+    name: {
         type: String,
-        required: [true, 'Add a first name']
-    },
-    lastName: {
-        type: String,
-        required: [true, 'Add an last name']
+        required: [true, 'Add an name']
     },
     email: {
         type: String,

@@ -29,22 +29,19 @@ const registerClient = asyncHandler(async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password, firstName, lastName, phone } = req.body
+    const { username, email, password, name, phone } = req.body
     
     try {
         let user = await User.findOne({ email })
         let userRole = await Role.findOne({ roletype: clientHelper.CLIENT })
-
-        console.log(userRole)
         //return
 
         if (user) {
-            res.status(400).json({ errors: [{ message: 'User email already exists' }] })
-            console.log('stop here')
+            return res.status(400).json({ message: 'User email already exists' })
         } 
 
         if (await User.findOne({ username })) {
-            res.status(400).json({errors: [{message: 'Username is already exists'}]})
+            return res.status(400).json({message: 'Username is already exists'})
         }
 
         const avatar = gravatar.url(email,{
@@ -62,7 +59,7 @@ const registerClient = asyncHandler(async (req, res) => {
         User.create(user)
 
         let clientData = await Client.create({
-            user, firstName, lastName, email, phone
+            user, name, email, phone
         })
 
         if (clientData) {
@@ -82,13 +79,14 @@ const updateClient = asyncHandler(async (req, res) => {
     if (!client) {
         res.status(400).json({message: 'Client profile not found'})
     } else {
-        let {firstName, lastName, email, phone } = req.body
+        let {name, email, phone } = req.body
         const clientData = {
-            firstName, lastName, email, phone
+            name, email, phone
         }
         //console.log(clientData)
         const updatedClient = await Client.findByIdAndUpdate(client._id, clientData, { new: true })
         let latestUserInfo = await User.findById(client.user._id)
+        // update user data if client wants to update email
         if (email) {
             //const {user} = client
             const user = await User.findById(client.user._id)
@@ -105,13 +103,13 @@ const updateClient = asyncHandler(async (req, res) => {
 const deleteClient = asyncHandler(async (req, res) => {
     const client = await Client.findById(req.params.id)
     if (!client) {
-        res.status(400)
+        res.status(404)
         throw new Error('Client not found')
     }
     console.log(client._id)
     await Client.findByIdAndDelete(client._id)
     await User.findByIdAndDelete(client.user._id)
-    console.log(client._id)
+    //console.log(client._id)
     res.status(200).json({messsage: `Client profile associated with an email ${client.email} has been successfully deleted!`})
 })
 

@@ -19,6 +19,10 @@ app.use('/api/users', require('./routes/userRoutes'))
 
 app.use('/api/clients', require('./routes/clientRoutes'))
 
+app.use('/api/bookings', require('./routes/bookingRoutes'))
+
+app.use('/api/auth', require('./routes/authRoutes'))
+//app.use('/api/auth', (req,res)=>{res.send("stuff")})
 app.use(errroHandler)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`))
