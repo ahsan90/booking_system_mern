@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.route('/').get(authenticateUser, authAdminUser, getClients)
 router.route('/').post( validateClient(), registerClient)
-router.route('/:id').get(getClient).delete(deleteClient).put(updateClient)
+router.route('/:id').get(authenticateUser, getClient).delete(authenticateUser, deleteClient).put(authenticateUser, updateClient)
 
 module.exports = router
 

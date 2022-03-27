@@ -88,7 +88,7 @@ const updateBooking = asyncHandler(async (req, res) => {
     let reservationData = { reservation_date: bookingDate }
     let existingBookedDate = moment(new Date(reservation.reservation_date)).format('YYYY-MM-DDT00:00:00')
 
-    console.log(bookingDate === existingBookedDate)
+    //console.log(bookingDate === existingBookedDate)
     if (bookingDate === existingBookedDate) {
         return res.status(200).json({message: 'No change of booking date'})
     }

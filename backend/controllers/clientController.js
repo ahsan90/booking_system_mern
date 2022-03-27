@@ -7,6 +7,7 @@ const User = require('../models/userModel')
 const Client = require('../models/clientModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
+const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
 const getClients = asyncHandler(async (req, res) => {
@@ -14,8 +15,7 @@ const getClients = asyncHandler(async (req, res) => {
     let clients = await Client.find()
 
     //let specificData = clients.map(x => { return [{ lastname: x.lastName }, {firstname: x.firstName }] })
-    
-    //console.log(user)
+
     res.status(200).json({ clients: clients })
 })
 
@@ -75,8 +75,13 @@ const registerClient = asyncHandler(async (req, res) => {
 })
 
 const updateClient = asyncHandler(async (req, res) => {
-    const client = await Client.findOne({ _id: req.params.id })
-    //console.log(client)
+
+    const client = await Client.findById(req.params.id)
+    let userRole = await Role.findById(req.user.role._id)
+    //throw new Error('Stop!')
+
+    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) { return res.status(401).json({ message: 'Unauthorized!' }) }
+
     if (!client) {
         res.status(400).json({message: 'Client profile not found'})
     } else {
@@ -84,21 +89,21 @@ const updateClient = asyncHandler(async (req, res) => {
         const clientData = {
             name, email, phone
         }
-        //console.log(clientData)
-        const updatedClient = await Client.findByIdAndUpdate(client._id, clientData, { new: true })
-        let latestUserInfo = await User.findById(client.user._id)
         // update user data if client wants to update email
         if (email) {
-            //const {user} = client
+            let xClient = (await Client.find({ email })).filter(obj => obj.id !== req.params.id)
+            let xUser = (await User.find({ email })).filter(user => user.id !== client.user._id.toString())
+            //console.log('xClient: '+ xClient +',\nxUser: '+xUser)
+            if (xClient.length > 0 || xUser.length > 0) {
+                return res.status(400).json({message: 'This email is already used by soneone else!'})
+            }
             const user = await User.findById(client.user._id)
-            //console.log(user)
-            latestUserInfo = await User.findByIdAndUpdate(user._id, {email}, {new: true})
+            await User.findByIdAndUpdate(user._id, {email}, {new: true})
         }
-        //console.log(updatedClient, latestUserInfo)
-
+        const updatedClient = await Client.findByIdAndUpdate(client._id, clientData, { new: true })
+        let latestUserInfo = await User.findById(client.user._id)
         res.status(200).json({ client: updatedClient, user: latestUserInfo })
     }
-    
 })
 
 const deleteClient = asyncHandler(async (req, res) => {

@@ -17,7 +17,7 @@ const authenticateUser = asyncHandler(async (req, res, next) => {
             next()
         } catch (error) {
             console.log(error)
-            res.status(401).json({ message: "Please login to the system first!" })
+            res.status(401).json({ message: "Unauthorized!" })
             //throw new Error('Unauthorized access');
         }
     }
@@ -49,7 +49,7 @@ const authAdminUser = asyncHandler(async (req, res, next) => {
 })
 
 const isCurrentAuthUser = (user, roletype, obj) => {
-    return roletype === predefinedRoles.ADMIN || obj.user._id.toString() === user._id.toString() 
+    return roletype === ExistingRoles.ADMIN || obj.user._id.toString() === user._id.toString() 
 }
 
 module.exports = {
