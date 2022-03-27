@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator')
-'use strict'
+
 
 const validateClient = () => {
     return [

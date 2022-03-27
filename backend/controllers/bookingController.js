@@ -2,14 +2,21 @@
 const asyncHandler = require("express-async-handler");
 const Reservation = require('../models/reservationModel')
 const moment = require('moment')
+const { check, validationResult } = require('express-validator')
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
 const Client = require('../models/clientModel');
-const predefinedRoles = require('../config/predefinedRoles')
+const predefinedRoles = require('../config/predefinedRoles');
+const res = require("express/lib/response");
 
 
 const getBooking = asyncHandler(async (req, res) => {
+
+    let userRole = await Role.findById(req.user.role._id)
     let reservation = await Reservation.findById(req.params.id)
+
+    if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
+
     if (!reservation) {
         return res.status(404).json({message: 'Booking not found'})
     }
@@ -17,23 +24,29 @@ const getBooking = asyncHandler(async (req, res) => {
 })
 
 const getAllBooking = asyncHandler(async (req, res) => {
-    let reservations = await Reservation.find()
+    let user = await User.findOne(req.user)
+    let userRole = await Role.findById(req.user.role._id)
+    let reservations = null
+    if (userRole.roletype == predefinedRoles.ADMIN) {
+        reservations = await Reservation.find()
+        return res.status(200).json({ reservations })
+    }
+    reservations = await Reservation.find({user: user._id })
     //console.log((await Role.findOne(req.user.role)).roletype)
     res.status(200).json({reservations})
 })
 
-
-//Reference: https://stackoverflow.com/questions/26827584/mongoose-cast-to-date-failed-for-value-when-updating-a-document
 const createBooking = asyncHandler(async (req, res) => {
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     let date = new Date()
 
     let user = await User.findOne(req.user)
     const userRole = await Role.findById(user.role._id)
     let client = null;
 
-
-    //throw new Error('Stop!')
     if (userRole.roletype == predefinedRoles.ADMIN) {
         const { email } = req.body
         if (!email) {
@@ -52,17 +65,7 @@ const createBooking = asyncHandler(async (req, res) => {
     }
 
     let booking_reference = user.username + "" + moment(date).format('DMYYhmmss').toString()
-    
-    let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DD').toLocaleLowerCase()
-    
-    //console.log(startingdate>endingdate)
-    //let { startdate, enddate } = req.body
-    /* let reservation = await Reservation.findOne({
-        $and: [
-            { startingdate: { $lte: sDate } },
-            { endingdate: { $gte: sDate } },
-        ]
-    }) */
+    let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
     let reservation = await Reservation.findOne({reservation_date: bookingDate})
     
     if (reservation) {
@@ -76,16 +79,47 @@ const createBooking = asyncHandler(async (req, res) => {
 
 const updateBooking = asyncHandler(async (req, res) => {
 
-    res.status(200).json({message: 'Update booking'})
+    let userRole = await Role.findById(req.user.role._id)
+    let reservation = await Reservation.findById(req.params.id)
+    let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
+   
+    if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
+
+    let reservationData = { reservation_date: bookingDate }
+    let existingBookedDate = moment(new Date(reservation.reservation_date)).format('YYYY-MM-DDT00:00:00')
+
+    console.log(bookingDate === existingBookedDate)
+    if (bookingDate === existingBookedDate) {
+        return res.status(200).json({message: 'No change of booking date'})
+    }
+    // Make sure the booking date is available before booking
+    if ((await Reservation.findOne({ reservation_date: bookingDate }))) {
+        return res.status(401).json({message: 'Reservation date is not available'})
+        
+    } else {
+        await Reservation.findByIdAndUpdate(req.params.id, reservationData, { new: true })
+    }
+    
+    reservation = await Reservation.findById(req.params.id)
+    res.status(200).json({ reservation })
 })
 
 const deleteBooking = asyncHandler(async (req, res) => {
+
+    let userRole = await Role.findById(req.user.role._id)
+    const reservation = await Reservation.findById(req.params.id)    
+    if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
+
     if (!(await Reservation.findById(req.params.id))) {
         return res.status(404).json({message: 'No reservation found'})
     }
     let booking = await Reservation.findByIdAndDelete(req.params.id)
-    res.status(200).json({message: `Booking (id: ${ booking._id}) with the ref(ref#) has been cancelled`})
+    res.status(200).json({message: `Booking (Ref #: ${ booking.booking_reference}) has been cancelled`})
 })
+
+const isCurrentAuthUser = (user, roletype, booking) => {
+    return roletype === predefinedRoles.ADMIN || booking.user._id.toString() === user._id.toString() 
+}
 
 module.exports = {
     getBooking, getAllBooking, createBooking, updateBooking, deleteBooking

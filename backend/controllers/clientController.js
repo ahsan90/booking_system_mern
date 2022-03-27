@@ -10,6 +10,7 @@ const bcrypt = require('bcryptjs')
 
 
 const getClients = asyncHandler(async (req, res) => {
+    
     let clients = await Client.find()
 
     //let specificData = clients.map(x => { return [{ lastname: x.lastName }, {firstname: x.firstName }] })
