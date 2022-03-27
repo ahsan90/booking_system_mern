@@ -11,16 +11,15 @@ const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
 const getClients = asyncHandler(async (req, res) => {
-    
     let clients = await Client.find()
-
     //let specificData = clients.map(x => { return [{ lastname: x.lastName }, {firstname: x.firstName }] })
-
     res.status(200).json({ clients: clients })
 })
 
 const getClient = asyncHandler(async (req, res) => {
     let client = await Client.findById(req.params.id)
+    let userRole = await Role.findById(req.user.role._id)
+    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) { return res.status(401).json({ message: 'Unauthorized!' }) }        
     res.status(200).json({client})
 })
 
@@ -106,8 +105,11 @@ const updateClient = asyncHandler(async (req, res) => {
     }
 })
 
-const deleteClient = asyncHandler(async (req, res) => {
+const deleteClient = asyncHandler(async (req, res) => {    
     const client = await Client.findById(req.params.id)
+    let userRole = await Role.findById(req.user.role._id)
+    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) { return res.status(401).json({ message: 'Unauthorized!' }) }    
+
     if (!client) {
         res.status(404)
         throw new Error('Client not found')
