@@ -4,12 +4,12 @@ const dotenv = require('dotenv').config()
 const { errroHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const { roleSeedDb } = require('./helper/roleHelper')
-const { existingRoles } = require('./config/predefinedRoles')
+const { defaultRolesAndUsers } = require('./config/defaultRolesAndUsers')
 const port = process.env.PORT || 5000
 
 connectDB()
 //roleSeedDb()
-existingRoles()
+defaultRolesAndUsers()
 const app = express()
 
 app.use(express.json())

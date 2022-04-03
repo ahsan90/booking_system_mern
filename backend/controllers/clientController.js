@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const { check, validationResult } = require('express-validator')
 const { validateClient } = require('../helper/clientHelper')
-const clientHelper = require('../config/predefinedRoles') 
+const clientHelper = require('../config/defaultRolesAndUsers') 
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
 const Client = require('../models/clientModel')
@@ -17,6 +17,7 @@ const getClients = asyncHandler(async (req, res) => {
 })
 
 const getClient = asyncHandler(async (req, res) => {
+    if(!req.user) { return res.status(403).json({message: 'Unauthorized'})}
     let client = await Client.findById(req.params.id)
     let userRole = await Role.findById(req.user.role._id)
     if (!isCurrentAuthUser(req.user, userRole.roletype, client)) { return res.status(401).json({ message: 'Unauthorized!' }) }        
@@ -114,10 +115,9 @@ const deleteClient = asyncHandler(async (req, res) => {
         res.status(404)
         throw new Error('Client not found')
     }
-    console.log(client._id)
-    await Client.findByIdAndDelete(client._id)
-    await User.findByIdAndDelete(client.user._id)
     //console.log(client._id)
+    await Client.findByIdAndDelete(client._id)
+    await User.findByIdAndDelete(client.user._id)//Also delete associated user 
     res.status(200).json({messsage: `Client profile associated with an email ${client.email} has been successfully deleted!`})
 })
 

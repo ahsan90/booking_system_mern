@@ -1,5 +1,5 @@
-const { check } = require('express-validator')
-
+const { check, validationResult } = require('express-validator')
+const validator = require('validator')
 
 const validateBookingDate = () => {
     return [
@@ -10,4 +10,28 @@ const validateBookingDate = () => {
 
 module.exports = {
     validateBookingDate
+}
+
+const validateUSer = () => {
+    return [
+        check('username').notEmpty().withMessage('Username cannot be empty'),
+        check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
+        check('email').notEmpty().withMessage('Email address required').isEmail().withMessage('Please enter a valid email address')
+    ]
+}
+
+const clientValidationAtUserCreation = (name, phone) => {
+    const errors = []
+    if (name === undefined || name === "") {
+        errors.push('Please enter client name')
+    }
+    if (phone === undefined || phone === "" || isNaN(phone)) {
+        errors.push('Please enter client\'s valid phone number')
+    }
+    return errors
+}
+
+
+module.exports = {
+    validateBookingDate, validateUSer, clientValidationAtUserCreation
 }

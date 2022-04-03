@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator')
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
 const Client = require('../models/clientModel');
-const predefinedRoles = require('../config/predefinedRoles');
+const defaultRolesAndUsers = require('../config/defaultRolesAndUsers');
 const res = require("express/lib/response");
 
 
@@ -27,7 +27,7 @@ const getAllBooking = asyncHandler(async (req, res) => {
     let user = await User.findOne(req.user)
     let userRole = await Role.findById(req.user.role._id)
     let reservations = null
-    if (userRole.roletype == predefinedRoles.ADMIN) {
+    if (userRole.roletype == defaultRolesAndUsers.ADMIN) {
         reservations = await Reservation.find()
         return res.status(200).json({ reservations })
     }
@@ -47,7 +47,7 @@ const createBooking = asyncHandler(async (req, res) => {
     const userRole = await Role.findById(user.role._id)
     let client = null;
 
-    if (userRole.roletype == predefinedRoles.ADMIN) {
+    if (userRole.roletype == defaultRolesAndUsers.ADMIN) {
         const { email } = req.body
         if (!email) {
             throw new Error('Please provide a client\'s registered email address')
@@ -60,7 +60,7 @@ const createBooking = asyncHandler(async (req, res) => {
         user = await User.findById(client.user._id)
     }
 
-    if (userRole.roletype == predefinedRoles.CLIENT) {
+    if (userRole.roletype == defaultRolesAndUsers.CLIENT) {
         client = await Client.findOne({ user: user._id })
     }
 
@@ -118,7 +118,7 @@ const deleteBooking = asyncHandler(async (req, res) => {
 })
 
 const isCurrentAuthUser = (user, roletype, booking) => {
-    return roletype === predefinedRoles.ADMIN || booking.user._id.toString() === user._id.toString() 
+    return roletype === defaultRolesAndUsers.ADMIN || booking.user._id.toString() === user._id.toString() 
 }
 
 module.exports = {

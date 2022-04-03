@@ -5,35 +5,58 @@ const Role = require('../models/roleModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { validateClient } = require('../helper/clientHelper')
+const {clientValidationAtUserCreation} = require('../helper/validationHelper')
+const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
+const Client = require('../models/clientModel')
+const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
-const getUsers = asyncHandler(async (req, res) => {
-    let users = await User.find()
-    //console.log(users)
+const getAllUsers = asyncHandler(async (req, res) => {
+    //if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
+    //console.log(req.user)
+    let users = await User.find().select('-password')
     res.status(200).json(users)
 })
 
 const getUser = asyncHandler(async (req, res) => {
+    const client = await Client.findById(req.params.id)
+    let userRole = await Role.findById(req.user.role._id)    
+    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })
     let user = await User.findById(req.params.id)
     if (!user) {
         res.status(400).json({ message: 'User not found' })
     }
     res.status(200).json(user)
 })
-const createUser = asyncHandler( async (req, res) => {
+const createUser = asyncHandler(async (req, res, next) => {
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { role, username, email, password } = req.body
+    const { role, username, email, password, name, phone } = req.body
     
     try {
-        let user = await User.findOne({ email })
-        let userRole = await Role.findOne({role})
+        let user = await User.findOne({ $or: [{ email }, {username}] })
+        let userRole = await Role.findOne({ roletype: role })
 
-        if (user) {
-            res.status(400).json({errors: [{message: 'User already exists'}]})
+        let client = null
+        if (userRole.roletype === defaultRolesAndUsers.CLIENT) {
+             //const { name, phone } = req.body
+            const errors = clientValidationAtUserCreation(name, phone)
+            if (errors.length > 0) {
+                return res.status(400).json({ errors })
+            }
+            client = new Client({name, email, phone})
+        }
+    
+        if (user && email === user.email) {
+            return res.status(400).json({errors: [{message: 'Email already exists'}]})
         } 
+        if (user && username === user.username) {
+            return res.status(400).json({errors: [{message: 'Username already exists'}]})
+        }
 
         const avatar = gravatar.url(email,{
             s: '200',
@@ -47,7 +70,9 @@ const createUser = asyncHandler( async (req, res) => {
         user = new User({
             role: userRole, username, email, password: hashedPassword, avatar
         })
-        User.create(user)
+        let createdUser = await User.create(user)
+        //console.log(role+" vs "+defaultRolesAndUsers.CLIENT)
+        if (role === defaultRolesAndUsers.CLIENT) { await Client.create({ user: createdUser, name, email, phone }) }
 
         if (user) {
             res.status(201).json({
@@ -65,8 +90,19 @@ const createUser = asyncHandler( async (req, res) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id)
 
+    if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
+
+    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
+    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.CLIENT_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
+    if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
+        return res.status(403).json({message: 'Built-in admin/client user cannot be Edited'})
+    }
+    
+    const client = await Client.findById(req.params.id)
+    let currentUserRole = await Role.findById(req.user.role._id)    
+    if (!isCurrentAuthUser(req.user, currentUserRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })       
+    const user = await User.findById(req.params.id)
     if (!user) {
         res.status(400)
         throw new Error('User not found')
@@ -84,13 +120,33 @@ const updateUser = asyncHandler(async (req, res) => {
 })
 
 const deleteUser = asyncHandler(async (req, res) => {
-    let user = await User.findOneAndDelete(req.params.id)
-    res.status(200).json(user)
-    res.status(200).json({ message: `Delete user ${req.params.id}` })
+    
+    if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
+
+    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
+    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.CLIENT_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
+    if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
+        return res.status(403).json({message: 'Built-in admin/client user cannot be deleted'})
+    }
+    //throw new Error('Stop')
+    const client = await Client.findOne({ user: req.user })
+    let userRole = await Role.findById(req.user.role._id)  
+    //console.log(client)
+    //throw new Error('Stop here')
+    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })    
+    let user = await User.findByIdAndDelete(req.params.id)
+    //console.log(user.role)
+    let xUserRole = await Role.findById(user.role._id)
+    if (xUserRole.roletype === defaultRolesAndUsers.CLIENT) { await Client.findOneAndDelete({ user: user }) }
+    //console.log(x)
+    //res.status(200).json(user)
+    res.status(200).json({ message: `Deleted user ${user.username}` })
+    //throw new Error('Stop')
 })
 
+
 module.exports = {
-    getUsers,
+    getAllUsers,
     getUser,
     createUser,
     updateUser,
