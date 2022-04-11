@@ -5,7 +5,7 @@ const moment = require('moment')
 const { check, validationResult } = require('express-validator')
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
-const Client = require('../models/clientModel');
+const Profile = require('../models/profileModel');
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers');
 const res = require("express/lib/response");
 
@@ -45,23 +45,23 @@ const createBooking = asyncHandler(async (req, res) => {
 
     let user = await User.findOne(req.user)
     const userRole = await Role.findById(user.role._id)
-    let client = null;
+    let profile = null;
 
     if (userRole.roletype == defaultRolesAndUsers.ADMIN) {
         const { email } = req.body
         if (!email) {
-            throw new Error('Please provide a client\'s registered email address')
+            throw new Error('Please provide a profile\'s registered email address')
         }
 
-        client = await Client.findOne({ email })
-        if (!client) {
-            return res.status(404).json({message: 'No client found with this email'})
+        profile = await Profile.findOne({ email })
+        if (!profile) {
+            return res.status(404).json({message: 'No profile found with this email'})
         }
-        user = await User.findById(client.user._id)
+        user = await User.findById(profile.user._id)
     }
 
     if (userRole.roletype == defaultRolesAndUsers.CLIENT) {
-        client = await Client.findOne({ user: user._id })
+        profile = await Profile.findOne({ user: user._id })
     }
 
     let booking_reference = user.username + "" + moment(date).format('DMYYhmmss').toString()
@@ -71,7 +71,7 @@ const createBooking = asyncHandler(async (req, res) => {
     if (reservation) {
         res.status(200).json({ message: 'The Date is already booked!' })
     } else {
-        await Reservation.create({user, client, reservation_date: bookingDate, booking_reference })
+        await Reservation.create({user, profile, reservation_date: bookingDate, booking_reference })
         let bookedDate = await Reservation.findOne({ reservation_date: bookingDate})
         res.status(200).json({message: `Confirmed! Your date is booked on ${moment(bookedDate.reservation_date).format('LLL')}`})
     }

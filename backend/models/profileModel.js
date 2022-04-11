@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const clientSchema = mongoose.Schema({
+const profileSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: false, 
@@ -23,4 +23,4 @@ const clientSchema = mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('client', clientSchema)
+module.exports = mongoose.model('profile', profileSchema)

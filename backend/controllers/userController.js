@@ -5,24 +5,22 @@ const Role = require('../models/roleModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { validateClient } = require('../helper/clientHelper')
-const {clientValidationAtUserCreation} = require('../helper/validationHelper')
+//const { validateprofile } = require('../helper/profileHelper')
+const {profileValidationAtUserCreation} = require('../helper/validationHelper')
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
-const Client = require('../models/clientModel')
+const Profile = require('../models/profileModel')
 const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
 const getAllUsers = asyncHandler(async (req, res) => {
-    //if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
-    //console.log(req.user)
     let users = await User.find().select('-password')
     res.status(200).json(users)
 })
 
 const getUser = asyncHandler(async (req, res) => {
-    const client = await Client.findById(req.params.id)
+    const profile = await Profile.findById(req.params.id)
     let userRole = await Role.findById(req.user.role._id)    
-    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })
+    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })
     let user = await User.findById(req.params.id)
     if (!user) {
         res.status(400).json({ message: 'User not found' })
@@ -41,14 +39,14 @@ const createUser = asyncHandler(async (req, res, next) => {
         let user = await User.findOne({ $or: [{ email }, {username}] })
         let userRole = await Role.findOne({ roletype: role })
 
-        let client = null
-        if (userRole.roletype === defaultRolesAndUsers.CLIENT) {
+        let profile = null
+        if (userRole.roletype === defaultRolesAndUsers.profile) {
              //const { name, phone } = req.body
-            const errors = clientValidationAtUserCreation(name, phone)
+            const errors = profileValidationAtUserCreation(name, phone)
             if (errors.length > 0) {
                 return res.status(400).json({ errors })
             }
-            client = new Client({name, email, phone})
+            profile = new profile({name, email, phone})
         }
     
         if (user && email === user.email) {
@@ -71,8 +69,8 @@ const createUser = asyncHandler(async (req, res, next) => {
             role: userRole, username, email, password: hashedPassword, avatar
         })
         let createdUser = await User.create(user)
-        //console.log(role+" vs "+defaultRolesAndUsers.CLIENT)
-        if (role === defaultRolesAndUsers.CLIENT) { await Client.create({ user: createdUser, name, email, phone }) }
+        //console.log(role+" vs "+defaultRolesAndUsers.profile)
+        if (role === defaultRolesAndUsers.CLIENT) { await Profile.create({ user: createdUser, name, email, phone }) }
 
         if (user) {
             res.status(201).json({
@@ -91,22 +89,30 @@ const createUser = asyncHandler(async (req, res, next) => {
 
 const updateUser = asyncHandler(async (req, res) => {
 
-    if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
-
-    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
-    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.CLIENT_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
+    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, { username: defaultRolesAndUsers.ADMIN_USERNAME }] })
+    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.profile_EMAIL }, { username: defaultRolesAndUsers.profile_USERNAME }] })
     if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
-        return res.status(403).json({message: 'Built-in admin/client user cannot be Edited'})
+        return res.status(403).json({ message: 'Built-in admin/profile user cannot be Edited' })
+    }
+
+    if ((await User.find({ email: req.body.email })).filter(x => x.id !== req.params.id).length > 0) {
+        return res.status(400).json({ message: 'Email is already used by someone else' })
+    }
+    if ((await User.find({ username: req.body.username })).filter(x => x.id !== req.params.id).length > 0) {
+        return res.status(400).json({ message: 'Username is already used by someone else' })
     }
     
-    const client = await Client.findById(req.params.id)
-    let currentUserRole = await Role.findById(req.user.role._id)    
-    if (!isCurrentAuthUser(req.user, currentUserRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })       
+    const profile = await Profile.findOne({user: await User.findById(req.params.id)})
+    
+    let currentUserRole = await Role.findById(req.user.role._id) 
+    if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })       
     const user = await User.findById(req.params.id)
     if (!user) {
         res.status(400)
         throw new Error('User not found')
     }
+    
+    throw new Error('Stop....')
     const { role } = req.body
     let userRole = await Role.findOne({ roletype: role })
     if (!userRole) {
@@ -120,26 +126,25 @@ const updateUser = asyncHandler(async (req, res) => {
 })
 
 const deleteUser = asyncHandler(async (req, res) => {
-    
-    if (!req.user) { return res.status(401).json({ message: 'Unauthorized' }) }
 
     const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
-    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.CLIENT_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
+    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.profile_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
     if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
-        return res.status(403).json({message: 'Built-in admin/client user cannot be deleted'})
+        return res.status(403).json({message: 'Built-in admin/profile user cannot be deleted'})
     }
     //throw new Error('Stop')
-    const client = await Client.findOne({ user: req.user })
+    const profile = await profile.findOne({ user: req.user })
     let userRole = await Role.findById(req.user.role._id)  
-    //console.log(client)
+    //console.log(profile)
     //throw new Error('Stop here')
-    if (!isCurrentAuthUser(req.user, userRole.roletype, client)) return res.status(401).json({ message: 'Unauthorized!' })    
+    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })    
     let user = await User.findByIdAndDelete(req.params.id)
-    //console.log(user.role)
-    let xUserRole = await Role.findById(user.role._id)
-    if (xUserRole.roletype === defaultRolesAndUsers.CLIENT) { await Client.findOneAndDelete({ user: user }) }
-    //console.log(x)
-    //res.status(200).json(user)
+
+    // Delete if the user has a profile
+    let existingProfile = await Profile.findOne({ user: user })
+    if (existingProfile) { 
+        await Profile.findByIdAndDelete(existingProfile._id.toString())
+    }
     res.status(200).json({ message: `Deleted user ${user.username}` })
     //throw new Error('Stop')
 })

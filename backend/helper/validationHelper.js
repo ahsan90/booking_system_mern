@@ -20,7 +20,7 @@ const validateUSer = () => {
     ]
 }
 
-const clientValidationAtUserCreation = (name, phone) => {
+const profileValidationAtUserCreation = (name, phone) => {
     const errors = []
     if (name === undefined || name === "") {
         errors.push('Please enter client name')
@@ -33,5 +33,5 @@ const clientValidationAtUserCreation = (name, phone) => {
 
 
 module.exports = {
-    validateBookingDate, validateUSer, clientValidationAtUserCreation
+    validateBookingDate, validateUSer, profileValidationAtUserCreation
 }

@@ -1,7 +1,7 @@
 const expressAsyncHandler = require('express-async-handler')
 const Role = require('../models/roleModel')
 const User = require('../models/userModel')
-const Client = require('../models/clientModel')
+const Profile = require('../models/profileModel')
 const bcrypt = require('bcryptjs')
 
 //Predefined roles and users
@@ -20,8 +20,8 @@ const defaultRolesAndUsers = expressAsyncHandler(async () => {
     
     let AdminUser = new User({ username: ADMIN_USERNAME, email: ADMIN_EMAIL, password: 'ahsan90' })
     let ClienUser = new User({ username: CLIENT_USERNAME, email: CLIENT_EMAIL, password: 'steve123' })
-    let defaultClient = new Client({ name: 'Steve Mathew', email: ClienUser.email, phone: '9999999999' })  
-    
+    let defaultClientProfile = new Profile({ name: 'Steve Mathew', email: ClienUser.email, phone: '9999999999' })  
+    let defaultAdminProfile = new Profile({ name: 'Ahsan Rony', email: AdminUser.email, phone: '9029082017' })  
     let adminRole = await Role.findOne({ roletype: ADMIN })
     if (!adminRole) { adminRole = await Role.create({ roletype: ADMIN }) }
     
@@ -37,14 +37,15 @@ const defaultRolesAndUsers = expressAsyncHandler(async () => {
     if (!xAdminUser) {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(AdminUser.password, salt)
-        await User.create({role: adminRole, username: AdminUser.username, email: AdminUser.email, password: hashedPassword})
+        let Ahsan_Admin_user = await User.create({ role: adminRole, username: AdminUser.username, email: AdminUser.email, password: hashedPassword })
+        await Profile.create({user: Ahsan_Admin_user, name: defaultAdminProfile.name, email: defaultAdminProfile.email, phone: defaultAdminProfile.phone})
     }
     let xClientUser = await User.findOne({ $or: [{ email: ClienUser.email }, { username: ClienUser.username }] })
     if (!xClientUser) {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(ClienUser.password, salt)
         let Steve_ClientUser = await User.create({ role: clientRole, username: ClienUser.username, email: ClienUser.email, password: hashedPassword })
-        await Client.create({user: Steve_ClientUser, name: defaultClient.name, email: defaultClient.email, phone: defaultClient.phone, password: hashedPassword})
+        await Profile.create({user: Steve_ClientUser, name: defaultClientProfile.name, email: defaultClientProfile.email, phone: defaultClientProfile.phone})
     }
 })
 

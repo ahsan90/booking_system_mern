@@ -1,7 +1,7 @@
 const { check, validationResult } = require('express-validator')
 
 
-const validateClient = () => {
+const validateProfile = () => {
     return [
         check('username').notEmpty().withMessage('Username cannot be empty'),
         check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
@@ -13,5 +13,5 @@ const validateClient = () => {
 
 
 module.exports = {
-    validateClient
+    validateProfile
 }
