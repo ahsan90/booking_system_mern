@@ -117,8 +117,8 @@ const deleteBooking = asyncHandler(async (req, res) => {
     res.status(200).json({message: `Booking (Ref #: ${ booking.booking_reference}) has been cancelled`})
 })
 
-const isCurrentAuthUser = (user, roletype, booking) => {
-    return roletype === defaultRolesAndUsers.ADMIN || booking.user._id.toString() === user._id.toString() 
+const isCurrentAuthUser = (user, roletype, reservation) => {
+    return roletype === defaultRolesAndUsers.ADMIN || reservation.user._id.toString() === user._id.toString() 
 }
 
 module.exports = {

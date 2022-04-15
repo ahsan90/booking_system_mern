@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 const Role = require('../models/roleModel')
+const Profile = require('../models/profileModel')
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
 const { use } = require('../routes/userRoutes')
 
@@ -38,7 +39,7 @@ const authBookingUserRole = asyncHandler( async(req, res, next) => {
 })
 
 const hasUser = asyncHandler(async (req, res, next) => {
-    if (!req.user) { return res.status(403).json({ message: 'Invalid reqeust!' }) }
+    if (!req.user) { return res.status(404).json({ message: 'Invalid reqeust!' }) }
     next()
 }) 
 
@@ -57,12 +58,20 @@ const isCurrentAuthUser = (user, roletype, obj) => {
     return roletype === defaultRolesAndUsers.ADMIN || obj.user._id.toString() === user._id.toString() 
 }
 
-const protectBuiltInUsers = asyncHandler(async (req, res, next) => {
+const protectBuiltInUsersAndProfile = asyncHandler(async (req, res, next) => {
+    
     if(!req.user) return res.status(401).json({message: 'Unauthorized'})
     const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
     const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.CLIENT_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
-    if (builtInAdminUser._id.toString() === req.user._id.toString() || builtInClientUser._id.toString() === req.user._id.toString()) {
-        return res.status(403).json({message: 'Built-in admin/client user cannot be deleted'})
+    const builtInAdminProfile = await Profile.findOne({ email: defaultRolesAndUsers.ADMIN_EMAIL })
+    const builtInClientProfile = await Profile.findOne({ email: defaultRolesAndUsers.CLIENT_EMAIL })
+    let reqType = req.method === 'DELETE'? 'deleted' : 'edited'
+
+    if (builtInAdminUser._id.toString() === req.params.id
+        || builtInClientUser._id.toString() === req.params.id
+        || builtInAdminProfile._id.toString() === req.params.id
+        || builtInClientProfile._id.toString() === req.params.id) {
+        return res.status(403).json({message: `Built-in admin/client user/profile cannot be ${reqType}!`})
     }
     next()
 })
@@ -73,5 +82,5 @@ module.exports = {
     authBookingUserRole,
     authAdminUser,
     isCurrentAuthUser,
-    protectBuiltInUsers
+    protectBuiltInUsersAndProfile
 }

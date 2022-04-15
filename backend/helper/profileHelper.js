@@ -11,7 +11,15 @@ const validateProfile = () => {
     ]
 }
 
+const validateProfile_name_phone = () => {
+    return [
+        check('name').notEmpty().withMessage('Name required'),
+        check('phone').notEmpty().withMessage('Phone number required')
+    ]
+}
+
 
 module.exports = {
-    validateProfile
+    validateProfile,
+    validateProfile_name_phone
 }

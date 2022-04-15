@@ -40,7 +40,7 @@ const createUser = asyncHandler(async (req, res, next) => {
         let userRole = await Role.findOne({ roletype: role })
 
         let profile = null
-        if (userRole.roletype === defaultRolesAndUsers.profile) {
+        if (userRole.roletype === defaultRolesAndUsers.CLIENT) {
              //const { name, phone } = req.body
             const errors = profileValidationAtUserCreation(name, phone)
             if (errors.length > 0) {
@@ -89,12 +89,6 @@ const createUser = asyncHandler(async (req, res, next) => {
 
 const updateUser = asyncHandler(async (req, res) => {
 
-    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, { username: defaultRolesAndUsers.ADMIN_USERNAME }] })
-    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.profile_EMAIL }, { username: defaultRolesAndUsers.profile_USERNAME }] })
-    if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
-        return res.status(403).json({ message: 'Built-in admin/profile user cannot be Edited' })
-    }
-
     if ((await User.find({ email: req.body.email })).filter(x => x.id !== req.params.id).length > 0) {
         return res.status(400).json({ message: 'Email is already used by someone else' })
     }
@@ -112,7 +106,6 @@ const updateUser = asyncHandler(async (req, res) => {
         throw new Error('User not found')
     }
     
-    throw new Error('Stop....')
     const { role } = req.body
     let userRole = await Role.findOne({ roletype: role })
     if (!userRole) {
@@ -121,32 +114,44 @@ const updateUser = asyncHandler(async (req, res) => {
     }
     
     let userData = {role: userRole, username: req.body.username, email: req.body.email}
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, userData, {new: true} )
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, userData, { new: true })
+    const xProfile = await Profile.findOne({ user: updatedUser })
+    if (xProfile) {
+        let profileData = {email: updatedUser.email}
+        await Profile.findByIdAndUpdate(xProfile._id.toString(), profileData, { new: true })
+    }
     res.status(200).json({updatedUser})
 })
 
-const deleteUser = asyncHandler(async (req, res) => {
-
-    const builtInAdminUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.ADMIN_EMAIL }, {username: defaultRolesAndUsers.ADMIN_USERNAME}] })
-    const builtInClientUser = await User.findOne({ $or: [{ email: defaultRolesAndUsers.profile_EMAIL }, { username: defaultRolesAndUsers.CLIENT_USERNAME }] })
-    if (builtInAdminUser._id.toString() === req.params.id || builtInClientUser._id.toString() === req.params.id) {
-        return res.status(403).json({message: 'Built-in admin/profile user cannot be deleted'})
+const createUserProfile = asyncHandler(async (req, res) => {
+    let user = await User.findById(req.params.id)
+    let xProfile = await Profile.findOne({ user })
+    if (xProfile) { return res.status(400).json({ message: 'Profile already exist' }) }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    //throw new Error('Stop')
-    const profile = await profile.findOne({ user: req.user })
+    let profileData = new Profile({
+        user: user, email: user.email, name: req.body.name, phone: req.body.phone
+    })
+    let profile = await Profile.create(profileData)
+    res.status(200).json({profile})
+})
+
+const deleteUser = asyncHandler(async (req, res) => {
+    
+    const profile = await Profile.findOne({ user: req.user })
     let userRole = await Role.findById(req.user.role._id)  
-    //console.log(profile)
-    //throw new Error('Stop here')
+
     if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })    
     let user = await User.findByIdAndDelete(req.params.id)
 
     // Delete if the user has a profile
-    let existingProfile = await Profile.findOne({ user: user })
-    if (existingProfile) { 
-        await Profile.findByIdAndDelete(existingProfile._id.toString())
+    let profileToBeDeleted = await Profile.findOne({ user: user })
+    if (profileToBeDeleted) { 
+        await Profile.findByIdAndDelete(profileToBeDeleted._id.toString())
     }
     res.status(200).json({ message: `Deleted user ${user.username}` })
-    //throw new Error('Stop')
 })
 
 
@@ -154,6 +159,7 @@ module.exports = {
     getAllUsers,
     getUser,
     createUser,
+    createUserProfile,
     updateUser,
     deleteUser
 }

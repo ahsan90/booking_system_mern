@@ -7,6 +7,7 @@ const User = require('../models/userModel')
 const Profile = require('../models/profileModel')
 const gravatar = require('gravatar')
 const bcrypt = require('bcryptjs')
+const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
 const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
@@ -59,12 +60,12 @@ const registerProfile = asyncHandler(async (req, res) => {
         })
         User.create(user)
 
-        let clientData = await Client.create({
+        let profileData = await Profile.create({
             user, name, email, phone
         })
 
-        if (clientData) {
-            res.status(201).json(clientData)
+        if (profileData) {
+            res.status(201).json(profileData)
         }else {
             res.status(400).json({errors: [{message: 'Invalid client data'}]})
         }
@@ -118,7 +119,7 @@ const deleteProfile = asyncHandler(async (req, res) => {
     //console.log(profile._id)
     await Profile.findByIdAndDelete(profile._id)
     await User.findByIdAndDelete(profile.user._id)//Also delete associated user 
-    res.status(200).json({messsage: `profile profile associated with an email ${profile.email} has been successfully deleted!`})
+    res.status(200).json({messsage: `Profile associated with an email ${profile.email} has been successfully deleted!`})
 })
 
 module.exports={
