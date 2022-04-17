@@ -4,7 +4,6 @@ const User = require('../models/userModel')
 const Role = require('../models/roleModel')
 const Profile = require('../models/profileModel')
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
-const { use } = require('../routes/userRoutes')
 
 const authenticateUser = asyncHandler(async (req, res, next) => {
     let token

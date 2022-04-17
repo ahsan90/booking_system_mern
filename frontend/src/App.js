@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
 import Header from './components/Header';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import Home from './pages/home';
 import Login from './pages/auth_pages/Login';
 import About from './pages/about';
@@ -22,6 +25,7 @@ function App() {
           </Routes>
         </div>
       </Router>
+      <ToastContainer/>
     </>
   );
 }

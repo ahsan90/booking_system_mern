@@ -1,23 +1,58 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaSignInAlt } from 'react-icons/fa'
 import './auth.css'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import {login, reset} from '../../features/auth/authSlice'
+import Spinner from '../../components/Spinner'
 
 function Login() {
     const [formData, setFormData] = useState({
         username_or_email: '',
         password: ''
     })
-    const onChange = (e) => {
-        setFormData((prevState) => ({
-            ...prevState, [e.target.name]: e.target.value,
-        }))
+
+  const { username_or_email, password } = formData
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  )
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message)
     }
-    const onSubmit = (e) => {
-        e.preventDefault()
+    if (isSuccess || user) {
+      navigate('/')
     }
-    const {username_or_email, password} = formData
+    dispatch(reset())
+  }, [user, isError, isSuccess, message, navigate, dispatch])
+
+  const onChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState, [e.target.name]: e.target.value,
+    }))
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    
+    const userData = {
+      username_or_email,
+      password
+    }
+    dispatch(login(userData))
+  }
+
+  if (isLoading) {
+    return <Spinner/>
+  }
+
   return (
       <>
           <div className='mt-5 login'>
