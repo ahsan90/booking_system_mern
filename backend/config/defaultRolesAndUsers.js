@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs')
 //Predefined roles and users
 const ADMIN = 'Admin'
 const CLIENT = 'Client'
-const GUEST = 'Guest'
 
 const ADMIN_USERNAME = 'ahsan90'
 const ADMIN_EMAIL = 'ahrony90@gmail.com'
@@ -27,9 +26,6 @@ const defaultRolesAndUsers = expressAsyncHandler(async () => {
     
     let clientRole = await Role.findOne({ roletype: CLIENT })
     if (!clientRole) { clientRole = await Role.create({ roletype: CLIENT }) }
-    
-    let guestRole = await Role.findOne({ roletype: GUEST })
-    if (!guestRole) { guestRole = await Role.create({ roletype: GUEST }) }
 
     //let user = await User.findOne({ $or: [{ email }, {username}] })
 
@@ -50,5 +46,5 @@ const defaultRolesAndUsers = expressAsyncHandler(async () => {
 })
 
 module.exports = {
-    defaultRolesAndUsers, ADMIN, CLIENT, GUEST, ADMIN_EMAIL, ADMIN_USERNAME, CLIENT_EMAIL, CLIENT_USERNAME
+    defaultRolesAndUsers, ADMIN, CLIENT, ADMIN_EMAIL, ADMIN_USERNAME, CLIENT_EMAIL, CLIENT_USERNAME
 }

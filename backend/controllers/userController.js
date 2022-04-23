@@ -12,18 +12,24 @@ const Profile = require('../models/profileModel')
 const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 
 
+
 const getAllUsers = asyncHandler(async (req, res) => {
     let users = await User.find().select('-password')
     res.status(200).json(users)
 })
 
+const getAllRoles = asyncHandler(async (req, res) => {
+    let roles = await Role.find()
+    res.status(200).json({roles: roles})
+})
+
 const getUser = asyncHandler(async (req, res) => {
     const profile = await Profile.findById(req.params.id)
     let userRole = await Role.findById(req.user.role._id)    
-    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })
+    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })
     let user = await User.findById(req.params.id)
     if (!user) {
-        res.status(400).json({ message: 'User not found' })
+        res.status(404).json({ error: 'User not found' })
     }
     res.status(200).json(user)
 })
@@ -48,13 +54,14 @@ const createUser = asyncHandler(async (req, res, next) => {
             }
             profile = new profile({name, email, phone})
         }
+
+        if (user && username === user.username) {
+            return res.status(400).json({error:'Username already exists'})
+        }
     
         if (user && email === user.email) {
-            return res.status(400).json({errors: [{message: 'Email already exists'}]})
+            return res.status(400).json({error: 'Email already exists'})
         } 
-        if (user && username === user.username) {
-            return res.status(400).json({errors: [{message: 'Username already exists'}]})
-        }
 
         const avatar = gravatar.url(email,{
             s: '200',
@@ -79,7 +86,7 @@ const createUser = asyncHandler(async (req, res, next) => {
                 email: user.email
             })
         } else {
-            res.status(400).json({errors: [{message: 'Invalid user data'}]})
+            res.status(400).json({error: 'Invalid user data'})
         }
     } catch (err) {
         console.error(err.message)
@@ -90,10 +97,10 @@ const createUser = asyncHandler(async (req, res, next) => {
 const updateUser = asyncHandler(async (req, res) => {
 
     if ((await User.find({ email: req.body.email })).filter(x => x.id !== req.params.id).length > 0) {
-        return res.status(400).json({ message: 'Email is already used by someone else' })
+        return res.status(400).json({ error: 'Email is already used by someone else' })
     }
     if ((await User.find({ username: req.body.username })).filter(x => x.id !== req.params.id).length > 0) {
-        return res.status(400).json({ message: 'Username is already used by someone else' })
+        return res.status(400).json({ error: 'Username is already used by someone else' })
     }
     
     const profile = await Profile.findOne({user: await User.findById(req.params.id)})
@@ -102,8 +109,7 @@ const updateUser = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })       
     const user = await User.findById(req.params.id)
     if (!user) {
-        res.status(400)
-        throw new Error('User not found')
+        res.status(404).json({error: 'No user found'})
     }
     
     const { role } = req.body
@@ -126,7 +132,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const createUserProfile = asyncHandler(async (req, res) => {
     let user = await User.findById(req.params.id)
     let xProfile = await Profile.findOne({ user })
-    if (xProfile) { return res.status(400).json({ message: 'Profile already exist' }) }
+    if (xProfile) { return res.status(400).json({ error: 'Profile already exist' }) }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -143,7 +149,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     const profile = await Profile.findOne({ user: req.user })
     let userRole = await Role.findById(req.user.role._id)  
 
-    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })    
+    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })    
     let user = await User.findByIdAndDelete(req.params.id)
 
     // Delete if the user has a profile
@@ -151,7 +157,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (profileToBeDeleted) { 
         await Profile.findByIdAndDelete(profileToBeDeleted._id.toString())
     }
-    res.status(200).json({ message: `Deleted user ${user.username}` })
+    res.status(200).json({ success: `Deleted user ${user.username}` })
 })
 
 
@@ -161,5 +167,6 @@ module.exports = {
     createUser,
     createUserProfile,
     updateUser,
-    deleteUser
+    deleteUser,
+    getAllRoles
 }

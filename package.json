@@ -1,7 +1,7 @@
 {
-  "name": "hotel_booking_mern",
+  "name": "booking_mern",
   "version": "1.0.0",
-  "description": "Hotel Booking system using MERN",
+  "description": "Booking system using MERN",
   "main": "server.js",
   "scripts": {
     "start": "node backend/server.js",
@@ -9,7 +9,7 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "Md Hoque",
+  "author": "Md Ahsanul Hoque",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,5 +1,17 @@
 
-.App {
-  text-align: center;
+body{
+  background-color: white;
 }
-
+.spin {
+  margin-top: 50px;
+  background-image: url('../public/spinner.gif');
+  background-size:auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  height: 200px;
+  background-color: white;
+}
+.validation_text{
+  text-align: left;
+}

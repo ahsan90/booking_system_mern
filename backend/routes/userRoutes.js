@@ -1,7 +1,7 @@
 const express = require('express')
 const { check, validationResult } = require('express-validator')
 const router = express.Router()
-const { getAllUsers, getUser, createUser, updateUser, deleteUser, createUserProfile } = require('../controllers/userController')
+const { getAllUsers, getUser, createUser, updateUser, deleteUser, createUserProfile, getAllRoles } = require('../controllers/userController')
 const { authenticateUser, authAdminUser, hasUser, protectBuiltInUsersAndProfile } = require('../middleware/authMiddleware')
 const {} = require('../helper/validationHelper')
 const { validateProfile_name_phone } = require('../helper/profileHelper')
@@ -9,6 +9,7 @@ const { validateProfile_name_phone } = require('../helper/profileHelper')
 
 
 router.route('/').get(authenticateUser, authAdminUser, getAllUsers)
+router.route('/roles').get(authenticateUser, authAdminUser, getAllRoles)
 router.route('/').post(authenticateUser, authAdminUser, [
     check('role').notEmpty().withMessage('User role is missing or invalid'),
     check('username').notEmpty().withMessage('Username cannot be empty'),

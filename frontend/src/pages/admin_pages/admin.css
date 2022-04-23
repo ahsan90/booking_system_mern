@@ -1,0 +1,17 @@
+.create-user {
+    max-width: 60%;
+    margin: 0 auto;
+}
+.custom-select {
+    width: 100%;
+    height: 40px;
+    text-align: left;
+    border: 1px solid gray;
+    border-radius: 1px;
+}
+@media only screen and (max-width: 768px) {
+    .create-user {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+}

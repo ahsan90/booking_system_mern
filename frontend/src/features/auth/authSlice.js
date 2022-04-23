@@ -8,8 +8,33 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
-    message: ''
+    message: null
 }
+// Login user 
+export const login = createAsyncThunk(
+    'auth/login',
+    async (user, thunkAPI) => {
+        try {
+            return await authService.login(user)
+        } catch (error) {
+            /* const message = (error.response && error.response.data &&
+                error.response.data.message) ||
+                error.message || error.toString() */
+            const message = error.response.data
+            //console.log(message)
+            //message.errors.map(x => console.log(x.msg))
+            //console.log(message.errors[0].msg)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+//Logout user
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async () => {
+        await authService.logout()
+    }
+)
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -19,7 +44,7 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.isSuccess = false
             state.isError = false
-            state.message = ''
+            state.message = null
         }
     },
     extraReducers: (builder) => {
@@ -43,27 +68,6 @@ export const authSlice = createSlice({
             })
     }
 })
-
-// Login user 
-export const login = createAsyncThunk(
-    'auth/login',
-    async (user, thunkAPI) => {
-        try {
-            return await authService.login(user)
-        } catch (error) {
-            const message = (error.response && error.response.data &&
-                error.response.data.message) ||
-                error.message || error.toString()
-            return thunkAPI.rejectWithValue(message)
-        }
-    }
-)
-export const logout = createAsyncThunk(
-    'auth/logout',
-    async () => {
-        await authService.logout()
-    }
-)
 
 export const { reset } = authSlice.actions
 export default authSlice.reducer
