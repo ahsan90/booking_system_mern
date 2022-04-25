@@ -29,7 +29,7 @@ const getUser = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })
     let user = await User.findById(req.params.id)
     if (!user) {
-        res.status(404).json({ error: 'User not found' })
+        res.status(400).json({ error: 'User not found' })
     }
     res.status(200).json(user)
 })
@@ -44,24 +44,26 @@ const createUser = asyncHandler(async (req, res, next) => {
     try {
         let user = await User.findOne({ $or: [{ email }, {username}] })
         let userRole = await Role.findOne({ roletype: role })
-
+        
         let profile = null
         if (userRole.roletype === defaultRolesAndUsers.CLIENT) {
              //const { name, phone } = req.body
+            
             const errors = profileValidationAtUserCreation(name, phone)
             if (errors.length > 0) {
+                //console.log('Any error?')
                 return res.status(400).json({ errors })
             }
-            profile = new profile({name, email, phone})
+            
+            profile = new Profile({ name, email, phone })
         }
 
-        if (user && username === user.username) {
-            return res.status(400).json({error:'Username already exists'})
-        }
-    
         if (user && email === user.email) {
             return res.status(400).json({error: 'Email already exists'})
         } 
+        if (user && username === user.username) {
+            return res.status(400).json({error:'Username already exists'})
+        }
 
         const avatar = gravatar.url(email,{
             s: '200',
@@ -109,7 +111,7 @@ const updateUser = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(401).json({ message: 'Unauthorized!' })       
     const user = await User.findById(req.params.id)
     if (!user) {
-        res.status(404).json({error: 'No user found'})
+        res.status(400).json({error: 'No user found'})
     }
     
     const { role } = req.body

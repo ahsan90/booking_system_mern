@@ -28,23 +28,11 @@ function Login() {
 
   const [validated, setValidated] = useState(false);
 
-  /* const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    setValidated(true);
-  } */
-
   useEffect(() => {
     if (isError) {
       //console.log(message.errors)
       
       if (message.errors !== undefined) {
-        //console.log(message.errors)
-        //validateFormError(message.errors)
         //message.errors.forEach(element => {
           //toast.error(element.msg)
         setErrors(validation_helper.validateFormError(message))
@@ -65,23 +53,6 @@ function Login() {
       ...prevState, [e.target.name]: e.target.value,
     }))
   }
-
-  /* const validateFormError = (message) => {
-    const errors = {}
-    console.log(message.errors)
-    if (message.errors !== null) {
-      message.errors.forEach(element => {
-        if (element.param === 'username_or_email') {
-          errors.username_or_email = element.msg
-        }
-        if (element.param === 'password') {
-          errors.password = element.msg
-        }   
-      });
-    }
-    return errors
-  } */
-  
   
   const onSubmit = (e) => {
     e.preventDefault()
@@ -92,12 +63,7 @@ function Login() {
     setValidated(true);
     dispatch(login(userData))
   }
-  //console.log(errors.password === null)
-  //console.log(hasError(errors, errors.password))
-  //validateFormError(message)
-  //console.log(errors.username_or_email)
-  //console.log(password_error === '')
-
+  
   if (isLoading) {
     return <Spinner/>
   }

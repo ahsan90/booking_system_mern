@@ -8,10 +8,12 @@ const initialState = {
     isError: false,
     isSuccess: false,
     isLoading: false,
-    message: null
+    message: null,
+    isAuthorirzed: false
 }
 
-// create_user user 
+
+// create_user user
 export const create_user = createAsyncThunk(
     'users',
     async (user, thunkAPI) => {
@@ -20,9 +22,8 @@ export const create_user = createAsyncThunk(
             return await userServices.create_user(user, token)
         } catch (error) {
             const message = error.response.data
-            /* const message = (error.response && error.response.data &&
-                error.response.data.message) ||
-                error.message || error.toString() || error.response.data.errors.msg */
+            console.log(error.response.status)
+            console.log(error.response.data)
             return thunkAPI.rejectWithValue(message)
         }
     }
@@ -40,6 +41,7 @@ export const userSlice = createSlice({
             state.isSuccess = false
             state.isError = false
             state.message = null
+            state.isAuthorirzed = false
         }
     },
     extraReducers: (builder) => {
@@ -50,7 +52,7 @@ export const userSlice = createSlice({
             .addCase(create_user.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user.push(action.payload)
+                state.user = action.payload
                 console.log(action.payload)
             })
             .addCase(create_user.rejected, (state, action) => {

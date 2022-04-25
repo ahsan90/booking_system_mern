@@ -44,9 +44,9 @@ const hasUser = asyncHandler(async (req, res, next) => {
 
 const authAdminUser = asyncHandler(async (req, res, next) => {
     //console.log(req.user)
-    if(!req.user) return res.status(401).json({message: 'Unauthorized!'})
+    if(!req.user) return res.status(401).json({error: 'Unauthorized!'})
     if ((await Role.findById(req.user.role._id)).roletype !== defaultRolesAndUsers.ADMIN) {
-        return res.status(401).json({ message: 'Unathorized!' })
+        return res.sendStatus(401).json({ message: 'Unathorized!' })
     }
     next()
 })

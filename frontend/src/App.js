@@ -8,6 +8,9 @@ import Home from './pages/home';
 import Login from './pages/auth_pages/Login';
 import About from './pages/about';
 import CreateUser from './pages/admin_pages/create_user';
+import Unauthorized from './pages/unauthorized';
+import Notfound from './pages/notfound';
+import AdminDashboard from './pages/admin_pages/admin_dashboard';
 
 
 function App() {
@@ -21,7 +24,10 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/create_user' element={< CreateUser />} />
-            <Route path='/about' element={<About/>} />
+            <Route path='/about' element={<About />} />
+            <Route path='/unauthorized' element={< Unauthorized />} />
+            <Route path='/notfound' element={<Notfound />} />
+            <Route path='/admin' element={<AdminDashboard/>}/>
           </Routes>
         </div>
       </Router>

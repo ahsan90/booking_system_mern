@@ -67,7 +67,7 @@ const registerProfile = asyncHandler(async (req, res) => {
         if (profileData) {
             res.status(201).json(profileData)
         }else {
-            res.status(400).json({errors: [{message: 'Invalid client data'}]})
+            res.status(400).json({errors: 'Invalid client data'})
         }
     } catch (err) {
         console.error(err.message)
@@ -81,10 +81,10 @@ const updateProfile = asyncHandler(async (req, res) => {
     let userRole = await Role.findById(req.user.role._id)
     //throw new Error('Stop!')
 
-    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) { return res.status(401).json({ message: 'Unauthorized!' }) }
+    if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) { return res.status(401).json({ error: 'Unauthorized!' }) }
 
     if (!profile) {
-        res.status(400).json({message: 'profile profile not found'})
+        res.status(400).json({error: 'profile profile not found'})
     } else {
         let {name, email, phone } = req.body
         const profileData = {
@@ -96,7 +96,7 @@ const updateProfile = asyncHandler(async (req, res) => {
             let xUser = (await User.find({ email })).filter(user => user.id !== profile.user._id.toString())
             //console.log('xProfile: '+ xProfile +',\nxUser: '+xUser)
             if (xProfile.length > 0 || xUser.length > 0) {
-                return res.status(400).json({message: 'This email is already used by soneone else!'})
+                return res.status(400).json({error: 'This email is already used by soneone else!'})
             }
             const user = await User.findById(profile.user._id)
             await User.findByIdAndUpdate(user._id, {email}, {new: true})

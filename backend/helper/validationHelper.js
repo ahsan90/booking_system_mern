@@ -8,12 +8,17 @@ const validateBookingDate = () => {
 }
 
 
-module.exports = {
-    validateBookingDate
-}
-
 const validateUSer = () => {
     return [
+        check('username').notEmpty().withMessage('Username cannot be empty'),
+        check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
+        check('email').isEmail().withMessage('Please enter a valid email address')
+    ]
+}
+
+const validateUserData = () => {
+    return [
+        check('role').notEmpty().withMessage('Select an user role'),
         check('username').notEmpty().withMessage('Username cannot be empty'),
         check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
         check('email').isEmail().withMessage('Please enter a valid email address')
@@ -33,5 +38,5 @@ const profileValidationAtUserCreation = (name, phone) => {
 
 
 module.exports = {
-    validateBookingDate, validateUSer, profileValidationAtUserCreation
+    validateBookingDate, validateUSer, profileValidationAtUserCreation, validateBookingDate, validateUserData
 }

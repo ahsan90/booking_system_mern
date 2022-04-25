@@ -1,11 +1,13 @@
 
 
 const FIELD_VALUES = {
+    username: 'username',
     email: 'email',
     username_or_email: 'username_or_email',
     password: 'password',
     name: 'name',
-    phone: 'phone'
+    phone: 'phone',
+    role: 'role'
 }
 
 const validateFormError = (message) => {
@@ -16,9 +18,19 @@ const validateFormError = (message) => {
             if (element.param === FIELD_VALUES.username_or_email) {
                 errors.username_or_email = element.msg
             }
+            if (element.param === FIELD_VALUES.username) {
+                errors.username = element.msg
+            }
+            if (element.param === FIELD_VALUES.email) {
+                errors.email = element.msg
+            }
             if (element.param === FIELD_VALUES.password) {
                 errors.password = element.msg
-            }   
+            }
+            if (element.param === FIELD_VALUES.role) {
+                errors.role = element.msg
+                //console.log(element.msg)
+            } 
         });
     }
     return errors
