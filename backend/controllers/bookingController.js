@@ -33,7 +33,7 @@ const getAllBooking = asyncHandler(async (req, res) => {
     }
     reservations = await Reservation.find({user: user._id })
     //console.log((await Role.findOne(req.user.role)).roletype)
-    res.status(200).json({reservations})
+    res.status(200).json(reservations)
 })
 
 const createBooking = asyncHandler(async (req, res) => {

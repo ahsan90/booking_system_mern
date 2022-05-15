@@ -33,6 +33,7 @@ const validateFormError = (message) => {
             } 
         });
     }
+    //console.log(errors)
     return errors
 }
 

@@ -14,7 +14,7 @@ const {isCurrentAuthUser} = require('../middleware/authMiddleware')
 const getProfiles = asyncHandler(async (req, res) => {
     let Profiles = await Profile.find()
     //let specificData = Profiles.map(x => { return [{ lastname: x.lastName }, {firstname: x.firstName }] })
-    res.status(200).json({ Profiles: Profiles })
+    res.status(200).json(Profiles)
 })
 
 const getProfile = asyncHandler(async (req, res) => {
@@ -22,7 +22,7 @@ const getProfile = asyncHandler(async (req, res) => {
     let profile = await Profile.findById(req.params.id)
     let userRole = await Role.findById(req.user.role._id)
     if (!isCurrentAuthUser(req.user, userRole.roletype, profile)) { return res.status(401).json({ message: 'Unauthorized!' }) }        
-    res.status(200).json({profile})
+    res.status(200).json(profile)
 })
 
 const registerProfile = asyncHandler(async (req, res) => {

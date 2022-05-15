@@ -1,76 +1,60 @@
 import { useState, useEffect } from "react";
-import { FaUser } from "react-icons/fa";
-import "./admin.css";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { update_user } from ".././features/user/userSlice";
+import validation_helper from ".././helper/validation_helper";
+//import Spinner from ".././components/Spinner";
+import Spinner from 'react-bootstrap/Spinner'
+//import "./admin.css";
 import { toast } from "react-toastify";
-import { create_user, reset } from "../../features/user/userSlice";
-import Spinner from "../../components/CustomSpinner";
-import validation_helper from "../../helper/validation_helper";
 
-function CreateUser() {
+function UserEditForm({ passedUser }) {
+  const { user } = useSelector((state) => state.auth);
+  const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.user
+  );
+  const { profiles } = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+
+  const { existingUser, setExistingUser } = useState({});
+
+  /* const foundUser = users.filter(
+    (x) => x._id === passedUser._id
+  ); */
+  const profile = profiles.filter((x) => x.user === passedUser._id);
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "",
-    name: "",
-    phone: "",
+    username: passedUser.username,
+    email: passedUser.email,
+    role: (roles.filter((x) => x._id === passedUser.role)[0]).roletype,
+    name: profile.length > 0 ? profile[0].name : null,
+    phone: profile.length > 0 ? profile[0].phone : null,
   });
-  let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  //console.log(loggedInUser)
-  const { username, email, password, role, name, phone } = formData;
+
+  const { username, email, role, name, phone } = formData;
+
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.user
-  );
-
   const [validated, setValidated] = useState(false);
-  //console.log(message.status === 401)
-  useEffect(() => {
-    if (!loggedInUser) {
-      return navigate("/unauthorized");
-    }
 
+  useEffect(() => {
     if (isError) {
-      if (message.errors !== undefined) {
+      //console.log(message.errors !== undefined)
+      /* if (message.errors !== undefined) {
         setErrors(validation_helper.validateFormError(message));
+        //console.log(message);
       } else {
         setErrors(() => {});
-      }
+      } */
+      //toast.error(message.error);
+    }
+  }, [isError, message, dispatch]);
 
-      toast.error(message.error);
-    }
-
-    if (isSuccess) {
-      console.log(isSuccess)
-      navigate("/admin");
-      //toast.success("User added successfully...!");
-    }
-    if (role === "Client") {
-      setisClient(true);
-    } else {
-      setisClient(false);
-    }
-    //console.log(message.status === 401)
-    dispatch(reset());
-  }, [
-    user,
-    isError,
-    isSuccess,
-    message,
-    navigate,
-    dispatch,
-    loggedInUser,
-    role,
-  ]);
+  
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -80,9 +64,6 @@ function CreateUser() {
   };
 
   const onRoleChange = (e) => {
-    if (errors !== undefined && errors.role) {
-      errors.role = "";
-    }
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -94,27 +75,19 @@ function CreateUser() {
     const userData = {
       username,
       email,
-      password,
       role,
       name,
       phone,
     };
+
     setValidated(true);
-    dispatch(create_user(userData));
+    //console.log(userData)
+    const id = passedUser._id
+    dispatch(update_user({ id, userData }));
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <>
-      <div className="mt-5 create-user">
-        <section>
-          <h1>
-            <FaUser /> Create an user
-          </h1>
-        </section>
+      <div className="">
         <Form onSubmit={onSubmit} validated={validated} noValidate>
           <Form.Group className="mb-3">
             <Form.Label>Enter username</Form.Label>
@@ -149,24 +122,7 @@ function CreateUser() {
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Enter Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={password}
-              placeholder="Password"
-              onChange={onChange}
-              required
-            />
-            {errors !== undefined && errors.password && (
-              <Form.Control.Feedback type="invalid" className="validation_text">
-                {errors.password}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-
-          {isClient && (
+          {name && (
             <Form.Group className="mb-3">
               <Form.Label>Enter Client Name</Form.Label>
               <Form.Control
@@ -177,19 +133,11 @@ function CreateUser() {
                 onChange={onChange}
                 required
               />
-              {errors !== undefined && errors.name && (
-                <Form.Control.Feedback
-                  type="invalid"
-                  className="validation_text"
-                >
-                  {errors.name}
-                </Form.Control.Feedback>
-              )}
             </Form.Group>
           )}
-          {isClient && (
+          {phone && (
             <Form.Group className="mb-3">
-              <Form.Label>Enter Client Phone { console.log(errors.phone)}</Form.Label>
+              <Form.Label>Enter Client Phone</Form.Label>
               <Form.Control
                 type="text"
                 name="phone"
@@ -198,14 +146,6 @@ function CreateUser() {
                 onChange={onChange}
                 required
               />
-              {errors !== undefined && errors.phone && (
-                <Form.Control.Feedback
-                  type="invalid"
-                  className="validation_text"
-                >
-                  {errors.phone}
-                </Form.Control.Feedback>
-              )}
             </Form.Group>
           )}
 
@@ -216,8 +156,9 @@ function CreateUser() {
               value={role}
               name="role"
               onChange={onRoleChange}
+              defaultValue={""}
             >
-              <option value="" disabled={true} selected>
+              <option value="" disabled={true}>
                 Select Role
               </option>
               <option value="Admin">Admin</option>
@@ -233,7 +174,9 @@ function CreateUser() {
 
           <Form.Group className=" mt-3 d-grid gap-2">
             <Button type="submit" variant="primary">
-              Submit
+              {isLoading? ( 
+                <Spinner animation="border" size="sm" />
+              ) : 'Update'}
             </Button>
           </Form.Group>
         </Form>
@@ -242,4 +185,4 @@ function CreateUser() {
   );
 }
 
-export default CreateUser;
+export default UserEditForm;

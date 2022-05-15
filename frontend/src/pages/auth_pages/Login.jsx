@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import {login, reset} from '../../features/auth/authSlice'
-import Spinner from '../../components/Spinner'
+import Spinner from '../../components/CustomSpinner'
 import validation_helper from '../../helper/validation_helper'
 
 function Login() {

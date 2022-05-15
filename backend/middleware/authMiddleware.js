@@ -38,7 +38,7 @@ const authBookingUserRole = asyncHandler( async(req, res, next) => {
 })
 
 const hasUser = asyncHandler(async (req, res, next) => {
-    if (!req.user) { return res.status(404).json({ message: 'Invalid reqeust!' }) }
+    if (!req.user) { return res.status(403).json({ message: 'Forbiden!' }) }
     next()
 }) 
 

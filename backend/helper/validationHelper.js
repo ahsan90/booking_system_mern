@@ -28,10 +28,11 @@ const validateUserData = () => {
 const profileValidationAtUserCreation = (name, phone) => {
     const errors = []
     if (name === undefined || name === "") {
-        errors.push('Please enter client name')
+
+        errors.push({ msg: 'Please enter client name', param: "name"})
     }
     if (phone === undefined || phone === "" || isNaN(phone)) {
-        errors.push('Please enter client\'s valid phone number')
+        errors.push({ msg: 'Please enter client\'s valid phone number', param: "phone" })
     }
     return errors
 }

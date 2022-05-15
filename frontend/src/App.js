@@ -11,6 +11,9 @@ import CreateUser from './pages/admin_pages/create_user';
 import Unauthorized from './pages/unauthorized';
 import Notfound from './pages/notfound';
 import AdminDashboard from './pages/admin_pages/admin_dashboard';
+import UsersListing from './pages/admin_pages/user_list';
+import UserProfile from './pages/client_pages/UserProfile';
+
 
 
 function App() {
@@ -23,11 +26,14 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/create_user' element={< CreateUser />} />
+            {/* <Route path='/create_user' element={< CreateUser />} /> */}
             <Route path='/about' element={<About />} />
             <Route path='/unauthorized' element={< Unauthorized />} />
             <Route path='/notfound' element={<Notfound />} />
-            <Route path='/admin' element={<AdminDashboard/>}/>
+            <Route path='/admin' element={<AdminDashboard />} />
+            <Route path='/users' element={<UsersListing />} />
+            <Route path='/users/profile/:id' element={< UserProfile/>} />
+            <Route path='*' element={<Notfound />} />
           </Routes>
         </div>
       </Router>

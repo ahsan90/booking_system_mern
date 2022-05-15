@@ -9,6 +9,29 @@
     border: 1px solid gray;
     border-radius: 1px;
 }
+.avatar{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.user-listing-card{
+    display: flex;
+    text-align: center;
+    height: 200;
+    width: 300px;
+    background-color: rgb(229, 226, 231);
+}
+.adminSideBar{
+    max-width: 20%;
+    max-height: 100%;
+    background-color: bisque;
+    padding: 5px;
+    border: 2px solid red;
+}
+.adminSideBar ul{
+    
+}
 @media only screen and (max-width: 768px) {
     .create-user {
         max-width: 100%;

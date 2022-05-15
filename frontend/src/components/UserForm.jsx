@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { FaUser } from "react-icons/fa";
-import "./admin.css";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { create_user, get_allUsers, reset } from ".././features/user/userSlice";
+import validation_helper from ".././helper/validation_helper";
+import Spinner from "react-bootstrap/Spinner";
+//import "./admin.css";
 import { toast } from "react-toastify";
-import { create_user, reset } from "../../features/user/userSlice";
-import Spinner from "../../components/CustomSpinner";
-import validation_helper from "../../helper/validation_helper";
 
-function CreateUser() {
+function UserForm() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -19,61 +20,39 @@ function CreateUser() {
     name: "",
     phone: "",
   });
-  let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  //console.log(loggedInUser)
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.user
+  );
+  const dispatch = useDispatch();
+
   const { username, email, password, role, name, phone } = formData;
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.user
-  );
-
   const [validated, setValidated] = useState(false);
   //console.log(message.status === 401)
   useEffect(() => {
-    if (!loggedInUser) {
-      return navigate("/unauthorized");
-    }
-
-    if (isError) {
-      if (message.errors !== undefined) {
-        setErrors(validation_helper.validateFormError(message));
-      } else {
-        setErrors(() => {});
-      }
-
-      toast.error(message.error);
-    }
-
-    if (isSuccess) {
-      console.log(isSuccess)
-      navigate("/admin");
-      //toast.success("User added successfully...!");
-    }
     if (role === "Client") {
       setisClient(true);
     } else {
       setisClient(false);
     }
-    //console.log(message.status === 401)
-    dispatch(reset());
-  }, [
-    user,
-    isError,
-    isSuccess,
-    message,
-    navigate,
-    dispatch,
-    loggedInUser,
-    role,
-  ]);
+    if (isError) {
+      //console.log(message.errors !== undefined)
+      if (message.errors !== undefined) {
+        setErrors(validation_helper.validateFormError(message));
+        //console.log(message);
+      } else {
+        setErrors(() => {});
+      }
+      toast.error(message.error);
+    }
+    
+  }, [user, role, isError, message, dispatch]);
 
   const onChange = (e) => {
-    setFormData((prevState) => ({
+    setFormData((prevState) => ({   
       ...prevState,
       [e.target.name]: e.target.value,
     }));
@@ -99,22 +78,13 @@ function CreateUser() {
       name,
       phone,
     };
+    //console.log(user);
     setValidated(true);
     dispatch(create_user(userData));
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <>
-      <div className="mt-5 create-user">
-        <section>
-          <h1>
-            <FaUser /> Create an user
-          </h1>
-        </section>
+      <div className="">
         <Form onSubmit={onSubmit} validated={validated} noValidate>
           <Form.Group className="mb-3">
             <Form.Label>Enter username</Form.Label>
@@ -189,7 +159,7 @@ function CreateUser() {
           )}
           {isClient && (
             <Form.Group className="mb-3">
-              <Form.Label>Enter Client Phone { console.log(errors.phone)}</Form.Label>
+              <Form.Label>Enter Client Phone</Form.Label>
               <Form.Control
                 type="text"
                 name="phone"
@@ -233,7 +203,7 @@ function CreateUser() {
 
           <Form.Group className=" mt-3 d-grid gap-2">
             <Button type="submit" variant="primary">
-              Submit
+              {isLoading ? <Spinner animation="border" size="sm" /> : "Submit"}
             </Button>
           </Form.Group>
         </Form>
@@ -242,4 +212,4 @@ function CreateUser() {
   );
 }
 
-export default CreateUser;
+export default UserForm;
