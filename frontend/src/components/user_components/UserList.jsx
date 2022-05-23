@@ -21,12 +21,11 @@ import Modal from "react-bootstrap/Modal";
 import UserComponent from "../../components/userComponent";
 
 function UsersListing() {
-  //let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const { user } = useSelector((state) => state.auth);
+  let loggedInUser = JSON.parse(localStorage.getItem("user"));
   const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
-  const { profiles } = useSelector((state) => state.profile);
+
 
   const [show, setShow] = useState(false);
 
@@ -39,7 +38,6 @@ function UsersListing() {
     dispatch(get_allUsers());
     dispatch(get_allRoles());
     dispatch(get_allProfiles());
-    //dispatch(get_allRoles())
     return () => {
       dispatch(reset());
     };
@@ -49,10 +47,8 @@ function UsersListing() {
     handleClose();
   }, [users]);
 
-  //console.log(profiles)
-
   /* if (isLoading) {
-    return <Spinner />;
+    return <CustomSpinner />;
   } */
   return (
     <>

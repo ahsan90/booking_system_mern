@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const { loggedInUser } = useSelector((state) => state.auth);
 
   const onLogout = () => {
     dispatch(logout());
@@ -35,24 +35,36 @@ function Header() {
                   <FaHome /> Home
                 </Link>
               </Nav.Link>
-
               <Nav.Link>
                 <Link to="/about">About</Link>
               </Nav.Link>
-              {user && (
+              <Nav.Link>
+                <Link to="/register">
+                  <FaUser /> Register
+                </Link>
+              </Nav.Link>
+
+              {loggedInUser && (
                 <>
                   <Nav.Link>
                     <Link to="/admin">
                       <GrDashboard /> Admin Pannel
                     </Link>
                   </Nav.Link>
-                  <NavDropdown title={user.username} id="basic-nav-dropdown">
+                  <NavDropdown
+                    title={loggedInUser.username}
+                    id="basic-nav-dropdown"
+                  >
                     <NavDropdown.Item>
-                      <GrUserSettings /> Profile
+                      <Link to={`/users/profile/${loggedInUser._id}`}>
+                        <GrUserSettings /> Profile
+                      </Link>
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="/">
-                      <GrDashboard /> Dashboard
+                      <Link to={`/users/profile/${loggedInUser._id}`}>
+                        <GrDashboard /> Dashboard
+                      </Link>
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={onLogout}>
@@ -61,7 +73,7 @@ function Header() {
                   </NavDropdown>
                 </>
               )}
-              {!user && (
+              {!loggedInUser && (
                 <>
                   <Nav.Link>
                     <Link to="/login">

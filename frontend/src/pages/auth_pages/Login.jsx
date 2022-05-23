@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Row from 'react-bootstrap/Row'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import {login, reset} from '../../features/auth/authSlice'
 import Spinner from '../../components/CustomSpinner'
@@ -35,7 +35,7 @@ function Login() {
       if (message.errors !== undefined) {
         //message.errors.forEach(element => {
           //toast.error(element.msg)
-        setErrors(validation_helper.validateFormError(message))
+        setErrors(validation_helper.validateFormError({ message }))
         //});
       } else {
           setErrors(() => {})
@@ -68,13 +68,13 @@ function Login() {
     return <Spinner/>
   }
 
-
-
   return (
     <>
-      <div className='mt-5 login'>
+      <div className="mt-5 login login_boxshadow">
         <section>
-          <h1><FaSignInAlt /> Login</h1>
+          <h1>
+            <FaSignInAlt /> Login
+          </h1>
         </section>
         <Form noValidate validated={validated} onSubmit={onSubmit}>
           <Row className="mb-3">
@@ -82,37 +82,56 @@ function Login() {
               <InputGroup hasValidation>
                 <Form.Control
                   type="text"
-                      placeholder="Username/Email"
-                      name='username_or_email'
-                      value={username_or_email}
-                      onChange={onChange}
+                  placeholder="Username/Email"
+                  name="username_or_email"
+                  value={username_or_email}
+                  onChange={onChange}
                   aria-describedby="inputGroupPrepend"
                   required
-                  />
-                    {errors !== undefined && errors.username_or_email && 
-                <Form.Control.Feedback type="invalid" className='validation_text'>
-                  {errors.username_or_email}
-                </Form.Control.Feedback>}    
+                />
+                {errors !== undefined && errors.username_or_email && (
+                  <Form.Control.Feedback
+                    type="invalid"
+                    className="validation_text"
+                  >
+                    {errors.username_or_email}
+                  </Form.Control.Feedback>
+                )}
               </InputGroup>
             </Form.Group>
           </Row>
           <Row className="mb-3">
             <Form.Group md="6">
-              <Form.Control type="password" placeholder="Password" name="password" value={password} onChange={onChange} required />
-              {errors !== undefined && errors.password && 
-                <Form.Control.Feedback type="invalid" className='validation_text'>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                name="password"
+                value={password}
+                onChange={onChange}
+                required
+              />
+              {errors !== undefined && errors.password && (
+                <Form.Control.Feedback
+                  type="invalid"
+                  className="validation_text"
+                >
                   {errors.password}
-                </Form.Control.Feedback>} 
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
-            
           </Row>
           <Form.Group className=" mt-3 d-grid gap-2">
-            <Button type='submit' variant='primary'>Submit</Button>
+            <Button type="submit" variant="primary">
+              Submit
+            </Button>
           </Form.Group>
+          <div>
+            Not a member yet? <Link to='/register'>Register</Link>
+          </div>
         </Form>
-      </div>    
+      </div>
     </>
-  )
+  );
 }
 
 export default Login

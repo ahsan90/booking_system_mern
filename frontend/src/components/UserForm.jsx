@@ -20,7 +20,7 @@ function UserForm() {
     name: "",
     phone: "",
   });
-  const { user } = useSelector((state) => state.auth);
+  
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
@@ -41,7 +41,7 @@ function UserForm() {
     if (isError) {
       //console.log(message.errors !== undefined)
       if (message.errors !== undefined) {
-        setErrors(validation_helper.validateFormError(message));
+        setErrors(validation_helper.validateFormError({ message }));
         //console.log(message);
       } else {
         setErrors(() => {});
@@ -49,7 +49,7 @@ function UserForm() {
       toast.error(message.error);
     }
     
-  }, [user, role, isError, message, dispatch]);
+  }, [ role, isError, message, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({   

@@ -4,6 +4,7 @@ const User = require('../models/userModel')
 const Role = require('../models/roleModel')
 const Profile = require('../models/profileModel')
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
+const req = require('express/lib/request')
 
 const authenticateUser = asyncHandler(async (req, res, next) => {
     let token
@@ -54,7 +55,7 @@ const authAdminUser = asyncHandler(async (req, res, next) => {
 const isCurrentAuthUser = (user, roletype, obj) => {
     //console.log(roletype === defaultRolesAndUsers.ADMIN)
     //console.log(obj.user._id.toString() === user._id.toString())
-    return roletype === defaultRolesAndUsers.ADMIN || obj.user._id.toString() === user._id.toString() 
+    return roletype === defaultRolesAndUsers.ADMIN || obj.user._id.toString() === user._id.toString() || req.user._id.toString ===user._id.toString()
 }
 
 const protectBuiltInUsersAndProfile = asyncHandler(async (req, res, next) => {

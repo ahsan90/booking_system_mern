@@ -10,11 +10,13 @@ const FIELD_VALUES = {
     role: 'role'
 }
 
-const validateFormError = (message) => {
+const validateFormError = (validationError) => {
     const errors = {}
-    //console.log(message.errors)
-    if (message.errors !== null) {
-        message.errors.forEach(element => {
+    
+    const { message, confirmPassError } = validationError
+    //console.log(message)
+    if (message !== undefined && message.errors !== null) {
+        message?.errors?.forEach(element => {
             if (element.param === FIELD_VALUES.username_or_email) {
                 errors.username_or_email = element.msg
             }
@@ -27,11 +29,21 @@ const validateFormError = (message) => {
             if (element.param === FIELD_VALUES.password) {
                 errors.password = element.msg
             }
+            if (element.param === FIELD_VALUES.name) {
+                errors.name = element.msg
+            }
+            if (element.param === FIELD_VALUES.phone) {
+                errors.phone = element.msg
+            }
             if (element.param === FIELD_VALUES.role) {
                 errors.role = element.msg
                 //console.log(element.msg)
             } 
+            
         });
+    }
+    if (confirmPassError !== '') {
+        errors.confirmPassError = confirmPassError
     }
     //console.log(errors)
     return errors

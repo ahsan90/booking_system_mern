@@ -5,6 +5,7 @@ import profileService from './profileService'
 //const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
+    profile: null,
     profiles: [],
     isError: false,
     isSuccess: false,
@@ -17,10 +18,9 @@ const initialState = {
 // create_user user
 export const create_profile = createAsyncThunk(
     'profiles',
-    async (user, thunkAPI) => {
+    async (userProfileData, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
-            return await profileService.create_user(user, token)
+            return await profileService.create_profile(userProfileData)
         } catch (error) {
             const message = error.response.data
             //console.log(error.response.status)
@@ -34,7 +34,7 @@ export const get_allProfiles = createAsyncThunk(
     'profiles/get_allProfiles',
     async (_, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await profileService.get_profiles(token)
         } catch (error) {
             const message = error.response.data
@@ -48,16 +48,7 @@ export const edit_profile = createAsyncThunk(
 
 )
 export const delete_profile = createAsyncThunk(
-    'profiles/delete_profile',
-    async (id, thunkAPI) => {
-        try {
-            const token = thunkAPI.getState().auth.user.token
-            return await profileService.delete_user(id, token)
-        } catch (error) {
-            const message = error.response.data
-            return thunkAPI.rejectWithValue(message)
-        }
-    }
+    
 )
 
 export const profileSlice = createSlice({
@@ -79,10 +70,25 @@ export const profileSlice = createSlice({
             .addCase(get_allProfiles.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
+                state.isSuccess = false
                 state.message = action.payload
             })
-            
-            
+            .addCase(create_profile.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(create_profile.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.profile = action.payload
+            })
+            .addCase(create_profile.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+
+
     }
 })
 

@@ -1,8 +1,13 @@
-import React from 'react'
-import { Row, Card, Col, Table } from 'react-bootstrap'
+import {useState, useEffect} from 'react'
+import { Row, Card, Col, Table, Button, Modal } from 'react-bootstrap'
+import {FaUser} from 'react-icons/fa'
 import moment from 'moment'
+import ClientProfileForm from '../client_components/ClientProfileForm';
 
-function UserProfileInformation({singleUserDetails}) {
+function UserProfileInformation({ singleUserDetails }) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <>
       <Row>
@@ -66,8 +71,25 @@ function UserProfileInformation({singleUserDetails}) {
           </Card>
         ) : (
           <p>
-            No profile information found for this user{" "}
-            <button className="btn btn-success">Create Profile</button>
+            <div className="mb-3 justify-content-center">
+              No profile information found{" "}
+              <Button variant="success" onClick={handleShow}>
+                + Create A New User
+              </Button>
+              <Modal show={show} onHide={handleClose} style={{minWidth: '80%'}}>
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    <h1>
+                      <FaUser /> Create Profile
+                    </h1>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <ClientProfileForm />
+                </Modal.Body>
+                <Modal.Footer></Modal.Footer>
+              </Modal>
+            </div>
           </p>
         )}
       </Row>

@@ -2,11 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import userServices from './userServices'
 
-//const user = JSON.parse(localStorage.getItem('user'))
+const loggedInUser = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
     user: null,
     singleUserDetails: null,
+    profile: null,
     users: [],
     roles: [],
     isError: false,
@@ -22,7 +23,7 @@ export const create_user = createAsyncThunk(
     'users',
     async (user, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.create_user(user, token)
         } catch (error) {
             const message = error.response.data
@@ -37,7 +38,7 @@ export const get_allUsers = createAsyncThunk(
     'users/get_allUsers',
     async (_, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.get_allUsers(token)
         } catch (error) {
             const message = error.response.data
@@ -49,7 +50,7 @@ export const get_user = createAsyncThunk(
     'users/get_user',
     async (id, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.get_user(id, token)
         } catch (error) {
             const message = error.response.data
@@ -62,7 +63,7 @@ export const delete_user = createAsyncThunk(
     'users/delete_user',
     async (id, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.delete_user(id, token)
         } catch (error) {
             const message = error.response.data
@@ -75,7 +76,7 @@ export const get_allRoles = createAsyncThunk(
     'users/get_allRoles',
     async (_, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.get_allRoles(token)
         } catch (error) {
             const message = error.response.data
@@ -90,8 +91,23 @@ export const update_user = createAsyncThunk(
         const {id, userData} = user
         //console.log(userData)
         try {
-            const token = thunkAPI.getState().auth.user.token
+            const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.update_user(id, userData, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const create_user_profile = createAsyncThunk(
+    'users/new_profile',
+    async (profile, thunkAPI) => {
+        const { userId, profileData } = profile
+        //console.log(userId)
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await userServices.create_user_profile(userId, profileData, token)
         } catch (error) {
             const message = error.response.data
             return thunkAPI.rejectWithValue(message)
@@ -174,13 +190,29 @@ export const userSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(delete_user.fulfilled, (state, action) => {
-                console.log(action.payload)
                 state.isLoading = false
                 state.isSuccess = true
                 state.users = state.users.filter(x => x._id !== action.payload.id)
                 toast.success('User deleted successfully!')
             })
             .addCase(delete_user.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+                if (state.message?.message) {
+                    toast.error(state.message?.message)
+                }
+            })
+            .addCase(create_user_profile.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(create_user_profile.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.singleUserDetails  = action.payload
+                toast.success('Profile Added successfully!')
+            })
+            .addCase(create_user_profile.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

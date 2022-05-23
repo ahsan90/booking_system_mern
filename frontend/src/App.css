@@ -15,3 +15,7 @@ body{
 .validation_text{
   text-align: left;
 }
+
+.login_boxshadow {
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}

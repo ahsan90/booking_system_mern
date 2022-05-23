@@ -35,13 +35,16 @@ const getAllRoles = asyncHandler(async (req, res) => {
 const getUser = asyncHandler(async (req, res) => {
 
     let user = await User.findById(req.params.id).select('-password')
-    const profile = await Profile.findOne({ user })
+    const profile = await Profile.findOne({ user }).select('-select')
     let role = await Role.findById(req.user.role._id)
-    if (!isCurrentAuthUser(req.user, role.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })
-    
+    const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user._id.toString() === user._id.toString()
+    if (!isCurrentAuthoriziedUser) { return res.status(403).json({ error: 'Forbidded!' }) }
+    //throw new Error('Stop')
+    //if (!isCurrentAuthUser(req.user, role.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })
     if (!user) {
-        res.status(400).json({ error: 'User not found' })
+        res.status(404).json({ error: 'User not found' })
     }
+
     let bookings = await Reservation.find({user})
     const singleUserDetails = {
         _id: user._id,
@@ -157,6 +160,14 @@ const updateUser = asyncHandler(async (req, res) => {
 const createUserProfile = asyncHandler(async (req, res) => {
     let user = await User.findById(req.params.id)
     let xProfile = await Profile.findOne({ user })
+
+    //const profile = await Profile.findOne({ user })
+    let role = await Role.findById(req.user.role._id)
+    
+    const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user._id.toString() === user._id.toString()
+    
+    if (!isCurrentAuthoriziedUser) return res.status(403).json({ error: 'Forbidded!' })
+    //throw new Error('Stop')
     if (xProfile) { return res.status(400).json({ error: 'Profile already exist' }) }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -165,8 +176,22 @@ const createUserProfile = asyncHandler(async (req, res) => {
     let profileData = new Profile({
         user: user, email: user.email, name: req.body.name, phone: req.body.phone
     })
-    let profile = await Profile.create(profileData)
-    res.status(200).json({ profile })
+    console.log(profileData)
+    await Profile.create(profileData)
+    
+    let bookings = await Reservation.find({ user })
+    const singleUserDetails = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        createdAt: user.createdAt,
+        updated: user.updatedAt,
+        role: await Role.findById(user.role._id),
+        profile: await Profile.findOne({user}).select('-user'),
+        bookings: bookings.length > 0 ? bookings : null,
+    }
+    res.status(200).json(singleUserDetails)
 })
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -184,6 +209,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
     res.status(200).json({ id: user._id })
 })
+
 
 
 module.exports = {

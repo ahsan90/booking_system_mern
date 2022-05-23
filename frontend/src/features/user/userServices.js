@@ -65,9 +65,19 @@ const get_allRoles = async (token) => {
     return response.data
 }
 
+const create_user_profile = async (userId, data, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(API_URL + "profile/" + userId, data, config)
+    console.log(API_URL + "profile/" + userId)
+    return response.data
+}
 
 const userServices = {
-    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles
+    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles, create_user_profile
 }
 
 export default userServices

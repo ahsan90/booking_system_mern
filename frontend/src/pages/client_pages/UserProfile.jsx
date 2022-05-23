@@ -28,9 +28,9 @@ function UserProfile() {
   useEffect(() => {
     dispatch(get_user(id));
   }, [id, dispatch]);
-  if (isLoading) {
+/*   if (isLoading) {
     return <CustomSpinner />;
-  }
+  } */
 
   //console.log(singleUserDetails)
   return (

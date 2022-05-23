@@ -38,13 +38,12 @@ const registerProfile = asyncHandler(async (req, res) => {
         let userRole = await Role.findOne({ roletype: ProfileHelper.CLIENT })
         //return
 
-        if (user) {
-            return res.status(400).json({ message: 'User email already exists' })
-        } 
-
         if (await User.findOne({ username })) {
-            return res.status(400).json({message: 'Username is already exists'})
+            return res.status(400).json({error: 'Username is already exists'})
         }
+        if (user) {
+            return res.status(400).json({ error: 'User email already exists' })
+        } 
 
         const avatar = gravatar.url(email,{
             s: '200',
