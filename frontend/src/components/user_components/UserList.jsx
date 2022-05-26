@@ -46,7 +46,6 @@ function UsersListing() {
   useEffect(() => {
     handleClose();
   }, [users]);
-
   /* if (isLoading) {
     return <CustomSpinner />;
   } */

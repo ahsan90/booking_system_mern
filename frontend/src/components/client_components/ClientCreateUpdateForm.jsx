@@ -6,57 +6,52 @@ import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { create_profile, reset } from "../../features/profile/profileSlice";
+import {
+  create_profile,
+  update_profile,
+  reset,
+} from "../../features/profile/profileSlice";
 import validation_helper from "../../../src/helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
 import { toast } from "react-toastify";
 
-function ClientCreateUpdateForm() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    passwordConfirmed: "",
-    role: "",
-    name: "",
-    phone: "",
-  });
-  const { profile, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.profile
-  );
+function ClientCreateUpdateForm({ profile = null }) {
   const dispatch = useDispatch();
-
-  const { username, email, password, passwordConfirmed, role, name, phone } =
-    formData;
-  const [confirmPassError, setConfirmPassError] = useState('');
-
-  /*
-  const confirmPassError = () => {
-    if (password !== passwordConfirmed) {
-      confirmPassError = 'Password did not match!'
-    }
-  } */
-  //console.log(confirmPassError)
-
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
 
   const [validated, setValidated] = useState(false);
+  let { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.profile
+  );
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: profile? profile.email : '',
+    password: "",
+    passwordConfirmed: "",
+    role: "",
+    name: profile ? profile.name : '',
+    phone: profile? profile.phone : '',
+  });
+
+  const { username, email, password, passwordConfirmed, name, phone } =
+    formData;
+
   //console.log(message.status === 401)
   useEffect(() => {
     if (isError) {
       if (message?.errors !== undefined) {
-        setErrors(
-          validation_helper.validateFormError({ message })
-        );
+        setErrors(validation_helper.validateFormError({ message }));
       } else {
         setErrors(() => {});
       }
       toast.error(message?.error);
+      message = null
     }
-    dispatch(reset())
-  }, [isError, message, confirmPassError, dispatch]);
+    
+  }, [isError, message, dispatch,]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -67,7 +62,7 @@ function ClientCreateUpdateForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const userData = {
+    const profilePayload = {
       username,
       email,
       password,
@@ -79,42 +74,59 @@ function ClientCreateUpdateForm() {
     }
 
     setValidated(true);
-    //console.log(userData)
-    dispatch(create_profile(userData));
+    //console.log(profilePayload)
+    if (profile) {
+      const profileData = {
+        name, email, phone
+      }
+      dispatch(update_profile({ profileData, id: profile._id }))
+      errors = null
+      message = null
+    } else {
+      dispatch(create_profile(profilePayload));
+    }
+    
   };
-
+  const classForRegistrationScreen = profile? '' : "container-fluid dflex justify-content-center mt-4 col-lg-6 col-md-8 col-sm-12";
   return (
     <>
-      <div className="container-fluid dflex justify-content-center mt-4 col-lg-6 col-md-8 col-sm-12">
+      <div className={classForRegistrationScreen}>
         <Card
           style={{ backgroundColor: "#f5f5f5" }}
           className="register_boxshadow"
         >
           <Card.Body>
-            <h2>
-              <FaUser />
-              Client Registration
-            </h2>
+            {profile ? (
+              ""
+            ) : (
+              <h2>
+                <FaUser />
+                Client Registration
+              </h2>
+            )}
+
             <Form onSubmit={onSubmit} validated={validated} noValidate>
-              <Form.Group className="mb-3">
-                <Form.Label>Enter username</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="username"
-                  value={username}
-                  placeholder="Enter Username"
-                  onChange={onChange}
-                  required
-                />
-                {errors !== undefined && errors.username && (
-                  <Form.Control.Feedback
-                    type="invalid"
-                    className="validation_text"
-                  >
-                    {errors.username}
-                  </Form.Control.Feedback>
-                )}
-              </Form.Group>
+              {!profile && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Enter username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="username"
+                    value={username}
+                    placeholder="Enter Username"
+                    onChange={onChange}
+                    required
+                  />
+                  {errors !== undefined && errors.username && (
+                    <Form.Control.Feedback
+                      type="invalid"
+                      className="validation_text"
+                    >
+                      {errors.username}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              )}
               <Form.Group className="mb-3">
                 <Form.Label>Enter Email</Form.Label>
                 <Form.Control
@@ -135,47 +147,49 @@ function ClientCreateUpdateForm() {
                 )}
               </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Enter Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={password}
-                  placeholder="Password"
-                  onChange={onChange}
-                  required
-                />
-                {errors !== undefined && errors.password && (
-                  <Form.Control.Feedback
-                    type="invalid"
-                    className="validation_text"
-                  >
-                    {errors.password}
-                  </Form.Control.Feedback>
-                )}
-              </Form.Group>
+              {!profile && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Enter Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={password}
+                    placeholder="Password"
+                    onChange={onChange}
+                    required
+                  />
+                  {errors !== undefined && errors.password && (
+                    <Form.Control.Feedback
+                      type="invalid"
+                      className="validation_text"
+                    >
+                      {errors.password}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              )}
+              {!profile && (
+                <Form.Group className="mb-3">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="passwordConfirmed"
+                    value={passwordConfirmed}
+                    placeholder="Confirm Password"
+                    onChange={onChange}
+                    required
+                  />
 
-              <Form.Group className="mb-3">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="passwordConfirmed"
-                  value={passwordConfirmed}
-                  placeholder="Confirm Password"
-                  onChange={onChange}
-                  required
-                />
-
-                {errors !== undefined && errors.confirmPassError && (
-                  <Form.Control.Feedback
-                    type="invalid"
-                    className="validation_text"
-                  >
-                    {errors.confirmPassError}
-                  </Form.Control.Feedback>
-                )}
-              </Form.Group>
-
+                  {errors !== undefined && errors.confirmPassError && (
+                    <Form.Control.Feedback
+                      type="invalid"
+                      className="validation_text"
+                    >
+                      {errors.confirmPassError}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              )}
               <Form.Group className="mb-3">
                 <Form.Label>Enter Client Name</Form.Label>
                 <Form.Control
@@ -225,9 +239,11 @@ function ClientCreateUpdateForm() {
                   )}
                 </Button>
               </Form.Group>
-              <div>
-                Already a member? <Link to="/login">Login</Link>
-              </div>
+              {!profile && (
+                <div>
+                  Already a member? <Link to="/login">Login</Link>
+                </div>
+              )}
             </Form>
           </Card.Body>
         </Card>

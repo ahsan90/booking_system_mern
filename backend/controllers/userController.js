@@ -25,7 +25,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getAllRoles = asyncHandler(async (req, res) => {
     try {
         let roles = await Role.find()
-        return res.status(200).json( roles )
+        return res.status(200).json(roles)
     } catch (error) {
         res.status(500).json({ error })
     }
@@ -45,7 +45,7 @@ const getUser = asyncHandler(async (req, res) => {
         res.status(404).json({ error: 'User not found' })
     }
 
-    let bookings = await Reservation.find({user})
+    let bookings = await Reservation.find({ user })
     const singleUserDetails = {
         _id: user._id,
         username: user.username,
@@ -54,8 +54,8 @@ const getUser = asyncHandler(async (req, res) => {
         createdAt: user.createdAt,
         updated: user.updatedAt,
         role: await Role.findById(user.role._id),
-        profile: profile? profile : null,
-        bookings: bookings.length > 0? bookings : null,
+        profile: profile ? profile : null,
+        bookings: bookings.length > 0 ? bookings : null,
     }
     res.status(200).json(singleUserDetails)
 })
@@ -129,9 +129,9 @@ const updateUser = asyncHandler(async (req, res) => {
     if ((await User.find({ username: req.body.username })).filter(x => x.id !== req.params.id).length > 0) {
         return res.status(400).json({ error: 'Username is already used by someone else' })
     }
-    
+
     const profile = await Profile.findOne({ user: await User.findById(req.params.id) })
-    
+
     let currentUserRole = await Role.findById(req.user.role._id)
     if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(403).json({ message: 'Forbidden!' })
     const user = await User.findById(req.params.id)
@@ -163,9 +163,9 @@ const createUserProfile = asyncHandler(async (req, res) => {
 
     //const profile = await Profile.findOne({ user })
     let role = await Role.findById(req.user.role._id)
-    
+
     const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user._id.toString() === user._id.toString()
-    
+
     if (!isCurrentAuthoriziedUser) return res.status(403).json({ error: 'Forbidded!' })
     //throw new Error('Stop')
     if (xProfile) { return res.status(400).json({ error: 'Profile already exist' }) }
@@ -176,9 +176,9 @@ const createUserProfile = asyncHandler(async (req, res) => {
     let profileData = new Profile({
         user: user, email: user.email, name: req.body.name, phone: req.body.phone
     })
-    console.log(profileData)
+
     await Profile.create(profileData)
-    
+
     let bookings = await Reservation.find({ user })
     const singleUserDetails = {
         _id: user._id,
@@ -188,7 +188,7 @@ const createUserProfile = asyncHandler(async (req, res) => {
         createdAt: user.createdAt,
         updated: user.updatedAt,
         role: await Role.findById(user.role._id),
-        profile: await Profile.findOne({user}).select('-user'),
+        profile: await Profile.findOne({ user }).select('-user'),
         bookings: bookings.length > 0 ? bookings : null,
     }
     res.status(200).json(singleUserDetails)

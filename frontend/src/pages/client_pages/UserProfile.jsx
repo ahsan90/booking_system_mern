@@ -3,7 +3,7 @@ import { Row, Col, Card, Table, Tabs, Tab, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { GrView } from "react-icons";
-import { get_user } from "../../features/user/userSlice";
+import { get_user, reset } from "../../features/user/userSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import AdminTab from "../../components/AdminTab";
 import UserProfileInformation from "../../components/user_components/UserProfileInformation";
@@ -27,6 +27,10 @@ function UserProfile() {
 
   useEffect(() => {
     dispatch(get_user(id));
+    
+    return () => {
+      dispatch(reset())
+    }
   }, [id, dispatch]);
 /*   if (isLoading) {
     return <CustomSpinner />;

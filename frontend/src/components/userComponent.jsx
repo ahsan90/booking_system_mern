@@ -7,9 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   delete_user,
-  get_allRoles,
-  get_allUsers,
-  reset,
 } from "../features/user/userSlice";
 import Spinner from "./CustomSpinner";
 //import "./admin.css";
@@ -24,7 +21,6 @@ import UserProfile from "../pages/client_pages/UserProfile";
 function UserComponent({ userData }) {
   
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const { user } = useSelector((state) => state.auth);
   const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
@@ -43,17 +39,11 @@ function UserComponent({ userData }) {
       dispatch(delete_user(id));
     }
   };
-  const viewUserDetails = (id) => {
-    
-  };
+  
   
   useEffect(() => {
     handleClose();
   }, [users]);
-
-  const showUserProfile = () => {
-    
-  }
 
   /*   if (isLoading) {
     return <Spinner />;
@@ -103,7 +93,6 @@ function UserComponent({ userData }) {
             <Modal.Body>
               <UserEditForm passedUser={userData} />
             </Modal.Body>
-            <Modal.Footer></Modal.Footer>
           </Modal>
         </div>
       </div>
