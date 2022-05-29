@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import {
   get_allRoles,
   get_allUsers,
-  reset,
+  resetUser,
 } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import CustomSpinner from "../../components/CustomSpinner";
@@ -39,7 +39,7 @@ function UsersListing() {
     dispatch(get_allRoles());
     dispatch(get_allProfiles());
     return () => {
-      dispatch(reset());
+      dispatch(resetUser());
     };
   }, [dispatch]);
 

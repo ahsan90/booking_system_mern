@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import {login, reset} from '../../features/auth/authSlice'
+import {login, resetAuth} from '../../features/auth/authSlice'
 import Spinner from '../../components/CustomSpinner'
 import validation_helper from '../../helper/validation_helper'
 
@@ -45,7 +45,7 @@ function Login() {
     if (isSuccess || user) {
       navigate('/')
     }
-    dispatch(reset())
+    dispatch(resetAuth())
   }, [user, isError, isSuccess, message, navigate, dispatch])
 
   const onChange = (e) => {

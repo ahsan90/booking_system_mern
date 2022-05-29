@@ -77,14 +77,23 @@ export const update_profile = createAsyncThunk(
     }
 )
 export const delete_profile = createAsyncThunk(
-    
+    'delete_profile',
+    async (id, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await profileService.delete_profile(id, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
 )
 
 export const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        resetProfile: (state) => initialState
     },
     extraReducers: (builder) => {
         builder
@@ -145,11 +154,27 @@ export const profileSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
+            .addCase(delete_profile.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(delete_profile.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.profile = action.payload
+                toast.success('Profile deleted!')
+            })
+            .addCase(delete_profile.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+
 
 
     }
 })
 
 
-export const { reset } = profileSlice.actions
+export const { resetProfile } = profileSlice.actions
 export default profileSlice.reducer

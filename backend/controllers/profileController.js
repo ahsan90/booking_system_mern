@@ -121,9 +121,9 @@ const deleteProfile = asyncHandler(async (req, res) => {
         throw new Error('profile not found')
     }
     //console.log(profile._id)
-    await Profile.findByIdAndDelete(profile._id)
-    await User.findByIdAndDelete(profile.user._id)//Also delete associated user 
-    res.status(200).json({ messsage: `Profile associated with an email ${profile.email} has been successfully deleted!` })
+    const deletedProfile = await Profile.findByIdAndDelete(profile._id)
+    //await User.findByIdAndDelete(profile.user._id)//Also delete associated user 
+    res.status(200).json(deletedProfile)
 })
 
 module.exports = {

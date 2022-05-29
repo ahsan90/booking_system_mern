@@ -6,7 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Navbar from "react-bootstrap/Navbar";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout, reset } from "../features/auth/authSlice";
+import { logout, resetAuth } from "../features/auth/authSlice";
 
 import { Link } from "react-router-dom";
 //import Button from 'react-bootstrap/Button'
@@ -18,7 +18,7 @@ function Header() {
 
   const onLogout = () => {
     dispatch(logout());
-    dispatch(reset());
+    dispatch(resetAuth());
     navigate("/login");
   };
 

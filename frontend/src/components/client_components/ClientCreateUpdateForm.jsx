@@ -10,6 +10,8 @@ import {
   create_profile,
   update_profile,
   reset,
+  resetProfile,
+  get_profile,
 } from "../../features/profile/profileSlice";
 import validation_helper from "../../../src/helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
@@ -26,20 +28,23 @@ function ClientCreateUpdateForm({ profile = null }) {
     (state) => state.profile
   );
 
+  //const { profile } = useSelector((state) => state.profile)
+  
   const [formData, setFormData] = useState({
     username: "",
-    email: profile? profile.email : '',
+    email: profile? profile?.email : '',
     password: "",
     passwordConfirmed: "",
     role: "",
-    name: profile ? profile.name : '',
-    phone: profile? profile.phone : '',
+    name: profile ? profile?.name : '',
+    phone: profile? profile?.phone : '',
   });
 
   const { username, email, password, passwordConfirmed, name, phone } =
     formData;
 
   //console.log(message.status === 401)
+
   useEffect(() => {
     if (isError) {
       if (message?.errors !== undefined) {
@@ -48,7 +53,6 @@ function ClientCreateUpdateForm({ profile = null }) {
         setErrors(() => {});
       }
       toast.error(message?.error);
-      message = null
     }
     
   }, [isError, message, dispatch,]);

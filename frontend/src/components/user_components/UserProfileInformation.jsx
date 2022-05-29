@@ -7,30 +7,54 @@ import ClientCreateUpdateForm from "../client_components/ClientCreateUpdateForm"
 import { BiTrash } from "react-icons/bi";
 import CustomSpinner from "../CustomSpinner";
 import { useSelector, useDispatch } from "react-redux";
-import {get_allProfiles, get_profile, reset} from '../../features/profile/profileSlice'
+import {
+  get_allProfiles,
+  get_profile,
+  delete_profile,
+  resetProfile,
+} from "../../features/profile/profileSlice";
+import {get_user, resetUser} from '../../features/user/userSlice'
 
-function UserProfileInformation({ singleUserDetails }) {
+
+function UserProfileInformation() {
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+
   //console.log(singleUserDetails?.profile?._id);
 
-  const dispatch = useDispatch()
-  let { profile, profiles, isError, message } = useSelector((state) => state.profile)
-  useEffect(() => {
-    if (singleUserDetails?.profile?._id) {
-      dispatch(get_profile(singleUserDetails?.profile?._id));
+  const dispatch = useDispatch();
+  let { profile, profiles, isError, message } = useSelector(
+    (state) => state.profile
+  );
+  const { singleUserDetails } = useSelector((state) => state.user)
+  
+  /* useEffect(() => {
+    if (profile) {
+      dispatch(get_user(id))
     }
     return () => {
-      dispatch(reset())
+      dispatch(resetProfile())
     }
-  }, [singleUserDetails, dispatch])
-  
+  },[profile, dispatch]) */
+
   useEffect(() => {
-    handleClose()
-  },[profile])
+    handleClose();
+  }, [profile]);
   //console.log(profile)
+  const onDelete = (profileId) => {
+    
+    if (window.confirm("Are you sure you want to delete this profile?")) {
+      dispatch(delete_profile(profileId))
+      //dispatch(resetProfile())
+      //dispatch(resetUser())
+      //dispatch(get_user(id))
+    }
+  };
+  const onEdit = () => {
+    handleShow()
+  }
   return (
     <>
       <Row>
@@ -73,7 +97,7 @@ function UserProfileInformation({ singleUserDetails }) {
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <ClientCreateUpdateForm profile={profile} />
+                <ClientCreateUpdateForm profile={ singleUserDetails?.profile}/>
               </Modal.Body>
             </Modal>
             <Card>
@@ -90,16 +114,16 @@ function UserProfileInformation({ singleUserDetails }) {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{profile?.name}</td>
-                    <td>{profile?.email}</td>
-                    <td>{profile?.phone}</td>
+                    <td>{singleUserDetails?.profile?.name}</td>
+                    <td>{singleUserDetails?.profile?.email}</td>
+                    <td>{singleUserDetails?.profile?.phone}</td>
                     <td>
-                      {moment(profile?.createdAt).format(
+                      {moment(singleUserDetails?.profile?.createdAt).format(
                         "LLL"
                       )}
                     </td>
                     <td>
-                      {moment(profile?.updatedAt).format(
+                      {moment(singleUserDetails?.profile?.updatedAt).format(
                         "LLL"
                       )}
                     </td>
@@ -107,7 +131,12 @@ function UserProfileInformation({ singleUserDetails }) {
                       <button className="btn btn-warning" onClick={handleShow}>
                         <FaEdit />
                       </button>
-                      <button className="btn btn-danger">
+                      <button
+                        className="btn btn-danger"
+                        onClick={() =>
+                          onDelete(singleUserDetails?.profile?._id)
+                        }
+                      >
                         <BiTrash />
                       </button>
                     </td>

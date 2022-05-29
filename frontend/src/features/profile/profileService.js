@@ -40,10 +40,21 @@ const update_profile = async (id, profileData, token) => {
     return response.data
 }
 
+const delete_profile = async (id, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.delete(API_URL + id, config)
+    //console.log("Hello: "+response.data.toString())
+    return response.data
+}
+
 
 
 const profileService = {
-    create_profile, get_profile, get_profiles, update_profile
+    create_profile, get_profile, get_profiles, update_profile, delete_profile
 }
 
 export default profileService

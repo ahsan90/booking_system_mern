@@ -3,7 +3,8 @@ import { Row, Col, Card, Table, Tabs, Tab, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { GrView } from "react-icons";
-import { get_user, reset } from "../../features/user/userSlice";
+import { get_user, resetUser } from "../../features/user/userSlice";
+import { get_profile, resetProfile } from "../../features/profile/profileSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import AdminTab from "../../components/AdminTab";
 import UserProfileInformation from "../../components/user_components/UserProfileInformation";
@@ -21,20 +22,30 @@ function UserProfile() {
     isSuccess,
     message,
   } = useSelector((state) => state.user);
+  const {profile} = useSelector((state) => state.profile)
 
   const { id } = useParams();
   const [key, setKey] = useState("user_profile");
 
   useEffect(() => {
     dispatch(get_user(id));
-    
+    if (singleUserDetails?.profile) dispatch(get_profile(singleUserDetails?.profile?._id));
     return () => {
-      dispatch(reset())
+      dispatch(resetUser())
+      dispatch(resetProfile());
     }
   }, [id, dispatch]);
-/*   if (isLoading) {
+  useEffect(() => {
+    if (singleUserDetails?.profile) {
+      dispatch(get_user(id))
+    }
+    return () => {
+      dispatch(resetUser())
+    }
+  },[profile, dispatch])
+  if (isLoading) {
     return <CustomSpinner />;
-  } */
+  }
 
   //console.log(singleUserDetails)
   return (
@@ -46,11 +57,11 @@ function UserProfile() {
         <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
           <Tab eventKey="user_profile" title="User Profile Information">
             <div className="container-fluid justify-center mt-5">
-              <UserProfileInformation singleUserDetails={singleUserDetails} />
+              <UserProfileInformation/>
             </div>
           </Tab>
           <Tab eventKey="bookings" title="Booking History">
-            <UserBookingHistory singleUserDetails={singleUserDetails} />
+            <UserBookingHistory />
           </Tab>
           <Tab eventKey="reservations" title="New Booking">
             New Booking

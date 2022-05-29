@@ -72,7 +72,6 @@ const create_user_profile = async (userId, data, token) => {
         }
     }
     const response = await axios.post(API_URL + "profile/" + userId, data, config)
-    console.log(API_URL + "profile/" + userId)
     return response.data
 }
 
