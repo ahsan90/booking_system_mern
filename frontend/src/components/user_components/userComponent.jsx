@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   delete_user,
-} from "../features/user/userSlice";
-import Spinner from "./CustomSpinner";
+} from "../../features/user/userSlice";
+import Spinner from "../CustomSpinner";
 //import "./admin.css";
 import Card from "react-bootstrap/Card";
 import { toast } from "react-toastify";
@@ -16,7 +16,6 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserEditForm from "./userEditForm";
-import UserProfile from "../pages/client_pages/UserProfile";
 
 function UserComponent({ userData }) {
   

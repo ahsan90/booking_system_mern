@@ -19,3 +19,11 @@ body{
 .login_boxshadow {
   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
+.booking{
+  align-self: center;
+  margin: 0 auto;
+}
+.booking_form {
+  display: flex;
+  max-width: 23%;
+}

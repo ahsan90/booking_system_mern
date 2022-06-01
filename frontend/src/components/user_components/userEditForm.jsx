@@ -5,63 +5,65 @@ import Form from "react-bootstrap/Form";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { create_user, get_allUsers, reset } from ".././features/user/userSlice";
-import validation_helper from ".././helper/validation_helper";
-import Spinner from "react-bootstrap/Spinner";
+import { update_user } from "../../features/user/userSlice";
+import validation_helper from "../../helper/validation_helper";
+//import Spinner from ".././components/Spinner";
+import Spinner from 'react-bootstrap/Spinner'
 //import "./admin.css";
 import { toast } from "react-toastify";
 
-function UserForm() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "",
-    name: "",
-    phone: "",
-  });
-  
-  const { isLoading, isError, isSuccess, message } = useSelector(
+function UserEditForm({ passedUser }) {
+  const { user } = useSelector((state) => state.auth);
+  const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
+  const { profiles } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
 
-  const { username, email, password, role, name, phone } = formData;
+  const { existingUser, setExistingUser } = useState({});
+
+  /* const foundUser = users.filter(
+    (x) => x._id === passedUser._id
+  ); */
+  const profile = profiles.filter((x) => x.user === passedUser._id);
+  const [formData, setFormData] = useState({
+    username: passedUser.username,
+    email: passedUser.email,
+    role: (roles.filter((x) => x._id === passedUser.role)[0]).roletype,
+    name: profile.length > 0 ? profile[0].name : null,
+    phone: profile.length > 0 ? profile[0].phone : null,
+  });
+
+  const { username, email, role, name, phone } = formData;
+
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
 
   const [validated, setValidated] = useState(false);
-  //console.log(message.status === 401)
+
   useEffect(() => {
-    if (role === "Client") {
-      setisClient(true);
-    } else {
-      setisClient(false);
-    }
     if (isError) {
       //console.log(message.errors !== undefined)
-      if (message.errors !== undefined) {
-        setErrors(validation_helper.validateFormError({ message }));
+      /* if (message.errors !== undefined) {
+        setErrors(validation_helper.validateFormError(message));
         //console.log(message);
       } else {
         setErrors(() => {});
-      }
-      toast.error(message.error);
+      } */
+      //toast.error(message.error);
     }
-    
-  }, [ role, isError, message, dispatch]);
+  }, [isError, message, dispatch]);
+
+  
 
   const onChange = (e) => {
-    setFormData((prevState) => ({   
+    setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
   const onRoleChange = (e) => {
-    if (errors !== undefined && errors.role) {
-      errors.role = "";
-    }
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -73,14 +75,15 @@ function UserForm() {
     const userData = {
       username,
       email,
-      password,
       role,
       name,
       phone,
     };
-    //console.log(user);
+
     setValidated(true);
-    dispatch(create_user(userData));
+    //console.log(userData)
+    const id = passedUser._id
+    dispatch(update_user({ id, userData }));
   };
   return (
     <>
@@ -119,24 +122,7 @@ function UserForm() {
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Enter Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={password}
-              placeholder="Password"
-              onChange={onChange}
-              required
-            />
-            {errors !== undefined && errors.password && (
-              <Form.Control.Feedback type="invalid" className="validation_text">
-                {errors.password}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-
-          {isClient && (
+          {name && (
             <Form.Group className="mb-3">
               <Form.Label>Enter Client Name</Form.Label>
               <Form.Control
@@ -147,17 +133,9 @@ function UserForm() {
                 onChange={onChange}
                 required
               />
-              {errors !== undefined && errors.name && (
-                <Form.Control.Feedback
-                  type="invalid"
-                  className="validation_text"
-                >
-                  {errors.name}
-                </Form.Control.Feedback>
-              )}
             </Form.Group>
           )}
-          {isClient && (
+          {phone && (
             <Form.Group className="mb-3">
               <Form.Label>Enter Client Phone</Form.Label>
               <Form.Control
@@ -168,14 +146,6 @@ function UserForm() {
                 onChange={onChange}
                 required
               />
-              {errors !== undefined && errors.phone && (
-                <Form.Control.Feedback
-                  type="invalid"
-                  className="validation_text"
-                >
-                  {errors.phone}
-                </Form.Control.Feedback>
-              )}
             </Form.Group>
           )}
 
@@ -186,8 +156,9 @@ function UserForm() {
               value={role}
               name="role"
               onChange={onRoleChange}
+              defaultValue={""}
             >
-              <option value="" disabled={true} selected>
+              <option value="" disabled={true}>
                 Select Role
               </option>
               <option value="Admin">Admin</option>
@@ -203,7 +174,9 @@ function UserForm() {
 
           <Form.Group className=" mt-3 d-grid gap-2">
             <Button type="submit" variant="primary">
-              {isLoading ? <Spinner animation="border" size="sm" /> : "Submit"}
+              {isLoading? ( 
+                <Spinner animation="border" size="sm" />
+              ) : 'Update'}
             </Button>
           </Form.Group>
         </Form>
@@ -212,4 +185,4 @@ function UserForm() {
   );
 }
 
-export default UserForm;
+export default UserEditForm;

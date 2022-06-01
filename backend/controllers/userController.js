@@ -45,7 +45,6 @@ const getUser = asyncHandler(async (req, res) => {
         res.status(404).json({ error: 'User not found' })
     }
 
-    let bookings = await Reservation.find({ user })
     const singleUserDetails = {
         _id: user._id,
         username: user.username,
@@ -55,7 +54,6 @@ const getUser = asyncHandler(async (req, res) => {
         updated: user.updatedAt,
         role: await Role.findById(user.role._id),
         profile: profile ? profile : null,
-        bookings: bookings.length > 0 ? bookings : null,
     }
     res.status(200).json(singleUserDetails)
 })

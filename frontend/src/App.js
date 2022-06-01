@@ -10,8 +10,8 @@ import About from './pages/about';
 import Unauthorized from './pages/unauthorized';
 import Notfound from './pages/notfound';
 import AdminDashboard from './pages/admin_pages/admin_dashboard';
-import UserProfile from './pages/client_pages/UserProfile';
 import ClientRegister from './pages/client_pages/client_register';
+import ClientDashboard from './pages/client_pages/client_dashboard';
 
 
 
@@ -28,7 +28,7 @@ function App() {
             <Route path='/unauthorized' element={< Unauthorized />} />
             <Route path='/notfound' element={<Notfound />} />
             <Route path='/admin' element={<AdminDashboard />} />
-            <Route path='/users/profile/:id' element={< UserProfile />} />
+            <Route path='/users/profile/:id' element={< ClientDashboard />} />
             <Route path='/register' element={<ClientRegister/>}/>
             <Route path='*' element={<Notfound />} />
           </Routes>

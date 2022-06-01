@@ -8,6 +8,7 @@ const User = require('../models/userModel')
 const Profile = require('../models/profileModel');
 const defaultRolesAndUsers = require('../config/defaultRolesAndUsers');
 const res = require("express/lib/response");
+const { default: mongoose } = require("mongoose");
 
 
 const getBooking = asyncHandler(async (req, res) => {
@@ -18,22 +19,40 @@ const getBooking = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
 
     if (!reservation) {
-        return res.status(404).json({message: 'Booking not found'})
+        return res.status(404).json({ message: 'Booking not found' })
     }
-    res.status(200).json({reservation})
+    res.status(200).json(reservation)
+})
+
+const getBookedDates = asyncHandler(async (req, res) => {
+    let bookedDates = []
+    const x = (await Reservation.find()).filter(x => bookedDates.push(x.reservation_date))
+    return res.status(200).json(bookedDates)
 })
 
 const getAllBooking = asyncHandler(async (req, res) => {
     let user = await User.findOne(req.user)
     let userRole = await Role.findById(req.user.role._id)
     let reservations = null
+
     if (userRole.roletype == defaultRolesAndUsers.ADMIN) {
         reservations = await Reservation.find()
-        return res.status(200).json({ reservations })
+        return res.status(200).json(reservations)
     }
-    reservations = await Reservation.find({user: user._id })
-    //console.log((await Role.findOne(req.user.role)).roletype)
+    reservations = await Reservation.find({ user: user._id })
+
     res.status(200).json(reservations)
+})
+
+// Get all bookings by user
+const getAllBookingsByUserId = asyncHandler(async (req, res) => {
+    let userRole = await Role.findById(req.user.role._id)
+    const isAuthorirzed = req.user._id === req.body.userId || userRole.roletype === defaultRolesAndUsers.ADMIN
+    if (!isAuthorirzed) {
+        return res.status(403).json({ error: 'Access denied' })
+    }
+    let user = await User.findById(req.body.userId)
+    return res.status(200).json(await Reservation.find({ user }))
 })
 
 const createBooking = asyncHandler(async (req, res) => {
@@ -55,7 +74,7 @@ const createBooking = asyncHandler(async (req, res) => {
 
         profile = await Profile.findOne({ email })
         if (!profile) {
-            return res.status(404).json({message: 'No profile found with this email'})
+            return res.status(404).json({ error: 'No profile found with this email' })
         }
         user = await User.findById(profile.user._id)
     }
@@ -66,14 +85,15 @@ const createBooking = asyncHandler(async (req, res) => {
 
     let booking_reference = user.username + "" + moment(date).format('DMYYhmmss').toString()
     let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
-    let reservation = await Reservation.findOne({reservation_date: bookingDate})
-    
+
+    let reservation = await Reservation.findOne({ reservation_date: bookingDate })
+
     if (reservation) {
-        res.status(200).json({ message: 'The Date is already booked!' })
+        return res.status(400).json({ error: 'The Date is already booked!' })
     } else {
-        await Reservation.create({user, profile, reservation_date: bookingDate, booking_reference })
-        let bookedDate = await Reservation.findOne({ reservation_date: bookingDate})
-        res.status(200).json({message: `Confirmed! Your date is booked on ${moment(bookedDate.reservation_date).format('LLL')}`})
+        await Reservation.create({ user, profile, reservation_date: bookingDate, booking_reference })
+        let new_booking = await Reservation.findOne({ reservation_date: bookingDate })
+        return res.status(200).json(new_booking)
     }
 })
 
@@ -82,7 +102,7 @@ const updateBooking = asyncHandler(async (req, res) => {
     let userRole = await Role.findById(req.user.role._id)
     let reservation = await Reservation.findById(req.params.id)
     let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
-   
+
     if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
 
     let reservationData = { reservation_date: bookingDate }
@@ -90,16 +110,16 @@ const updateBooking = asyncHandler(async (req, res) => {
 
     //console.log(bookingDate === existingBookedDate)
     if (bookingDate === existingBookedDate) {
-        return res.status(200).json({message: 'No change of booking date'})
+        return res.status(200).json({ message: 'No change of booking date' })
     }
     // Make sure the booking date is available before booking
     if ((await Reservation.findOne({ reservation_date: bookingDate }))) {
-        return res.status(401).json({message: 'Reservation date is not available'})
-        
+        return res.status(401).json({ message: 'Reservation date is not available' })
+
     } else {
         await Reservation.findByIdAndUpdate(req.params.id, reservationData, { new: true })
     }
-    
+
     reservation = await Reservation.findById(req.params.id)
     res.status(200).json({ reservation })
 })
@@ -107,20 +127,20 @@ const updateBooking = asyncHandler(async (req, res) => {
 const deleteBooking = asyncHandler(async (req, res) => {
 
     let userRole = await Role.findById(req.user.role._id)
-    const reservation = await Reservation.findById(req.params.id)    
+    const reservation = await Reservation.findById(req.params.id)
     if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
 
     if (!(await Reservation.findById(req.params.id))) {
-        return res.status(404).json({message: 'No reservation found'})
+        return res.status(404).json({ message: 'No reservation found' })
     }
-    let booking = await Reservation.findByIdAndDelete(req.params.id)
-    res.status(200).json({message: `Booking (Ref #: ${ booking.booking_reference}) has been cancelled`})
+    let deletedBooking = await Reservation.findByIdAndDelete(req.params.id)
+    res.status(200).json(deletedBooking)
 })
 
 const isCurrentAuthUser = (user, roletype, reservation) => {
-    return roletype === defaultRolesAndUsers.ADMIN || reservation.user._id.toString() === user._id.toString() 
+    return roletype === defaultRolesAndUsers.ADMIN || reservation.user._id.toString() === user._id.toString()
 }
 
 module.exports = {
-    getBooking, getAllBooking, createBooking, updateBooking, deleteBooking
+    getBooking, getAllBooking, getAllBookingsByUserId, createBooking, updateBooking, deleteBooking, getBookedDates
 }

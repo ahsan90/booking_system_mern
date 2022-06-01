@@ -3,7 +3,7 @@ const validator = require('validator')
 
 const validateBookingDate = () => {
     return [
-        check('reservation_date').notEmpty().withMessage('Required booking date!').isDate()
+        check('reservation_date').notEmpty().withMessage('Please enter a valid booking date!').isDate()
     ]
 }
 

@@ -1,7 +1,9 @@
 import React from 'react'
 import {Row, Card, Button} from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
 function ReservationList() {
+  const { bookings } = useSelector((state) => state.reservation);
   return (
     <>
       <Row className="mt-3">

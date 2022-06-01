@@ -5,24 +5,19 @@ import { GrView } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  get_allRoles,
-  get_allUsers,
-  resetUser,
-} from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 
 import Card from "react-bootstrap/Card";
 import { toast } from "react-toastify";
-import UserForm from "../../components/UserForm";
+import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import UserComponent from "../../components/userComponent";
+import UserComponent from "./userComponent";
 
 function UsersListing() {
-  let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
+  
+  const { users } = useSelector(
     (state) => state.user
   );
 
@@ -31,17 +26,6 @@ function UsersListing() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  //const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(get_allUsers());
-    dispatch(get_allRoles());
-    dispatch(get_allProfiles());
-    return () => {
-      dispatch(resetUser());
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     handleClose();
