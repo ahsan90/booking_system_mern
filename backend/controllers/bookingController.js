@@ -47,7 +47,7 @@ const getAllBooking = asyncHandler(async (req, res) => {
 // Get all bookings by user
 const getAllBookingsByUserId = asyncHandler(async (req, res) => {
     let userRole = await Role.findById(req.user.role._id)
-    const isAuthorirzed = req.user._id === req.body.userId || userRole.roletype === defaultRolesAndUsers.ADMIN
+    const isAuthorirzed = (req.user._id.toString() === req.body.userId) || (userRole.roletype === defaultRolesAndUsers.ADMIN)
     if (!isAuthorirzed) {
         return res.status(403).json({ error: 'Access denied' })
     }

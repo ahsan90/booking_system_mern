@@ -128,6 +128,7 @@ export const reservationSlice = createSlice({
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
+                state.booking = null
                 if (state.message.errors !== undefined && state.message.errors?.length > 0) {
                     toast.error(state.message.errors[0].msg)
                 } else {

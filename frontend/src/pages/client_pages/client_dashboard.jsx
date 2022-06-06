@@ -7,8 +7,8 @@ import { get_user, resetUser } from "../../features/user/userSlice";
 import { get_profile, resetProfile } from "../../features/profile/profileSlice";
 import CustomSpinner from "../../components/CustomSpinner";
 import UserProfileInformation from "../../components/user_components/UserProfileInformation";
-import UserBookingHistory from "../../components/user_components/UserBookingHistory";
-import NewBookingForm from "../../components/revervation_components/NewBookingForm";
+import BookingHistory from "../../components/reservation_components/BookingHistory";
+import NewBookingForm from "../../components/reservation_components/NewBookingForm";
 import {
   get_all_booked_dates,
   get_bookings_by_user,
@@ -18,7 +18,7 @@ import {
 export default function ClientDashboard() {
   const dispatch = useDispatch();
   //const { user } = useSelector((state) => state.auth);
-  const {
+  /* const {
     users,
     singleUserDetails,
     roles,
@@ -30,36 +30,11 @@ export default function ClientDashboard() {
   const { profile } = useSelector((state) => state.profile);
   const { booking, bookings } = useSelector(
     (state) => state.reservation
-  );
+  ); */
 
   const { id } = useParams();
   const [key, setKey] = useState("user_profile");
-  //console.log(id)
-  /* useEffect(() => {
-    dispatch(get_user(id));
-    dispatch(get_bookings_by_user(id));
-    if (singleUserDetails?.profile) dispatch(get_profile(singleUserDetails?.profile?._id));
-    //dispatch(get_bookings_by_user(id))
-    return () => {
-      dispatch(resetUser());
-      dispatch(resetProfile());
-      dispatch(resetReservation());
-    };
-  }, [id, dispatch]);
-
-  useEffect(() => {
-    if (singleUserDetails?.profile) {
-      dispatch(get_user(id));
-    }
-    return () => {
-      dispatch(resetUser());
-    };
-  }, [profile, dispatch]);
-    
-  if (isLoading) {
-    return <CustomSpinner />;
-  }
- */
+  
   useEffect(() => {
     //dispatch(get_profile())
     dispatch(get_user(id));
@@ -83,7 +58,7 @@ export default function ClientDashboard() {
             </div>
           </Tab>
           <Tab eventKey="bookings" title="Booking History">
-            <UserBookingHistory />
+            <BookingHistory />
           </Tab>
           <Tab eventKey="reservations" title="New Booking">
             <NewBookingForm />

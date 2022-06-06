@@ -1,16 +1,15 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-import { useEffect, useSelector } from "react-redux";
-import ReservationItem from "../revervation_components/ReservationItem";
+import { useDispatch, useEffect, useSelector } from "react-redux";
+import { get_user } from "../../features/user/userSlice";
+import ReservationItem from "./ReservationItem";
 
-function UserBookingHistory() {
-  const { bookings } = useSelector(
-    (state) => state.reservation
-  );
-  
+export default function BookingHistory() {
+  const { bookings } = useSelector((state) => state.reservation);
+
   return (
     <div>
-      {bookings.length>0 ? (
+      {bookings.length > 0 ? (
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -21,7 +20,6 @@ function UserBookingHistory() {
             </tr>
           </thead>
           <tbody>
-
             {bookings?.map((booking) => (
               <tr key={booking._id}>
                 <ReservationItem booking={booking} />
@@ -36,4 +34,3 @@ function UserBookingHistory() {
   );
 }
 
-export default UserBookingHistory;
