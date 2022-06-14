@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { profile_url } from 'gravatar'
 import { toast } from 'react-toastify'
 import profileService from './profileService'
 
@@ -100,6 +101,7 @@ export const profileSlice = createSlice({
             })
             .addCase(get_profile.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.profile = action.payload
             })
@@ -114,13 +116,16 @@ export const profileSlice = createSlice({
             })
             .addCase(get_allProfiles.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
+                state.profile = null
                 state.profiles = action.payload
             })
             .addCase(get_allProfiles.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false
+                state.profile = null
                 state.message = action.payload
             })
             .addCase(create_profile.pending, (state) => {
@@ -129,36 +134,48 @@ export const profileSlice = createSlice({
             .addCase(create_profile.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.isError = false
                 state.profile = action.payload
+                state.message = null
+                state.profiles.push(action.payload)
+                toast.success(`New Client (${action.payload.name}) Added Successfully!`)
             })
             .addCase(create_profile.rejected, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = false
                 state.isError = true
+                state.profile = null
                 state.message = action.payload
+                toast.error(action.payload.error)
             })
             .addCase(update_profile.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(update_profile.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.profile = action.payload
+                state.profiles = state.profiles.map(profile => profile._id === action.payload._id? action.payload : profile)
                 toast.success('Profile updated!')
             })
             .addCase(update_profile.rejected, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = false
                 state.isError = true
+                state.profile = null
                 state.message = action.payload
+                toast.error(state.message?.error)
             })
             .addCase(delete_profile.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(delete_profile.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.profile = action.payload
+                state.profiles = state.profiles.filter(prof => prof._id !== state.profile._id)
                 toast.success('Profile deleted!')
             })
             .addCase(delete_profile.rejected, (state, action) => {
@@ -166,10 +183,8 @@ export const profileSlice = createSlice({
                 state.isSuccess = false
                 state.isError = true
                 state.message = action.payload
+                toast.error(state.message.error)
             })
-
-
-
     }
 })
 

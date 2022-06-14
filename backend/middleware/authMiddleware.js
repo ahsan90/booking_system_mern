@@ -70,7 +70,7 @@ const protectBuiltInUsersAndProfile = asyncHandler(async (req, res, next) => {
         || builtInClientUser._id.toString() === req.params.id
         || builtInAdminProfile._id.toString() === req.params.id
         || builtInClientProfile._id.toString() === req.params.id) {
-        return res.status(403).json({ message: `Built-in admin/client user/profile cannot be ${reqType}!` })
+        return res.status(403).json({ error: `Built-in admin/client user/profile cannot be ${reqType}!` })
     }
     next()
 })

@@ -31,7 +31,7 @@ function ClientProfileForm() {
       if (isError) {
         //console.log(message.errors !== undefined)
         if (message.errors !== undefined) {
-          setErrors(validation_helper.validateFormError(message));
+          setErrors(validation_helper.validateFormError({ message }));
           //console.log(message);
         } else {
           setErrors(() => {});
@@ -53,8 +53,9 @@ function ClientProfileForm() {
         name,
         phone,
       };
+
+      const userId = id;
       //console.log(userId);
-      const userId = id
       setValidated(true);
       dispatch(create_user_profile({ userId, profileData }));
     };
@@ -72,10 +73,11 @@ function ClientProfileForm() {
             required
           />
 
-          <Form.Control.Feedback
-            type="invalid"
-            className="validation_text"
-          ></Form.Control.Feedback>
+          {errors !== undefined && errors.name && (
+            <Form.Control.Feedback type="invalid" className="validation_text">
+              {errors.name}
+            </Form.Control.Feedback>
+          )}
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -89,10 +91,11 @@ function ClientProfileForm() {
             required
           />
 
-          <Form.Control.Feedback
-            type="invalid"
-            className="validation_text"
-          ></Form.Control.Feedback>
+          {errors !== undefined && errors.phone && (
+            <Form.Control.Feedback type="invalid" className="validation_text">
+              {errors.phone}
+            </Form.Control.Feedback>
+          )}
         </Form.Group>
         <Form.Group className=" mt-3 d-grid gap-2">
           <Button type="submit" variant="primary">

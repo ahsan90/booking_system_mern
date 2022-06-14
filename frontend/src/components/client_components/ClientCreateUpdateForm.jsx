@@ -12,32 +12,35 @@ import {
   reset,
   resetProfile,
   get_profile,
+  get_allProfiles,
 } from "../../features/profile/profileSlice";
 import validation_helper from "../../../src/helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
 import { toast } from "react-toastify";
+import { get_allUsers } from "../../features/user/userSlice";
 
-function ClientCreateUpdateForm({ profile = null }) {
+function ClientCreateUpdateForm(props) {
+  const { isFromAdminDashboard = false } = props;
+  const userProfile = props.profile;
   const dispatch = useDispatch();
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
 
   const [validated, setValidated] = useState(false);
-  let { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.profile
-  );
+  let { profile, profiles, isLoading, isError, isSuccess, message } =
+    useSelector((state) => state.profile);
 
   //const { profile } = useSelector((state) => state.profile)
-  
+
   const [formData, setFormData] = useState({
     username: "",
-    email: profile? profile?.email : '',
+    email: userProfile ? userProfile?.email : "",
     password: "",
     passwordConfirmed: "",
     role: "",
-    name: profile ? profile?.name : '',
-    phone: profile? profile?.phone : '',
+    name: userProfile ? userProfile?.name : "",
+    phone: userProfile ? userProfile?.phone : "",
   });
 
   const { username, email, password, passwordConfirmed, name, phone } =
@@ -46,16 +49,20 @@ function ClientCreateUpdateForm({ profile = null }) {
   //console.log(message.status === 401)
 
   useEffect(() => {
+    //dispatch(get_allProfiles())
     if (isError) {
       if (message?.errors !== undefined) {
         setErrors(validation_helper.validateFormError({ message }));
       } else {
         setErrors(() => {});
       }
-      toast.error(message?.error);
+      //toast.error(message?.error);
     }
-    
-  }, [isError, message, dispatch,]);
+
+    /* return () => {
+      dispatch(resetProfile())
+    } */
+  }, [isError, message, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -79,19 +86,26 @@ function ClientCreateUpdateForm({ profile = null }) {
 
     setValidated(true);
     //console.log(profilePayload)
-    if (profile) {
+    if (userProfile) {
       const profileData = {
-        name, email, phone
-      }
-      dispatch(update_profile({ profileData, id: profile._id }))
-      errors = null
-      message = null
+        name,
+        email,
+        phone,
+      };
+      dispatch(update_profile({ profileData, id: userProfile._id }));
+      errors = null;
+      message = null;
     } else {
       dispatch(create_profile(profilePayload));
     }
-    
   };
-  const classForRegistrationScreen = profile? '' : "container-fluid dflex justify-content-center mt-4 col-lg-6 col-md-8 col-sm-12";
+
+  let classForRegistrationScreen = userProfile
+    ? ""
+    : "container-fluid dflex justify-content-center mt-4 col-lg-6 col-md-8 col-sm-12";
+  classForRegistrationScreen = isFromAdminDashboard
+    ? ""
+    : classForRegistrationScreen;
   return (
     <>
       <div className={classForRegistrationScreen}>
@@ -100,17 +114,21 @@ function ClientCreateUpdateForm({ profile = null }) {
           className="register_boxshadow"
         >
           <Card.Body>
-            {profile ? (
-              ""
+            {!isFromAdminDashboard ? (
+              userProfile ? (
+                ""
+              ) : (
+                <h2>
+                  <FaUser />
+                  Client Registration
+                </h2>
+              )
             ) : (
-              <h2>
-                <FaUser />
-                Client Registration
-              </h2>
+              ""
             )}
 
             <Form onSubmit={onSubmit} validated={validated} noValidate>
-              {!profile && (
+              {!userProfile && (
                 <Form.Group className="mb-3">
                   <Form.Label>Enter username</Form.Label>
                   <Form.Control
@@ -151,7 +169,7 @@ function ClientCreateUpdateForm({ profile = null }) {
                 )}
               </Form.Group>
 
-              {!profile && (
+              {!userProfile && (
                 <Form.Group className="mb-3">
                   <Form.Label>Enter Password</Form.Label>
                   <Form.Control
@@ -172,7 +190,7 @@ function ClientCreateUpdateForm({ profile = null }) {
                   )}
                 </Form.Group>
               )}
-              {!profile && (
+              {!userProfile && (
                 <Form.Group className="mb-3">
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
@@ -238,12 +256,14 @@ function ClientCreateUpdateForm({ profile = null }) {
                 <Button type="submit" variant="primary">
                   {isLoading ? (
                     <Spinner animation="border" size="sm" />
+                  ) : userProfile ? (
+                    "Update"
                   ) : (
                     "Submit"
                   )}
                 </Button>
               </Form.Group>
-              {!profile && (
+              {!isFromAdminDashboard && !userProfile && (
                 <div>
                   Already a member? <Link to="/login">Login</Link>
                 </div>

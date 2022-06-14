@@ -73,7 +73,7 @@ function NewBookingForm() {
             dateFormat="dd/MM/yyyy"
             filterDate={(date) => !isBooked(date)}
           />
-          <Button onClick={onSubmit}>Book</Button>
+          <Button onClick={onSubmit}>Confirm Booking</Button>
         </Form>
       </div>
       {showBookingDetails ? (

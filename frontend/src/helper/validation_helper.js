@@ -10,10 +10,10 @@ const FIELD_VALUES = {
     role: 'role'
 }
 
-const validateFormError = (validationError) => {
+const validateFormError = (validationErrors) => {
     const errors = {}
     
-    const { message, confirmPassError } = validationError
+    const { message, confirmPassError } = validationErrors
     //console.log(message)
     if (message !== undefined && message.errors !== null) {
         message?.errors?.forEach(element => {
@@ -42,7 +42,7 @@ const validateFormError = (validationError) => {
             
         });
     }
-    if (confirmPassError !== '') {
+    if (confirmPassError !== undefined && confirmPassError !== '') {
         errors.confirmPassError = confirmPassError
     }
     //console.log(errors)

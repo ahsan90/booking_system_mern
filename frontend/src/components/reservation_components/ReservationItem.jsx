@@ -10,30 +10,30 @@ import {
 import { FaEdit } from "react-icons/fa";
 import { BiTrash } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
-import { Modal, Button, Card, Table } from 'react-bootstrap'
+import { Modal, Button, Card, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BookingDetails from "./BookingDetails";
 
-function ReservationItem({booking}) {
+function ReservationItem({ booking }) {
   const dispatch = useDispatch();
   let { user, singleUserDetails } = useSelector((state) => state.user);
 
-    const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
-    const handleClose = () => setShowDetails(false);
-    const handShowDetails = () => setShowDetails(true);
+  const handleClose = () => setShowDetails(false);
+  const handShowDetails = () => setShowDetails(true);
 
   const onDelete = (bookingId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       dispatch(delete_booking(bookingId));
     }
   };
-  const updateBooking = (bookingId) => { };
+  const updateBooking = (bookingId) => {};
 
   const onDetails = (booking) => {
-    singleUserDetails = null
-    dispatch(get_user(booking?.user))
+    dispatch(get_user(booking?.user));
     handShowDetails();
+    booking = null
   };
 
   return (
@@ -43,57 +43,9 @@ function ReservationItem({booking}) {
           <Modal.Title>Reservation Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BookingDetails booking_details={[{ booking }, { singleUserDetails } ]}/>
-          {/* <Card>
-            <Card.Text>Booking information</Card.Text>
-            <Table striped bordered hover>
-              <thead>
-                <th>Booking Reference</th>
-                <th>Reservation Date</th>
-                <th>Reservation Booked Date</th>
-                <th>Last Updated</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{booking?.booking_reference}</td>
-                  <td>
-                    {moment(booking?.reservation_date).format("ll")}
-                  </td>
-                  <td>{moment(booking?.createdAt).format("lll")}</td>
-                  <td>{moment(booking?.updatedAt).format("lll")}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </Card>
-          <Card className="mt-4">
-            <Card.Text>Customer Information</Card.Text>
-            <hr />
-            <Card.Body>
-              <img className="avatar" src={singleUserDetails?.avatar} alt="" />
-              <Card.Text>
-                Username:{" "}
-                <Link to={`/users/profile/${singleUserDetails?._id}`}>
-                  {" "}
-                  {singleUserDetails?.username}
-                </Link>
-              </Card.Text>
-              <Card.Text>Email: {singleUserDetails?.email}</Card.Text>
-              {singleUserDetails?.profile ? (
-                <Card.Text>
-                  Customer Name: {singleUserDetails?.profile?.name}
-                </Card.Text>
-              ) : (
-                <Card.Text>No other information found</Card.Text>
-              )}
-              {singleUserDetails?.profile ? (
-                <Card.Text>
-                  Phone: {singleUserDetails?.profile?.phone}
-                </Card.Text>
-              ) : (
-                ""
-              )}
-            </Card.Body>
-          </Card> */}
+          <BookingDetails
+            booking_details={[{ booking }, { singleUserDetails }]}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button

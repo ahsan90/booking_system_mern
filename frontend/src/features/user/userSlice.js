@@ -128,6 +128,7 @@ export const userSlice = createSlice({
             })
             .addCase(create_user.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.users.push(action.payload)
                 //console.log(action.payload)
@@ -136,6 +137,7 @@ export const userSlice = createSlice({
             .addCase(create_user.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
+                state.isSuccess = false
                 state.message = action.payload
                 //state.users = null
             })
@@ -144,6 +146,7 @@ export const userSlice = createSlice({
             })
             .addCase(update_user.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.users = state.users.map((user) => user._id === action.payload._id ? action.payload : user)
                 //console.log(action.payload)
@@ -153,6 +156,7 @@ export const userSlice = createSlice({
             .addCase(update_user.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
+                state.isSuccess = false
                 state.message = action.payload
                 toast.error(state.message.error)
                 if (state.message?.message) {
@@ -165,11 +169,13 @@ export const userSlice = createSlice({
             })
             .addCase(get_allUsers.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.users = action.payload
             })
             .addCase(get_allUsers.rejected, (state, action) => {
                 state.isLoading = false
+                state.isSuccess = false
                 state.isError = true
                 state.message = action.payload
             })
@@ -183,6 +189,7 @@ export const userSlice = createSlice({
             })
             .addCase(get_user.rejected, (state, action) => {
                 state.isLoading = false
+                state.isSuccess = false
                 state.isError = true
                 state.message = action.payload
             })
@@ -198,6 +205,7 @@ export const userSlice = createSlice({
             .addCase(delete_user.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
+                state.isSuccess = false
                 state.message = action.payload
                 if (state.message?.message) {
                     toast.error(state.message?.message)
@@ -215,6 +223,7 @@ export const userSlice = createSlice({
             .addCase(create_user_profile.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
+                state.isSuccess = false
                 state.message = action.payload
                 if (state.message?.message) {
                     toast.error(state.message?.message)

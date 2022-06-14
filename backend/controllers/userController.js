@@ -205,6 +205,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (profileToBeDeleted) {
         await Profile.findByIdAndDelete(profileToBeDeleted._id.toString())
     }
+    //await Reservation.deleteMany({user: user})
     res.status(200).json({ id: user._id })
 })
 

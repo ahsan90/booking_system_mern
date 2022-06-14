@@ -6,6 +6,7 @@ import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { create_user, get_allUsers, reset } from "../../features/user/userSlice";
+import {get_allProfiles} from '../../features/profile/profileSlice'
 import validation_helper from "../../helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
@@ -49,7 +50,8 @@ function UserForm() {
       toast.error(message.error);
     }
     
-  }, [ role, isError, message, dispatch]);
+  }, [role, isError, message, dispatch]);
+  
 
   const onChange = (e) => {
     setFormData((prevState) => ({   
@@ -67,6 +69,12 @@ function UserForm() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(get_allProfiles())
+    }
+  }, [isSuccess, dispatch])
 
   const onSubmit = (e) => {
     e.preventDefault();

@@ -1,12 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import { Table, Card } from 'react-bootstrap'
-import moment from 'moment'
+import React from "react";
+import { Link } from "react-router-dom";
+import { Table, Card } from "react-bootstrap";
+import moment from "moment";
 
-export default function BookingDetails({booking_details}) {
-    
-    const { booking } = booking_details[0]
-    const {singleUserDetails} = booking_details[1]
+export default function BookingDetails({ booking_details }) {
+  const { booking } = booking_details[0];
+  const { singleUserDetails } = booking_details[1];
+  
   return (
     <div>
       <Card>

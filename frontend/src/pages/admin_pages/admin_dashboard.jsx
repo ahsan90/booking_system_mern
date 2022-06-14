@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./admin.css";
 import { Table, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
-import { get_allUsers, resetUser } from "../../features/user/userSlice";
+import { get_allRoles, get_allUsers, resetUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import UsersListing from "../../components/user_components/UserList";
 import ReservationList from "../../components/reservation_components/ReservationList";
@@ -13,11 +13,13 @@ function AdminDashboard() {
   const [key, setKey] = useState("users");
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.user);
+  const { profiles } = useSelector((state) => state.profile);
   const { bookings } = useSelector((state) => state.reservation);
   useEffect(() => {
     dispatch(get_allUsers());
     dispatch(get_all_bookings())
     dispatch(get_allProfiles())
+    dispatch(get_allRoles())
     return () => {
       dispatch(resetUser());
       dispatch(resetReservation())
@@ -25,6 +27,7 @@ function AdminDashboard() {
     };
   }, [dispatch]);
   //console.log(bookings)
+
   return (
     <>
       <div>

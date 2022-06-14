@@ -14,12 +14,16 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
+import { get_allUsers } from "../../features/user/userSlice";
 
 function UsersListing() {
   
   const { users } = useSelector(
     (state) => state.user
   );
+  const { profiles } = useSelector(state => state.profile)
+
+  const dispatch = useDispatch()
 
 
   const [show, setShow] = useState(false);
@@ -30,6 +34,7 @@ function UsersListing() {
   useEffect(() => {
     handleClose();
   }, [users]);
+
   /* if (isLoading) {
     return <CustomSpinner />;
   } */

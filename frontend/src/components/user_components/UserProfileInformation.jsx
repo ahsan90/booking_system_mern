@@ -13,7 +13,9 @@ import {
   delete_profile,
   resetProfile,
 } from "../../features/profile/profileSlice";
-import {get_user, resetUser} from '../../features/user/userSlice'
+import { get_user, resetUser } from '../../features/user/userSlice'
+import {useParams} from 'react-router-dom'
+import { toast } from "react-toastify";
 
 
 function UserProfileInformation() {
@@ -21,40 +23,31 @@ function UserProfileInformation() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
 
   //console.log(singleUserDetails?.profile?._id);
 
   const dispatch = useDispatch();
-  let { profile, profiles, isError, message } = useSelector(
+  let { profile } = useSelector(
     (state) => state.profile
   );
   const { singleUserDetails } = useSelector((state) => state.user)
+  const { id } = useParams()
   
-  /* useEffect(() => {
-    if (profile) {
-      dispatch(get_user(id))
-    }
-    return () => {
-      dispatch(resetProfile())
-    }
-  },[profile, dispatch]) */
-
   useEffect(() => {
-    handleClose();
-  }, [profile]);
-  //console.log(profile)
+    handleCloseEdit();
+    handleClose()
+    dispatch(get_user(id));
+  }, [profile, id, dispatch]);
+
   const onDelete = (profileId) => {
-    
     if (window.confirm("Are you sure you want to delete this profile?")) {
       dispatch(delete_profile(profileId))
-      //dispatch(resetProfile())
-      //dispatch(resetUser())
-      //dispatch(get_user(id))
     }
   };
-  const onEdit = () => {
-    handleShow()
-  }
+  
   return (
     <>
       <Row>
@@ -88,7 +81,7 @@ function UserProfileInformation() {
         <h2>Profile Information</h2>
         {singleUserDetails?.profile ? (
           <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={showEdit} onHide={handleCloseEdit}>
               <Modal.Header closeButton>
                 <Modal.Title>
                   <h2>
@@ -97,7 +90,7 @@ function UserProfileInformation() {
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <ClientCreateUpdateForm profile={ singleUserDetails?.profile}/>
+                <ClientCreateUpdateForm profile={singleUserDetails?.profile} />
               </Modal.Body>
             </Modal>
             <Card>
@@ -128,7 +121,10 @@ function UserProfileInformation() {
                       )}
                     </td>
                     <td>
-                      <button className="btn btn-warning" onClick={handleShow}>
+                      <button
+                        className="btn btn-warning"
+                        onClick={handleShowEdit}
+                      >
                         <FaEdit />
                       </button>
                       <button
@@ -150,7 +146,7 @@ function UserProfileInformation() {
             <div className="mb-3 justify-content-center">
               No profile information found{" "}
               <Button variant="success" onClick={handleShow}>
-                + Create A New User
+                + Create profile information
               </Button>
               <Modal
                 show={show}

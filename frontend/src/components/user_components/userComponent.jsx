@@ -16,6 +16,7 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserEditForm from "./userEditForm";
+import { get_allProfiles } from "../../features/profile/profileSlice";
 
 function UserComponent({ userData }) {
   
@@ -23,6 +24,7 @@ function UserComponent({ userData }) {
   const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
+  const {profiles} = useSelector( state => state.profile)
 
   const [show, setShow] = useState(false);
 
@@ -36,13 +38,20 @@ function UserComponent({ userData }) {
     if (window.confirm("Are you sure you want to delete this user?")) {
       //console.log(id)
       dispatch(delete_user(id));
+      
+      //console.log(profiles);
     }
   };
   
   
   useEffect(() => {
     handleClose();
-  }, [users]);
+    if (isSuccess) {
+      dispatch(get_allProfiles())
+    }
+  }, [users, isSuccess, dispatch]);
+
+  
 
   /*   if (isLoading) {
     return <Spinner />;

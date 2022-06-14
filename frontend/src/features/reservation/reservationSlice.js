@@ -67,8 +67,6 @@ export const get_bookings_by_user = createAsyncThunk(
             return await reservationService.get_bookings_by_user(userIdObj, token)
         } catch (error) {
             const message = error.response.data
-            //console.log(error.response.status)
-            //console.log(error.response.data)
             return thunkAPI.rejectWithValue(message)
         }
     }

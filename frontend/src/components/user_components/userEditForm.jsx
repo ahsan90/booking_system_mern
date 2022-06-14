@@ -6,9 +6,10 @@ import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { update_user } from "../../features/user/userSlice";
+import { get_allProfiles } from "../../features/profile/profileSlice";
 import validation_helper from "../../helper/validation_helper";
 //import Spinner from ".././components/Spinner";
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
 import { toast } from "react-toastify";
 
@@ -29,7 +30,7 @@ function UserEditForm({ passedUser }) {
   const [formData, setFormData] = useState({
     username: passedUser.username,
     email: passedUser.email,
-    role: (roles.filter((x) => x._id === passedUser.role)[0]).roletype,
+    role: roles.filter((x) => x._id === passedUser.role)[0]?.roletype,
     name: profile.length > 0 ? profile[0].name : null,
     phone: profile.length > 0 ? profile[0].phone : null,
   });
@@ -44,17 +45,18 @@ function UserEditForm({ passedUser }) {
   useEffect(() => {
     if (isError) {
       //console.log(message.errors !== undefined)
-      /* if (message.errors !== undefined) {
+      if (message.errors !== undefined) {
         setErrors(validation_helper.validateFormError(message));
         //console.log(message);
       } else {
         setErrors(() => {});
-      } */
+      }
       //toast.error(message.error);
     }
-  }, [isError, message, dispatch]);
-
-  
+    if (isSuccess) {
+      dispatch(get_allProfiles());
+    }
+  }, [isError, isSuccess, message, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -70,6 +72,7 @@ function UserEditForm({ passedUser }) {
     }));
   };
 
+
   const onSubmit = (e) => {
     e.preventDefault();
     const userData = {
@@ -82,7 +85,7 @@ function UserEditForm({ passedUser }) {
 
     setValidated(true);
     //console.log(userData)
-    const id = passedUser._id
+    const id = passedUser._id;
     dispatch(update_user({ id, userData }));
   };
   return (
@@ -174,9 +177,7 @@ function UserEditForm({ passedUser }) {
 
           <Form.Group className=" mt-3 d-grid gap-2">
             <Button type="submit" variant="primary">
-              {isLoading? ( 
-                <Spinner animation="border" size="sm" />
-              ) : 'Update'}
+              {isLoading ? <Spinner animation="border" size="sm" /> : "Update"}
             </Button>
           </Form.Group>
         </Form>
