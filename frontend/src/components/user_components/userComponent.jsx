@@ -5,9 +5,7 @@ import { GrView } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  delete_user,
-} from "../../features/user/userSlice";
+import { delete_user } from "../../features/user/userSlice";
 import Spinner from "../CustomSpinner";
 //import "./admin.css";
 import Card from "react-bootstrap/Card";
@@ -19,39 +17,28 @@ import UserEditForm from "./userEditForm";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 
 function UserComponent({ userData }) {
-  
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
   const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
-  const {profiles} = useSelector( state => state.profile)
-
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   //const navigate = useNavigate();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const deleteItem = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      //console.log(id)
       dispatch(delete_user(id));
-      
-      //console.log(profiles);
+      dispatch(get_allProfiles());
     }
   };
-  
-  
+
   useEffect(() => {
     handleClose();
-    if (isSuccess) {
-      dispatch(get_allProfiles())
-    }
-  }, [users, isSuccess, dispatch]);
-
-  
+  }, [users]);
 
   /*   if (isLoading) {
     return <Spinner />;
@@ -79,8 +66,6 @@ function UserComponent({ userData }) {
                 </button>
               </Card.Link>
               <Card.Link>
-                
-                
                 <Link
                   className="btn btn-outline-success"
                   to={`/users/profile/${userData._id}`}

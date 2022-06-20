@@ -64,6 +64,10 @@ function ClientCreateUpdateForm(props) {
     } */
   }, [isError, message, dispatch]);
 
+  useEffect(() => {
+    dispatch(get_allUsers())
+  }, [profile, dispatch])
+
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,

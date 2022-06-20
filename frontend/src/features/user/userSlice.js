@@ -130,6 +130,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = false
                 state.isSuccess = true
+                state.user = action.payload
                 state.users.push(action.payload)
                 //console.log(action.payload)
                 toast.success(`New User Added with a username: ${action.payload.username}`)
@@ -138,7 +139,9 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false
+                state.user = null
                 state.message = action.payload
+                toast.error(state.message?.error);
                 //state.users = null
             })
             .addCase(update_user.pending, (state) => {
@@ -148,6 +151,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = false
                 state.isSuccess = true
+                state.user = action.payload
                 state.users = state.users.map((user) => user._id === action.payload._id ? action.payload : user)
                 //console.log(action.payload)
                 
@@ -157,6 +161,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false
+                state.user = null
                 state.message = action.payload
                 toast.error(state.message.error)
                 if (state.message?.message) {
@@ -191,6 +196,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = false
                 state.isError = true
+                state.singleUserDetails = null
                 state.message = action.payload
             })
             .addCase(delete_user.pending, (state) => {

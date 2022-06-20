@@ -29,31 +29,41 @@ export default function BookingDetails({ booking_details }) {
         </Table>
       </Card>
       <Card className="mt-4">
-        <Card.Text>Customer Information</Card.Text>
-        <hr />
-        <Card.Body>
-          <img className="avatar" src={singleUserDetails?.avatar} alt="" />
-          <Card.Text>
-            Username:{" "}
-            <Link to={`/users/profile/${singleUserDetails?._id}`}>
-              {" "}
-              {singleUserDetails?.username}
-            </Link>
-          </Card.Text>
-          <Card.Text>Email: {singleUserDetails?.email}</Card.Text>
-          {singleUserDetails?.profile ? (
-            <Card.Text>
-              Customer Name: {singleUserDetails?.profile?.name}
-            </Card.Text>
-          ) : (
-            <Card.Text>No other information found</Card.Text>
-          )}
-          {singleUserDetails?.profile ? (
-            <Card.Text>Phone: {singleUserDetails?.profile?.phone}</Card.Text>
-          ) : (
-            ""
-          )}
-        </Card.Body>
+        {singleUserDetails !== null ? (
+          <>
+            <Card.Text>Customer Information</Card.Text>
+            <hr />
+            <Card.Body>
+              <img className="avatar" src={singleUserDetails?.avatar} alt="" />
+              <Card.Text>
+                Username:{" "}
+                <Link to={`/users/profile/${singleUserDetails?._id}`}>
+                  {" "}
+                  {singleUserDetails?.username}
+                </Link>
+              </Card.Text>
+              <Card.Text>Email: {singleUserDetails?.email}</Card.Text>
+              {singleUserDetails?.profile ? (
+                <Card.Text>
+                  Customer Name: {singleUserDetails?.profile?.name}
+                </Card.Text>
+              ) : (
+                <Card.Text>No other information found</Card.Text>
+              )}
+              {singleUserDetails?.profile ? (
+                <Card.Text>
+                  Phone: {singleUserDetails?.profile?.phone}
+                </Card.Text>
+              ) : (
+                ""
+              )}
+            </Card.Body>
+          </>
+        ) : (
+          <>
+            <p>No Custormer Information found. Information Erased!</p>
+          </>
+        )}
       </Card>
     </div>
   );

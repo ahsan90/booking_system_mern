@@ -14,8 +14,8 @@ import Spinner from "react-bootstrap/Spinner";
 import { toast } from "react-toastify";
 
 function UserEditForm({ passedUser }) {
-  const { user } = useSelector((state) => state.auth);
-  const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
+  
+  const { users, user, roles, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
   const { profiles } = useSelector((state) => state.profile);
@@ -53,10 +53,16 @@ function UserEditForm({ passedUser }) {
       }
       //toast.error(message.error);
     }
-    if (isSuccess) {
-      dispatch(get_allProfiles());
+    /* if (isSuccess) {
+      //dispatch(get_allProfiles());
+    } */
+  }, [isError]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(get_allProfiles())
     }
-  }, [isError, isSuccess, message, dispatch]);
+  }, [user, dispatch])
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -87,6 +93,7 @@ function UserEditForm({ passedUser }) {
     //console.log(userData)
     const id = passedUser._id;
     dispatch(update_user({ id, userData }));
+    //dispatch(get_allProfiles());
   };
   return (
     <>

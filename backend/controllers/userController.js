@@ -35,7 +35,7 @@ const getAllRoles = asyncHandler(async (req, res) => {
 const getUser = asyncHandler(async (req, res) => {
 
     let user = await User.findById(req.params.id).select('-password')
-    const profile = await Profile.findOne({ user }).select('-select')
+    const profile = await Profile.findOne({ user })
     let role = await Role.findById(req.user.role._id)
     const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user._id.toString() === user._id.toString()
     if (!isCurrentAuthoriziedUser) { return res.status(403).json({ error: 'Forbidded!' }) }

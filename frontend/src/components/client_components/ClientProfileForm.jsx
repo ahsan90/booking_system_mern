@@ -1,64 +1,59 @@
-import { useState, useEffect } from 'react'
-import {useSelector, useDispatch} from 'react-redux'
-import { Form, Button } from 'react-bootstrap'
-import validation_helper from '../../helper/validation_helper';
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Form, Button } from "react-bootstrap";
+import validation_helper from "../../helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
 import { toast } from "react-toastify";
-import { create_user_profile } from '../../features/user/userSlice'
-import {useParams} from 'react-router-dom'
+import { create_user_profile } from "../../features/user/userSlice";
+import { useParams } from "react-router-dom";
 
 function ClientProfileForm() {
-  const {id} = useParams()
-    const [formData, setFormData] = useState({
-      name: "",
-      phone: "",
-    });
-    const { loggedInUser } = useSelector((state) => state.auth);
-    const { isLoading, singleUserDetails , isError, isSuccess, message } = useSelector(
-      (state) => state.user
-    );
-    const dispatch = useDispatch();
+  const { id } = useParams();
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+  });
+  const { loggedInUser } = useSelector((state) => state.auth);
+  const { isLoading, singleUserDetails, isError, isSuccess, message } =
+    useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-    const { name, phone } = formData;
-    let [errors, setErrors] = useState({});
-    const [isClient, setisClient] = useState(false);
+  const { name, phone } = formData;
+  let [errors, setErrors] = useState({});
+  const [isClient, setisClient] = useState(false);
 
-    const [validated, setValidated] = useState(false);
-    //console.log(message.status === 401)
-    useEffect(() => {
-      
-      if (isError) {
-        //console.log(message.errors !== undefined)
-        if (message.errors !== undefined) {
-          setErrors(validation_helper.validateFormError({ message }));
-          //console.log(message);
-        } else {
-          setErrors(() => {});
-        }
-        toast.error(message.error);
+  const [validated, setValidated] = useState(false);
+  //console.log(message.status === 401)
+  useEffect(() => {
+    if (isError) {
+      //console.log(message.errors !== undefined)
+      if (message.errors !== undefined) {
+        setErrors(validation_helper.validateFormError({ message }));
+        //console.log(message);
+      } else {
+        setErrors(() => {});
       }
-    }, [loggedInUser, isError, message, dispatch]);
+      //toast.error(message.error);
+    }
+  }, [loggedInUser, isError, message, dispatch]);
 
-    const onChange = (e) => {
-      setFormData((prevState) => ({
-        ...prevState,
-        [e.target.name]: e.target.value,
-      }));
+  const onChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const profileData = {
+      name,
+      phone,
     };
-
-    const onSubmit = (e) => {
-      e.preventDefault();
-      const profileData = {
-        name,
-        phone,
-      };
-
-      const userId = id;
-      //console.log(userId);
-      setValidated(true);
-      dispatch(create_user_profile({ userId, profileData }));
-    };
+    setValidated(true);
+    dispatch(create_user_profile({ userId: id, profileData }));
+  };
   return (
     <div>
       <Form onSubmit={onSubmit} validated={validated} noValidate>
@@ -107,4 +102,4 @@ function ClientProfileForm() {
   );
 }
 
-export default ClientProfileForm
+export default ClientProfileForm;

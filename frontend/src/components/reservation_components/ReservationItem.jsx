@@ -31,7 +31,8 @@ function ReservationItem({ booking }) {
   const updateBooking = (bookingId) => {};
 
   const onDetails = (booking) => {
-    dispatch(get_user(booking?.user));
+    singleUserDetails = null
+    dispatch(get_user(booking?.user.toString()));
     handShowDetails();
     booking = null
   };

@@ -22,10 +22,7 @@ function NewBookingForm() {
   const max_date = currentDate.setDate(
     currentDate.getDate() + numberOfDaysToAdd
   );
-  /* const today = new Date();
-  const reserved = {
-    booked: new Date(today.setDate(today.getDate() + 5)),
-  }; */
+  
   useEffect(() => {
     dispatch(get_all_booked_dates())
   }, [bookings, dispatch])

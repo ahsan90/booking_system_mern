@@ -5,8 +5,12 @@ import Form from "react-bootstrap/Form";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { create_user, get_allUsers, reset } from "../../features/user/userSlice";
-import {get_allProfiles} from '../../features/profile/profileSlice'
+import {
+  create_user,
+  get_allUsers,
+  reset,
+} from "../../features/user/userSlice";
+import { get_allProfiles } from "../../features/profile/profileSlice";
 import validation_helper from "../../helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
@@ -21,10 +25,14 @@ function UserForm() {
     name: "",
     phone: "",
   });
-  
-  const { isLoading, isError, isSuccess, message } = useSelector(
+
+  const { isLoading, user, users, isSuccess, isError, message } = useSelector(
     (state) => state.user
   );
+  const { profiles } = useSelector((state) => state.profile);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [userCreated, setUserCreated] = useState(false)
+
   const dispatch = useDispatch();
 
   const { username, email, password, role, name, phone } = formData;
@@ -47,14 +55,11 @@ function UserForm() {
       } else {
         setErrors(() => {});
       }
-      toast.error(message.error);
     }
-    
   }, [role, isError, message, dispatch]);
-  
 
   const onChange = (e) => {
-    setFormData((prevState) => ({   
+    setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
@@ -70,11 +75,16 @@ function UserForm() {
     }));
   };
 
+  
   useEffect(() => {
-    if (isSuccess) {
-      dispatch(get_allProfiles())
+    /* if (formSubmitted) {
+      console.log("Here");
+      dispatch(get_allProfiles());
     }
-  }, [isSuccess, dispatch])
+    setFormSubmitted(false); */
+    if(user) dispatch(get_allProfiles())
+  }, [user, dispatch]);
+
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -89,7 +99,23 @@ function UserForm() {
     //console.log(user);
     setValidated(true);
     dispatch(create_user(userData));
+    //dispatch(get_allProfiles());
+    //setFormSubmitted(true)
+    //console.log(isSuccess);
   };
+  //console.log(formSubmitted)
+
+  /* useEffect(() => {
+    
+    if (userCreated) {
+      console.log("inside useEffect: "+userCreated);
+      dispatch(get_allProfiles())
+      setUserCreated(false);
+    }
+    
+  }, [userCreated, dispatch]) */
+  
+  
   return (
     <>
       <div className="">

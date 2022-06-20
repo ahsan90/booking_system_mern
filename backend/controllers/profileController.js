@@ -126,10 +126,28 @@ const deleteProfile = asyncHandler(async (req, res) => {
     res.status(200).json(deletedProfile)
 })
 
+const getProfilesBySearchQuery = asyncHandler(async (req, res) => {
+    const { searchQuery } = req.query
+    //console.log('Anything Coming?: ' + searchQuery)
+    try {
+        const searchText = new RegExp(searchQuery, "i")
+        const profiles = await Profile.find({
+            $or: [{
+                name: searchText
+            }, { email: searchText }, { phone: searchText }]
+        })
+
+        return res.status(200).json(profiles)
+    } catch (error) {
+        return res.status(404).json({ error: 'Something went wrong!' })
+    }
+})
+
 module.exports = {
     getProfiles,
     getProfile,
     registerProfile,
     updateProfile,
-    deleteProfile
+    deleteProfile,
+    getProfilesBySearchQuery
 }

@@ -51,10 +51,20 @@ const delete_profile = async (id, token) => {
     return response.data
 }
 
+const search_profiles = async (searchText, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + 'search?searchQuery=' + searchText, config)
+    return response.data
+}
+
 
 
 const profileService = {
-    create_profile, get_profile, get_profiles, update_profile, delete_profile
+    create_profile, get_profile, get_profiles, update_profile, delete_profile, search_profiles
 }
 
 export default profileService

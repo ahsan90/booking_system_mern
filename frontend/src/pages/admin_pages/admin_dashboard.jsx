@@ -12,9 +12,8 @@ import ClientList from "../../components/client_components/ClientList";
 function AdminDashboard() {
   const [key, setKey] = useState("users");
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
-  const { profiles } = useSelector((state) => state.profile);
-  const { bookings } = useSelector((state) => state.reservation);
+  const {users, isSuccess} = useSelector(state => state.user)
+  const {profiles} = useSelector(state => state.profile)
   useEffect(() => {
     dispatch(get_allUsers());
     dispatch(get_all_bookings())
