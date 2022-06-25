@@ -18,9 +18,8 @@ import { get_allProfiles } from "../../features/profile/profileSlice";
 
 function UserComponent({ userData }) {
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const { users, roles, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.user
-  );
+  const { user, users, roles, isLoading, isError, isSuccess, message } =
+    useSelector((state) => state.user);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -32,13 +31,16 @@ function UserComponent({ userData }) {
   const deleteItem = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       dispatch(delete_user(id));
-      dispatch(get_allProfiles());
     }
   };
 
   useEffect(() => {
     handleClose();
   }, [users]);
+
+  useEffect(() => {
+    if (user) dispatch(get_allProfiles());
+  }, [user, dispatch]);
 
   /*   if (isLoading) {
     return <Spinner />;

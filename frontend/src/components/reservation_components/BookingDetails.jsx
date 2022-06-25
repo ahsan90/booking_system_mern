@@ -31,9 +31,9 @@ export default function BookingDetails({ booking_details }) {
       <Card className="mt-4">
         {singleUserDetails !== null ? (
           <>
-            <Card.Text>Customer Information</Card.Text>
-            <hr />
             <Card.Body>
+              <Card.Text>Customer Information</Card.Text>
+              <hr />
               <img className="avatar" src={singleUserDetails?.avatar} alt="" />
               <Card.Text>
                 Username:{" "}

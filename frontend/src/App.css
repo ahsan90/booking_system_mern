@@ -38,3 +38,8 @@ body{
 .client_search{
   max-width: 40%;
 }
+
+.clear_booking_search {
+  background-color: white;
+  cursor: pointer;
+}

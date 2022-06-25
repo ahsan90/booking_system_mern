@@ -20,7 +20,10 @@ function ReservationItem({ booking }) {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleClose = () => setShowDetails(false);
+  const handleClose = () => {
+    setShowDetails(false);
+    singleUserDetails = null;
+  };
   const handShowDetails = () => setShowDetails(true);
 
   const onDelete = (bookingId) => {
@@ -31,10 +34,8 @@ function ReservationItem({ booking }) {
   const updateBooking = (bookingId) => {};
 
   const onDetails = (booking) => {
-    singleUserDetails = null
     dispatch(get_user(booking?.user.toString()));
     handShowDetails();
-    booking = null
   };
 
   return (

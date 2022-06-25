@@ -58,8 +58,30 @@ const get_all_booked_dates = async (token) => {
     return response.data
 }
 
+const search_bookings = async (searchText, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + 'search?searchQuery=' + searchText, config)
+    return response.data
+}
+const search_bookings_by_user = async (payload, token) => {
+    const { userId, searchText } = payload
+    
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(API_URL + 'search?searchQuery=' + searchText, { userId }, config)
+    return response.data
+}
+
+
 const reservationService = {
-    create_booking, delete_booking, get_bookings_by_user, get_all_bookings, get_all_booked_dates
+    create_booking, delete_booking, get_bookings_by_user, get_all_bookings, get_all_booked_dates, search_bookings, search_bookings_by_user
 }
 
 export default reservationService

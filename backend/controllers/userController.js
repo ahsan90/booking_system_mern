@@ -209,7 +209,20 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.status(200).json({ id: user._id })
 })
 
+const getUsersBySearchQuery = asyncHandler(async (req, res) => {
+    const { searchQuery } = req.query
+    //console.log('Anything Coming?: ' + searchQuery)
+    try {
+        const searchText = new RegExp(searchQuery, "i")
+        const users = await User.find({
+            $or: [{ username: searchText }, { email: searchText }]
+        })
 
+        return res.status(200).json(users)
+    } catch (error) {
+        return res.status(404).json({ error: 'Something went wrong!' })
+    }
+})
 
 module.exports = {
     getAllUsers,
@@ -218,5 +231,6 @@ module.exports = {
     createUserProfile,
     updateUser,
     deleteUser,
+    getUsersBySearchQuery,
     getAllRoles
 }

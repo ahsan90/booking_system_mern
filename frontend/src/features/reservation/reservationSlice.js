@@ -61,7 +61,7 @@ export const delete_booking = createAsyncThunk(
 export const get_bookings_by_user = createAsyncThunk(
     'bookings/get_bookings_by_user',
     async (id, thunkAPI) => {
-        const userIdObj = {userId: id} 
+        const userIdObj = { userId: id }
         try {
             const token = thunkAPI.getState().auth.loggedInUser.token
             return await reservationService.get_bookings_by_user(userIdObj, token)
@@ -82,6 +82,32 @@ export const get_all_booked_dates = createAsyncThunk(
             const message = error.response.data
             //console.log(error.response.status)
             //console.log(error.response.data)
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const search_bookings = createAsyncThunk(
+    'bookings/search',
+    async (searchText, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await reservationService.search_bookings(searchText, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const search_bookings_by_user = createAsyncThunk(
+    'bookings/search_by_user',
+    async (payload, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await reservationService.search_bookings_by_user(payload, token)
+        } catch (error) {
+            const message = error.response.data
             return thunkAPI.rejectWithValue(message)
         }
     }
@@ -183,6 +209,45 @@ export const reservationSlice = createSlice({
                 state.message = action.payload
                 toast.error(state.message.error)
             })
+            .addCase(search_bookings.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(search_bookings.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.bookings = action.payload
+                state.message = null
+                state.booking = null
+            })
+            .addCase(search_bookings.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+                state.bookings = []
+                state.booking = null
+            })
+            .addCase(search_bookings_by_user.pending, (state, action) => {
+                state.isLoading = false
+            })
+            .addCase(search_bookings_by_user.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.bookings = action.payload
+                state.message = null
+                state.booking = null
+            })
+            .addCase(search_bookings_by_user.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+                state.bookings = []
+                state.booking = null
+            })
+
     }
 })
 

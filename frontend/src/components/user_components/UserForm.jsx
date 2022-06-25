@@ -96,26 +96,10 @@ function UserForm() {
       name,
       phone,
     };
-    //console.log(user);
     setValidated(true);
     dispatch(create_user(userData));
-    //dispatch(get_allProfiles());
-    //setFormSubmitted(true)
-    //console.log(isSuccess);
   };
-  //console.log(formSubmitted)
 
-  /* useEffect(() => {
-    
-    if (userCreated) {
-      console.log("inside useEffect: "+userCreated);
-      dispatch(get_allProfiles())
-      setUserCreated(false);
-    }
-    
-  }, [userCreated, dispatch]) */
-  
-  
   return (
     <>
       <div className="">

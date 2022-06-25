@@ -100,6 +100,7 @@ export const update_user = createAsyncThunk(
     }
 )
 
+
 export const create_user_profile = createAsyncThunk(
     'users/new_profile',
     async (profile, thunkAPI) => {
@@ -108,6 +109,19 @@ export const create_user_profile = createAsyncThunk(
         try {
             const token = thunkAPI.getState().auth.loggedInUser.token
             return await userServices.create_user_profile(userId, profileData, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const search_users = createAsyncThunk(
+    'users/search',
+    async (searchText, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await userServices.search_users(searchText, token)
         } catch (error) {
             const message = error.response.data
             return thunkAPI.rejectWithValue(message)
@@ -205,6 +219,7 @@ export const userSlice = createSlice({
             .addCase(delete_user.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.user = state.users.filter(x => x._id === action.payload.id)
                 state.users = state.users.filter(x => x._id !== action.payload.id)
                 toast.success('User deleted successfully!')
             })
@@ -249,6 +264,26 @@ export const userSlice = createSlice({
                 state.message = action.payload
                 
             })
+            .addCase(search_users.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(search_users.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.user = null
+                state.users = action.payload
+                state.message = null
+            })
+            .addCase(search_users.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.user = null
+                state.users = null
+                state.message = action.payload
+            })
+            
     }
 })
 

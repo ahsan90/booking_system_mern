@@ -82,7 +82,7 @@ const createBooking = asyncHandler(async (req, res) => {
         profile = await Profile.findOne({ user: user._id })
     }
 
-    let booking_reference = user.username + "" + moment(date).format('DMYYhmmss').toString()
+    let booking_reference = user.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') + "" + moment(date).format('DMYYhmmss').toString()
     let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
 
     let reservation = await Reservation.findOne({ reservation_date: bookingDate })
@@ -136,10 +136,43 @@ const deleteBooking = asyncHandler(async (req, res) => {
     res.status(200).json(deletedBooking)
 })
 
+const getBookingsBySearchQuery = asyncHandler(async (req, res) => {
+    const { searchQuery } = req.query
+    //console.log('Anything Coming?: ' + searchQuery)
+    try {
+        const searchText = new RegExp(searchQuery, "i")
+        const bookings = await Reservation.find({ booking_reference: searchText })
+        return res.status(200).json(bookings)
+    } catch (error) {
+        return res.status(404).json({ error: 'Something went wrong!' })
+    }
+})
+
+const getBookingsByUserSearchQuery = asyncHandler(async (req, res) => {
+    const { searchQuery } = req.query
+    //console.log('Anything Coming?: ' + searchQuery)
+    let userRole = await Role.findById(req.user.role._id)
+    const isAuthorirzed = (req.user._id.toString() === req.body.userId) || (userRole.roletype === defaultRolesAndUsers.ADMIN)
+    if (!isAuthorirzed) {
+        return res.status(403).json({ error: 'Access denied' })
+    }
+    let user = await User.findById(req.body.userId)
+   
+    try {
+        const searchText = new RegExp(searchQuery, "i")
+        const bookings = await Reservation.find({
+            $and: [{ booking_reference: searchText }, { user }]
+        })
+        return res.status(200).json(bookings)
+    } catch (error) {
+        return res.status(404).json({ error: 'Something went wrong!' })
+    }
+})
+
 const isCurrentAuthUser = (user, roletype, reservation) => {
     return roletype === defaultRolesAndUsers.ADMIN || reservation.user._id.toString() === user._id.toString()
 }
 
 module.exports = {
-    getBooking, getAllBooking, getAllBookingsByUserId, createBooking, updateBooking, deleteBooking, getBookedDates
+    getBooking, getAllBooking, getAllBookingsByUserId, createBooking, updateBooking, deleteBooking, getBookedDates, getBookingsBySearchQuery, getBookingsByUserSearchQuery
 }

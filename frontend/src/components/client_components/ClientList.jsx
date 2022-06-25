@@ -3,7 +3,7 @@ import { Modal, Table, Card, Button, InputGroup, Form } from "react-bootstrap";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useSelector, useDispatch } from "react-redux";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaSearch } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { BiTrash } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -58,15 +58,14 @@ export default function ClientList() {
     handleShowClientForm();
   };
   let { searchText } = searchQuery;
-
   const handleSearchProfiles = (e) => {
     if (e.length > 0) {
       setSearchQuery((prevState) => ({
         ...prevState,
-        searchText: e[0] !== undefined ? e[0].email : "",
+        searchText: e[0].email,
       }));
     } else {
-      dispatch(get_allProfiles())
+      dispatch(get_allProfiles());
     }
     setSingleSelections(e);
   };
@@ -75,8 +74,11 @@ export default function ClientList() {
     if (searchText.length > 0) {
       setTimeout(() => {
         dispatch(search_profiles(searchText));
-      }, 500);
+      }, 200);
     }
+    setSearchQuery(() => ({
+      searchText: "",
+    }));
   }, [searchText, dispatch]);
 
   return (
@@ -96,6 +98,9 @@ export default function ClientList() {
       <div className="clientListHead mb-3">
         <Button onClick={() => addClient()}>+Add Client</Button>
         <InputGroup className="client_search">
+          <InputGroup.Text id="basic-addon1">
+            <FaSearch />
+          </InputGroup.Text>
           <Typeahead
             clearButton
             id="basic-typeahead-single"

@@ -14,24 +14,14 @@ import {
   get_bookings_by_user,
   resetReservation,
 } from "../../features/reservation/reservationSlice";
+import BookingSearchComponent from "../../components/reservation_components/BookingSearchComponent";
 
 export default function ClientDashboard() {
   const dispatch = useDispatch();
-  //const { user } = useSelector((state) => state.auth);
-  /* const {
-    users,
-    singleUserDetails,
-    roles,
-    isLoading,
-    isError,
-    isSuccess,
-    message,
-  } = useSelector((state) => state.user);
-  const { profile } = useSelector((state) => state.profile);
-  const { booking, bookings } = useSelector(
-    (state) => state.reservation
-  ); */
-
+  const { bookings } = useSelector(state => state.reservation)
+  const [showBookingSearch, setShowBookingSearch] = useState(false)
+  
+  
   const { id } = useParams();
   const [key, setKey] = useState("user_profile");
   
@@ -45,6 +35,7 @@ export default function ClientDashboard() {
       dispatch(resetReservation());
     };
   }, [id, dispatch]);
+
   return (
     <>
       <div>
@@ -58,6 +49,8 @@ export default function ClientDashboard() {
             </div>
           </Tab>
           <Tab eventKey="bookings" title="Booking History">
+
+            <BookingSearchComponent/>
             <BookingHistory />
           </Tab>
           <Tab eventKey="reservations" title="New Booking">
