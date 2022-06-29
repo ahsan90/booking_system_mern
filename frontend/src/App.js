@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import './App.css';
 import Header from './components/Header';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -19,7 +19,7 @@ function App() {
   return (
     <>
       <Router>
-        <Header/>
+        <Header />
         <div className="container">
           <Routes>
             <Route path='/' element={<Home />} />
@@ -29,12 +29,12 @@ function App() {
             <Route path='/notfound' element={<Notfound />} />
             <Route path='/admin' element={<AdminDashboard />} />
             <Route path='/users/profile/:id' element={< ClientDashboard />} />
-            <Route path='/register' element={<ClientRegister/>}/>
+            <Route path='/register' element={<ClientRegister />} />
             <Route path='*' element={<Notfound />} />
           </Routes>
         </div>
       </Router>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

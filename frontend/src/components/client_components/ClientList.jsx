@@ -15,7 +15,7 @@ import {
   search_profiles,
 } from "../../features/profile/profileSlice";
 import { Link } from "react-router-dom";
-import { get_allUsers } from "../../features/user/userSlice";
+import ReactPaginate from "react-paginate";
 
 export default function ClientList() {
   const [userProfile, setUserProfile] = useState(null);
@@ -23,6 +23,7 @@ export default function ClientList() {
     searchText: "",
   });
   const [singleSelections, setSingleSelections] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -80,6 +81,49 @@ export default function ClientList() {
       searchText: "",
     }));
   }, [searchText, dispatch]);
+
+  const clientPerPage = 8;
+  const pageCount = Math.ceil(profiles.length / clientPerPage);
+  const pagesVisited = pageNumber * clientPerPage;
+  const displayProfiles = profiles
+    .slice(pagesVisited, pagesVisited + clientPerPage)
+    .map((profileData) => {
+      return (
+        <tr key={profileData._id}>
+          <td>{profileData.name}</td>
+          <td>{profileData.email}</td>
+          <td>{profileData.phone}</td>
+          <td>{moment(profileData.createdAt).format("LLL")}</td>
+          <td>{moment(profileData.updatedAt).format("LLL")}</td>
+          <td>
+            <Link
+              className="btn btn-primary"
+              style={{ marginRight: "3px" }}
+              to={`/users/profile/${profileData?.user?.toString()}`}
+            >
+              <AiOutlineEye />
+            </Link>
+            <button
+              className="btn btn-warning"
+              onClick={() => onEdit(profileData)}
+              style={{ marginRight: "3px" }}
+            >
+              <FaEdit />
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() => onDelete(profileData._id)}
+            >
+              <BiTrash />
+            </button>
+          </td>
+        </tr>
+      );
+    });
+
+  const handlePageClick = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   return (
     <div>
@@ -142,39 +186,7 @@ export default function ClientList() {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {profiles.map((profileData) => (
-                  <tr key={profileData._id}>
-                    <td>{profileData.name}</td>
-                    <td>{profileData.email}</td>
-                    <td>{profileData.phone}</td>
-                    <td>{moment(profileData.createdAt).format("LLL")}</td>
-                    <td>{moment(profileData.updatedAt).format("LLL")}</td>
-                    <td>
-                      <Link
-                        className="btn btn-primary"
-                        style={{ marginRight: "3px" }}
-                        to={`/users/profile/${profileData?.user?.toString()}`}
-                      >
-                        <AiOutlineEye />
-                      </Link>
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => onEdit(profileData)}
-                        style={{ marginRight: "3px" }}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => onDelete(profileData._id)}
-                      >
-                        <BiTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              <tbody>{displayProfiles}</tbody>
             </Table>
           </>
         ) : (
@@ -183,6 +195,29 @@ export default function ClientList() {
           </>
         )}
       </Card>
+      {profiles?.length > 0 && (
+        <div className="mt-3">
+          <ReactPaginate
+            previousLabel={"<<Previous"}
+            nextLabel={"Next>>"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination justify-content-center"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
+      )}
     </div>
   );
 }

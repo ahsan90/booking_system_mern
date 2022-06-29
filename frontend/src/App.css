@@ -43,3 +43,11 @@ body{
   background-color: white;
   cursor: pointer;
 }
+
+.nab_item {
+  text-decoration: none;
+  color: gainsboro;
+}
+.nab_item:hover{
+  color: whitesmoke;
+}

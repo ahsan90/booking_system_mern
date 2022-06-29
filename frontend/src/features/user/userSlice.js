@@ -265,10 +265,10 @@ export const userSlice = createSlice({
                 
             })
             .addCase(search_users.pending, (state) => {
-                state.isLoading = true
+                //state.isLoading = true
             })
             .addCase(search_users.fulfilled, (state, action) => {
-                state.isLoading = false
+                //state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
                 state.user = null
@@ -276,7 +276,7 @@ export const userSlice = createSlice({
                 state.message = null
             })
             .addCase(search_users.rejected, (state, action) => {
-                state.isLoading = false
+                //state.isLoading = false
                 state.isSuccess = false
                 state.isError = true
                 state.user = null

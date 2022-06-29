@@ -18,13 +18,12 @@ import BookingSearchComponent from "../../components/reservation_components/Book
 
 export default function ClientDashboard() {
   const dispatch = useDispatch();
-  const { bookings } = useSelector(state => state.reservation)
-  const [showBookingSearch, setShowBookingSearch] = useState(false)
-  
-  
+  const [showBookingSearch, setShowBookingSearch] = useState(false);
+  const { bookings } = useSelector((state) => state.reservation);
+
   const { id } = useParams();
   const [key, setKey] = useState("user_profile");
-  
+
   useEffect(() => {
     //dispatch(get_profile())
     dispatch(get_user(id));
@@ -49,8 +48,7 @@ export default function ClientDashboard() {
             </div>
           </Tab>
           <Tab eventKey="bookings" title="Booking History">
-
-            <BookingSearchComponent/>
+            <BookingSearchComponent />
             <BookingHistory />
           </Tab>
           <Tab eventKey="reservations" title="New Booking">
@@ -61,4 +59,3 @@ export default function ClientDashboard() {
     </>
   );
 }
-

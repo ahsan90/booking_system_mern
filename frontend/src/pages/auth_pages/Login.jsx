@@ -1,76 +1,80 @@
-import { useState, useEffect } from 'react'
-import { FaSignInAlt } from 'react-icons/fa'
-import './auth.css'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import InputGroup from 'react-bootstrap/InputGroup'
-import Row from 'react-bootstrap/Row'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import {login, resetAuth} from '../../features/auth/authSlice'
-import Spinner from '../../components/CustomSpinner'
-import validation_helper from '../../helper/validation_helper'
+import { useState, useEffect } from "react";
+import { FaSignInAlt } from "react-icons/fa";
+import "./auth.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, resetAuth } from "../../features/auth/authSlice";
+import Spinner from "../../components/CustomSpinner";
+import validation_helper from "../../helper/validation_helper";
 
 function Login() {
   const [formData, setFormData] = useState({
-      username_or_email: '',
-      password: ''
-  })
-  const { username_or_email, password } = formData
-  let [errors, setErrors] = useState({})
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+    username_or_email: "",
+    password: "",
+  });
+  const { username_or_email, password } = formData;
+  let [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
-  )
+  );
 
   const [validated, setValidated] = useState(false);
 
   useEffect(() => {
     if (isError) {
       //console.log(message.errors)
-      
+
       if (message.errors !== undefined) {
         //message.errors.forEach(element => {
-          //toast.error(element.msg)
-        setErrors(validation_helper.validateFormError({ message }))
+        //toast.error(element.msg)
+        setErrors(validation_helper.validateFormError({ message }));
         //});
       } else {
-          setErrors(() => {})
+        setErrors(() => {});
       }
-      toast.error(message.error)
+      toast.error(message.error);
     }
     if (isSuccess || user) {
-      navigate('/')
+      navigate("/");
     }
-    dispatch(resetAuth())
-  }, [user, isError, isSuccess, message, navigate, dispatch])
+    dispatch(resetAuth());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
-      ...prevState, [e.target.name]: e.target.value,
-    }))
-  }
-  
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   const onSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const userData = {
       username_or_email,
-      password
-    }
+      password,
+    };
     setValidated(true);
-    dispatch(login(userData))
-  }
-  
+    dispatch(login(userData));
+  };
+
   if (isLoading) {
-    return <Spinner/>
+    return <Spinner />;
   }
 
   return (
     <>
-      <div className="mt-5 login login_boxshadow">
+      <div
+        className="mt-5 login login_boxshadow"
+        style={{ marginTop: "300px" }}
+      >
         <section>
           <h1>
             <FaSignInAlt /> Login
@@ -126,7 +130,7 @@ function Login() {
             </Button>
           </Form.Group>
           <div>
-            Not a member yet? <Link to='/register'>Register</Link>
+            Not a member yet? <Link to="/register">Register</Link>
           </div>
         </Form>
       </div>
@@ -134,4 +138,4 @@ function Login() {
   );
 }
 
-export default Login
+export default Login;

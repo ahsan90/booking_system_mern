@@ -1,8 +1,6 @@
 
 function Unauthorized() {
-  return (
-    <div>Unauthorized!</div>
-  )
+  return <div>Unauthorized!</div>;
 }
 
-export default Unauthorized
+export default Unauthorized;

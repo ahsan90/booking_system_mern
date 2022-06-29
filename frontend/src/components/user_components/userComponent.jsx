@@ -18,8 +18,7 @@ import { get_allProfiles } from "../../features/profile/profileSlice";
 
 function UserComponent({ userData }) {
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
-  const { user, users, roles, isLoading, isError, isSuccess, message } =
-    useSelector((state) => state.user);
+  const { user, users } = useSelector((state) => state.user);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -28,19 +27,19 @@ function UserComponent({ userData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    handleClose();
+  }, [user]);
+
+  /* useEffect(() => {
+    //if (user) dispatch(get_allProfiles());
+  }, [user, dispatch]); */
+
   const deleteItem = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       dispatch(delete_user(id));
     }
   };
-
-  useEffect(() => {
-    handleClose();
-  }, [users]);
-
-  useEffect(() => {
-    if (user) dispatch(get_allProfiles());
-  }, [user, dispatch]);
 
   /*   if (isLoading) {
     return <Spinner />;
@@ -55,6 +54,14 @@ function UserComponent({ userData }) {
               <Card.Text>Username: {userData.username}</Card.Text>
               <Card.Text>Email: {userData.email}</Card.Text>
               <Card.Link>
+                <Link
+                  to={`/users/profile/${userData._id}`}
+                  className="btn btn-outline-primary"
+                >
+                  <GrView />
+                </Link>
+              </Card.Link>
+              <Card.Link>
                 <button onClick={handleShow} className="btn btn-warning">
                   <BiEditAlt />
                 </button>
@@ -66,14 +73,6 @@ function UserComponent({ userData }) {
                 >
                   <GoTrashcan />
                 </button>
-              </Card.Link>
-              <Card.Link>
-                <Link
-                  className="btn btn-outline-success"
-                  to={`/users/profile/${userData._id}`}
-                >
-                  <GrView />
-                </Link>
               </Card.Link>
             </Card.Body>
           </Card>

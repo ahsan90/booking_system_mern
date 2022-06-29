@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Row, Card, Col, Table, Button, Modal } from "react-bootstrap";
+import { Row, Card, Col, Table, Button, Modal, Spinner } from "react-bootstrap";
 import { FaEdit, FaUser } from "react-icons/fa";
 import moment from "moment";
 import ClientProfileForm from "../client_components/ClientProfileForm";
@@ -7,15 +7,9 @@ import ClientCreateUpdateForm from "../client_components/ClientCreateUpdateForm"
 import { BiTrash } from "react-icons/bi";
 import CustomSpinner from "../CustomSpinner";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  get_allProfiles,
-  get_profile,
-  delete_profile,
-  resetProfile,
-} from "../../features/profile/profileSlice";
+import { delete_profile } from "../../features/profile/profileSlice";
 import { get_user, resetUser } from "../../features/user/userSlice";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
 function UserProfileInformation() {
   const [show, setShow] = useState(false);
