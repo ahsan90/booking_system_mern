@@ -25,6 +25,17 @@ const create_booking = async (bookingData, token) => {
     return response.data
 }
 
+const update_booking = async (bookingData, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.patch(API_URL + bookingData._id, { reservation_date: bookingData.reservation_date } , config)
+    //console.log(response.data)
+    return response.data
+}
+
 const delete_booking = async (id, token) => {
     const config = {
         headers: {
@@ -69,7 +80,7 @@ const search_bookings = async (searchText, token) => {
 }
 const search_bookings_by_user = async (payload, token) => {
     const { userId, searchText } = payload
-    
+
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -81,7 +92,7 @@ const search_bookings_by_user = async (payload, token) => {
 
 
 const reservationService = {
-    create_booking, delete_booking, get_bookings_by_user, get_all_bookings, get_all_booked_dates, search_bookings, search_bookings_by_user
+    create_booking, update_booking, delete_booking, get_bookings_by_user, get_all_bookings, get_all_booked_dates, search_bookings, search_bookings_by_user
 }
 
 export default reservationService

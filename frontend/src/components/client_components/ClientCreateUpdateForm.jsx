@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import { get_allUsers } from "../../features/user/userSlice";
 
 function ClientCreateUpdateForm(props) {
-  const { isFromAdminDashboard = false } = props;
+  const { isFromAdminDashboard } = props;
   const userProfile = props.profile;
   const dispatch = useDispatch();
   let [errors, setErrors] = useState({});

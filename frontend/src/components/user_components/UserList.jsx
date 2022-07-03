@@ -10,7 +10,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
 import { get_allUsers, search_users } from "../../features/user/userSlice";
-import Paginate from "../utils/Paginate";
 import ReactPaginate from "react-paginate";
 
 function UsersListing() {

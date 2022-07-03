@@ -14,6 +14,6 @@ router.route('/byuser').post(authenticateUser, getAllBookingsByUserId)
 router.route('/booked').get(authenticateUser, getBookedDates)
 router.route('/').post(authenticateUser, validateBookingDate(), createBooking)
 router.route('/:id').get(authenticateUser, hasUser, getBooking).delete(authenticateUser, hasUser, deleteBooking)
-router.route('/:id').put(authenticateUser, hasUser, updateBooking)
+router.route('/:id').patch(authenticateUser, hasUser, updateBooking)
 
 module.exports = router

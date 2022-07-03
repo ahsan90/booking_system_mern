@@ -105,22 +105,22 @@ const updateBooking = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
 
     let reservationData = { reservation_date: bookingDate }
-    let existingBookedDate = moment(new Date(reservation.reservation_date)).format('YYYY-MM-DDT00:00:00')
-
+    
+    /* let existingBookedDate = moment(new Date(reservation.reservation_date)).format('YYYY-MM-DDT00:00:00')
     //console.log(bookingDate === existingBookedDate)
     if (bookingDate === existingBookedDate) {
         return res.status(200).json({ message: 'No change of booking date' })
-    }
-    // Make sure the booking date is available before booking
-    if ((await Reservation.findOne({ reservation_date: bookingDate }))) {
-        return res.status(401).json({ message: 'Reservation date is not available' })
+    } */
 
+    // Make sure the booking date (except currently booked date) is available before booking
+    if (((await Reservation.find({ reservation_date: bookingDate })).filter(x => x.id !== req.params.id)).length > 0) {
+        return res.status(401).json({ message: 'Reservation date is not available' })
     } else {
         await Reservation.findByIdAndUpdate(req.params.id, reservationData, { new: true })
     }
 
     reservation = await Reservation.findById(req.params.id)
-    res.status(200).json({ reservation })
+    return res.status(200).json(reservation)
 })
 
 const deleteBooking = asyncHandler(async (req, res) => {
@@ -157,7 +157,7 @@ const getBookingsByUserSearchQuery = asyncHandler(async (req, res) => {
         return res.status(403).json({ error: 'Access denied' })
     }
     let user = await User.findById(req.body.userId)
-   
+
     try {
         const searchText = new RegExp(searchQuery, "i")
         const bookings = await Reservation.find({

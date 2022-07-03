@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { logout, resetAuth } from "../features/auth/authSlice";
 
 import { Link } from "react-router-dom";
+import ROLES from "../helper/util";
+import { resetUser } from "../features/user/userSlice";
+import { resetProfile } from "../features/profile/profileSlice";
+import { resetReservation } from "../features/reservation/reservationSlice";
 //import Button from 'react-bootstrap/Button'
 
 function Header() {
@@ -18,16 +22,23 @@ function Header() {
   const { loggedInUser } = useSelector((state) => state.auth);
 
   const onLogout = () => {
-    dispatch(logout());
+    dispatch(logout({ navigate }));
     dispatch(resetAuth());
-    navigate("/login");
+    dispatch(resetUser())
+    dispatch(resetProfile())
+    dispatch(resetReservation())
+    return navigate("/login");
   };
 
   return (
-    <div style={{ marginBottom: "60px" }}>
-      <Navbar bg="dark" expand="lg" fixed='top' variant="dark">
+    <div style={{ marginBottom: "" }}>
+      <Navbar bg="dark" expand="lg" variant="dark">
         <Container>
-          <Navbar.Brand href="/">Booking System</Navbar.Brand>
+          <Navbar.Brand>
+            <Link to="/" className="nab_item">
+              Booking System
+            </Link>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="container justify-content-end">
@@ -51,11 +62,13 @@ function Header() {
 
               {loggedInUser && (
                 <>
-                  <Nav.Link>
-                    <Link to="/admin" className="nab_item">
-                      <GrDashboard /> Admin Pannel
-                    </Link>
-                  </Nav.Link>
+                  {loggedInUser.role === ROLES.Admin && (
+                    <Nav.Link>
+                      <Link to="/admin" className="nab_item">
+                        <GrDashboard /> Admin Pannel
+                      </Link>
+                    </Nav.Link>
+                  )}
                   <NavDropdown
                     title={loggedInUser.username}
                     id="basic-nav-dropdown"

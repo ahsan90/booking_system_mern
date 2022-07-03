@@ -29,8 +29,13 @@
     padding: 5px;
     border: 2px solid red;
 }
-.adminSideBar ul{
-    
+.admin-dashboard{
+    border-top: 3px solid red;
+}
+.admin-dashboard h1{
+    text-align: center;
+    background-color: rgb(212, 212, 197);
+    border-bottom: 3px solid green;
 }
 @media only screen and (max-width: 768px) {
     .create-user {

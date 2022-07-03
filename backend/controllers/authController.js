@@ -2,7 +2,8 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const {check, validationResult} = require('express-validator')
+const { check, validationResult } = require('express-validator')
+const Role = require('../models/roleModel')
 
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -19,7 +20,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({
             _id: user.id,
-            role: user.role,
+            role: (await Role.findById(user.role.toString())).roletype,
             username: user.username,
             email: user.email,
             token: generateToken(user._id),

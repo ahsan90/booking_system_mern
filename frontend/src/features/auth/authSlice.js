@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authService from './authService'
+import { useNavigate } from 'react-router-dom'
 
 const user = JSON.parse(localStorage.getItem('user'))
+
 
 const initialState = {
     loggedInUser: user? user : null,
@@ -55,15 +57,17 @@ export const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
+                state.isError = false
                 state.loggedInUser= action.payload
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false
+                state.isSuccess = false
                 state.isError = true
                 state.message = action.payload
                 state.loggedInUser = null
             })
-            .addCase(logout.fulfilled, (state) => {
+            .addCase(logout.fulfilled, (state, action) => {
                 state.loggedInUser = null
             })
     }

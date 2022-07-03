@@ -44,6 +44,20 @@ export const create_booking = createAsyncThunk(
     }
 )
 
+// update_booking
+export const update_booking = createAsyncThunk(
+    'update_booking',
+    async (bookingData, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await reservationService.update_booking(bookingData, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 export const delete_booking = createAsyncThunk(
     'delete_booking',
     async (id, thunkAPI) => {
@@ -245,6 +259,27 @@ export const reservationSlice = createSlice({
                 state.isSuccess = false
                 state.message = action.payload
                 state.bookings = []
+                state.booking = null
+            })
+            .addCase(update_booking.pending, (state, action) => {
+                state.isLoading = false
+                state.booking = null
+            })
+            .addCase(update_booking.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.booking = action.payload
+                //console.log(action.payload)
+                state.bookings = state.bookings.map(x => x._id === action.payload._id ? action.payload : x)
+                state.message = null
+                toast.success('Booking Updated Successfully!')
+            })
+            .addCase(update_booking.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
                 state.booking = null
             })
 

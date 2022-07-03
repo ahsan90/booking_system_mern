@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { login, resetAuth } from "../../features/auth/authSlice";
 import Spinner from "../../components/CustomSpinner";
 import validation_helper from "../../helper/validation_helper";
+import ROLES from "../../helper/util";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -22,11 +23,23 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
+  const { loggedInUser, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
   const [validated, setValidated] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess || loggedInUser) {
+      if (loggedInUser && loggedInUser.role === ROLES.Admin) {
+        navigate("/admin");
+      } else if (loggedInUser && loggedInUser.role === ROLES.Client) {
+        navigate(`/users/profile/${loggedInUser._id.toString()}`);
+      } else {
+        navigate("/login");
+      }
+    }
+  }, [loggedInUser, isSuccess, navigate]);
 
   useEffect(() => {
     if (isError) {
@@ -42,11 +55,8 @@ function Login() {
       }
       toast.error(message.error);
     }
-    if (isSuccess || user) {
-      navigate("/");
-    }
     dispatch(resetAuth());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [isError, message, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
