@@ -224,6 +224,22 @@ const getUsersBySearchQuery = asyncHandler(async (req, res) => {
     }
 })
 
+const getUserByUsernameEmail = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.findOne({
+            $or: [{ username: req.body.userSearchText }, { email: req.body.userSearchText }]
+        })
+        if (user) {
+            return res.status(200).json(user)
+        } else {
+            return res.status(404).json({error: 'No record found wih this username/email'})
+        }
+    } catch (error) {
+        return res.status(404).json({ error: 'Something went wrong!' })
+    }
+})
+
+
 module.exports = {
     getAllUsers,
     getUser,
@@ -232,5 +248,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getUsersBySearchQuery,
-    getAllRoles
+    getAllRoles,
+    getUserByUsernameEmail
 }

@@ -10,22 +10,25 @@ import {
 import { FaEdit } from "react-icons/fa";
 import { BiTrash } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
-import { Modal, Button, Card, Table } from "react-bootstrap";
+import { Modal, Button, Card, Table, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BookingDetails from "./BookingDetails";
 import NewBookingForm from "./NewBookingForm";
+import CustomSpinner from "../CustomSpinner";
 
 function ReservationItem({ booking }) {
   const dispatch = useDispatch();
-  let { user, singleUserDetails } = useSelector((state) => state.user);
+  let { user, singleUserDetails, isLoading } = useSelector(
+    (state) => state.user
+  );
 
   const [showDetails, setShowDetails] = useState(false);
   const [showEditBooking, setShowEditBooking] = useState(false);
   //const [bookingToBeUpdated, setBookingToBeUpdated] = useState({bookingObj: null});
 
   useEffect(() => {
-    setShowEditBooking(false)
-  }, [booking])
+    setShowEditBooking(false);
+  }, [booking]);
 
   const handleClose = () => {
     setShowDetails(false);
@@ -51,6 +54,11 @@ function ReservationItem({ booking }) {
     handShowDetails();
   };
 
+  const booking_details = {
+    booking,
+    singleUserDetails,
+  };
+
   return (
     <>
       <Modal show={showDetails} onHide={handleClose} style={{ width: "100%" }}>
@@ -58,9 +66,14 @@ function ReservationItem({ booking }) {
           <Modal.Title>Reservation Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <BookingDetails
-            booking_details={[{ booking }, { singleUserDetails }]}
-          />
+          {isLoading ? (
+            <div style={{ }}>
+              {/* <Spinner animation="border" variant="success" /> */}
+              <CustomSpinner/>
+            </div>
+          ) : (
+            <BookingDetails booking_details={booking_details} />
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button

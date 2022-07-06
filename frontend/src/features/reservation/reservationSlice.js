@@ -221,7 +221,7 @@ export const reservationSlice = createSlice({
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
-                toast.error(state.message.error)
+                toast.error(state.message?.error)
             })
             .addCase(search_bookings.pending, (state) => {
                 state.isLoading = true
@@ -262,7 +262,7 @@ export const reservationSlice = createSlice({
                 state.booking = null
             })
             .addCase(update_booking.pending, (state, action) => {
-                state.isLoading = false
+                state.isLoading = true
                 state.booking = null
             })
             .addCase(update_booking.fulfilled, (state, action) => {

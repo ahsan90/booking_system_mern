@@ -61,28 +61,32 @@ const createBooking = asyncHandler(async (req, res) => {
     }
     let date = new Date()
 
-    let user = await User.findOne(req.user)
-    const userRole = await Role.findById(user.role._id)
-    let profile = null;
+    let loggedInUser = await User.findOne(req.user)
+    const userRole = await Role.findById(loggedInUser.role._id)
+    let foundUser = null
+    const { email, username } = req.body
 
-    if (userRole.roletype == defaultRolesAndUsers.ADMIN) {
-        const { email } = req.body
-        if (!email) {
-            throw new Error('Please provide a profile\'s registered email address')
-        }
+    // Return unauthorrized if the user role does not fall under any specific role types
+    //const isUserAllowedRole =  defaultRolesAndUsers.ADMIN === userRole.roletype || defaultRolesAndUsers.CLIENT === userRole.roletype
+    //if(!isUserAllowedRole) return res.status(401).json({error: 'Unauthorized!'})
 
-        profile = await Profile.findOne({ email })
-        if (!profile) {
-            return res.status(404).json({ error: 'No profile found with this email' })
-        }
-        user = await User.findById(profile.user._id)
+    if (userRole.roletype === defaultRolesAndUsers.ADMIN) {
+        foundUser = await User.findOne({
+            $or: [{ username: username }, { email: email }]
+        })
+    }
+    else if (userRole.roletype === defaultRolesAndUsers.CLIENT) {
+        foundUser = loggedInUser
+    }
+    else {
+        return res.status(401).json({ error: 'Unauthorized!' })
     }
 
-    if (userRole.roletype == defaultRolesAndUsers.CLIENT) {
-        profile = await Profile.findOne({ user: user._id })
+    if (!foundUser) {
+        return res.status(404).json({ error: 'No User found with this email/username' })
     }
 
-    let booking_reference = user.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') + "" + moment(date).format('DMYYhmmss').toString()
+    let booking_reference = foundUser.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') + "" + moment(date).format('DMYYhmmss').toString()
     let bookingDate = moment(new Date(req.body.reservation_date)).format('YYYY-MM-DDT00:00:00')
 
     let reservation = await Reservation.findOne({ reservation_date: bookingDate })
@@ -90,7 +94,7 @@ const createBooking = asyncHandler(async (req, res) => {
     if (reservation) {
         return res.status(400).json({ error: 'The Date is already booked!' })
     } else {
-        await Reservation.create({ user, profile, reservation_date: bookingDate, booking_reference })
+        await Reservation.create({ user: foundUser, reservation_date: bookingDate, booking_reference })
         let new_booking = await Reservation.findOne({ reservation_date: bookingDate })
         return res.status(200).json(new_booking)
     }
@@ -105,7 +109,7 @@ const updateBooking = asyncHandler(async (req, res) => {
     if (!isCurrentAuthUser(req.user, userRole.roletype, reservation)) return res.status(401).json({ message: 'Unauthorized!' })
 
     let reservationData = { reservation_date: bookingDate }
-    
+
     /* let existingBookedDate = moment(new Date(reservation.reservation_date)).format('YYYY-MM-DDT00:00:00')
     //console.log(bookingDate === existingBookedDate)
     if (bookingDate === existingBookedDate) {

@@ -6,11 +6,11 @@ const reservationSchema = mongoose.Schema({
         required: false,
         ref: 'user'
     },
-    client: {
+    /* client: {
         type: mongoose.Schema.Types.ObjectId,
         required: false, 
         ref: 'client'
-    },
+    }, */
     reservation_date: {
         type: Date,
         required: true

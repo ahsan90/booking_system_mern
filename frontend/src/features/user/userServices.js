@@ -85,9 +85,19 @@ const search_users = async (searchText, token) => {
     return response.data
 }
 
+const search_user_by_username_email = async (searchText, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(API_URL + 'search', searchText, config)
+    return response.data
+}
+
 
 const userServices = {
-    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles, create_user_profile, search_users
+    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles, create_user_profile, search_users, search_user_by_username_email
 }
 
 export default userServices

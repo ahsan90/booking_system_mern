@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Row, Card, Form, Button, Table, InputGroup } from "react-bootstrap";
+import {
+  Row,
+  Card,
+  Form,
+  Button,
+  Table,
+  InputGroup,
+  Modal,
+} from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,30 +16,62 @@ import {
 } from "../../features/reservation/reservationSlice";
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
+import NewBookingForm from "./NewBookingForm";
+import { resetUser, search_users, search_user_by_username_email } from "../../features/user/userSlice";
 
 function ReservationList() {
   const dispatch = useDispatch();
   const { bookings } = useSelector((state) => state.reservation);
+  let { user, message, isLoading, isError } = useSelector(state => state.user)
   const [searchQuery, setSearchQuery] = useState({
     searchText: "",
+    userSearchText: ""
   });
   const [pageNumber, setPageNumber] = useState(0);
+  const [showNewBooking, setShowNewBooking] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [errorText, setErrorText] = useState(null)
 
   let searchPlaceHolder = `Search Reservation By Booking Reference...`;
-  const { searchText } = searchQuery;
+  const { searchText, userSearchText } = searchQuery;
 
   useEffect(() => {
-    if (searchText.length > 2) {
+    if (searchText?.length > 2) {
       dispatch(search_bookings(searchText));
     } else {
       dispatch(get_all_bookings());
     }
-  }, [searchText.length, dispatch]);
+  }, [searchText?.length, dispatch]);
+
+  useEffect(() => {
+    if (userSearchText?.length > 2) {
+      dispatch(search_user_by_username_email(userSearchText))
+    }
+    if (userSearchText?.length <= 2) {
+      setShowBookingForm(false)
+      setErrorText(null);
+    }
+    if (isError && userSearchText?.length > 2) {
+      setErrorText(message?.error);
+    } else {
+      setErrorText(null)
+    }
+  }, [userSearchText?.length, isError, dispatch])
+
+  useEffect(() => {
+    if (user) {
+      setShowBookingForm(true)
+    } else {
+      setShowBookingForm(false)
+    }
+  }, [user])
 
   const clearSearch = () => {
     setSearchQuery(() => ({
       searchText: "",
+      userSearchText: ""
     }));
+    setErrorText(null)
   };
 
   const handleSearch = (e) => {
@@ -41,7 +81,7 @@ function ReservationList() {
     }));
   };
 
-  const bookingsPerPage = 10;
+  const bookingsPerPage = 9;
   const pageCount = Math.ceil(bookings.length / bookingsPerPage);
   const pagesVisited = pageNumber * bookingsPerPage;
   const displayBookings = bookings
@@ -58,8 +98,69 @@ function ReservationList() {
     setPageNumber(selected);
   };
 
+  const addBooking = () => {
+    setShowNewBooking(true);
+  };
+
+  const handleClose = () => {
+    setShowNewBooking(false);
+    setShowBookingForm(false)
+    setSearchQuery(() => ({ userSearchText: "", searchText: "" }))
+    setErrorText(null)
+  };
+
+  const handleSearchProfileByEmailUsername = (e) => {
+    setSearchQuery((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
   return (
     <>
+      <Button onClick={addBooking}>+Add Booking</Button>
+      <Modal
+        show={showNewBooking}
+        onHide={handleClose}
+        style={{ width: "100%" }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Add Booking Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <InputGroup className="">
+            <Form.Control
+              type="text"
+              name="userSearchText"
+              value={userSearchText}
+              onChange={handleSearchProfileByEmailUsername}
+              placeholder="Enter Registered Email/Username"
+              aria-describedby="basic-addon1"
+              style={{ display: "inline-block", width: "90%" }}
+            />
+            {userSearchText.length > 0 && (
+              <InputGroup.Text
+                className="clear_booking_search"
+                onClick={clearSearch}
+              >
+                X
+              </InputGroup.Text>
+            )}
+          </InputGroup>
+          {showBookingForm && <NewBookingForm />}
+          {errorText && <p style={{color: 'red'}}>{ message?.error }</p>}
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleClose}
+            style={{ display: "block" }}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Row className="mt-3">
         <Card style={{ width: "100%" }}>
           <Card.Body>

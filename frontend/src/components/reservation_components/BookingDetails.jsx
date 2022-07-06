@@ -2,17 +2,18 @@ import { Link } from "react-router-dom";
 import { Table, Card } from "react-bootstrap";
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import {RiReservedFill} from "react-icons/ri"
 
 export default function BookingDetails({ booking_details }) {
-  const { booking } = booking_details[0];
-  const { singleUserDetails } = booking_details[1];
+  const { booking, singleUserDetails } = booking_details;
   const { id } = useParams()
   
   return (
     <div>
       <Card>
         <Card.Body>
-          <Card.Title>Reservation information</Card.Title>
+          <Card.Title><RiReservedFill/> Reservation information</Card.Title>
           <Table striped bordered hover>
             <thead>
               <th>Booking Reference</th>
@@ -32,10 +33,10 @@ export default function BookingDetails({ booking_details }) {
         </Card.Body>
       </Card>
       <Card className="mt-4">
-        {singleUserDetails !== null ? (
+        {booking_details[1] !== null ? (
           <>
             <Card.Body>
-              <Card.Title>Customer Information</Card.Title>
+              <Card.Title><FaUser/> Customer Information</Card.Title>
               <hr />
               <img className="avatar" src={singleUserDetails?.avatar} alt="" />
               <Card.Text>
@@ -53,18 +54,16 @@ export default function BookingDetails({ booking_details }) {
                 <b>Email:</b> {singleUserDetails?.email}
               </Card.Text>
               {singleUserDetails?.profile ? (
-                <Card.Text>
-                  <b>Customer Name:</b> {singleUserDetails?.profile?.name}
-                </Card.Text>
+                <>
+                  <Card.Text>
+                    <b>Customer Name:</b> {singleUserDetails?.profile?.name}
+                  </Card.Text>
+                  <Card.Text>
+                    <b>Phone:</b> {singleUserDetails?.profile?.phone}
+                  </Card.Text>
+                </>
               ) : (
                 <Card.Text>No other information found</Card.Text>
-              )}
-              {singleUserDetails?.profile ? (
-                <Card.Text>
-                  <b>Phone:</b> {singleUserDetails?.profile?.phone}
-                </Card.Text>
-              ) : (
-                ""
               )}
             </Card.Body>
           </>

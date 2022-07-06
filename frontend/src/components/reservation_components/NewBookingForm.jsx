@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 //import Calendar from "react-calendar";
 import DatePicker from "react-datepicker";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
@@ -22,7 +22,7 @@ function NewBookingForm(props) {
 
   const dispatch = useDispatch();
   const { singleUserDetails } = useSelector((state) => state.user);
-  let { booking, bookedDates, bookings, isSuccess } = useSelector(
+  let { isLoading, booking, bookedDates, bookings, isSuccess } = useSelector(
     (state) => state.reservation
   );
 
@@ -76,10 +76,11 @@ function NewBookingForm(props) {
     }
     return false;
   };
+  
   return (
     <div className="">
       <div className="booking">
-        <h2>New Booking</h2>
+        <h3>{bookingObj ? "Reschedule Booking" : "New Booking"}</h3>
         <Form type="submit" className="booking_form">
           <DatePicker
             className={{ width: "50%" }}
@@ -96,7 +97,7 @@ function NewBookingForm(props) {
           <p>{bookingObj}</p>
         </div> */}
       </div>
-      {!bookingObj && showBookingDetails ? (
+      {/* {!bookingObj && showBookingDetails ? (
         <div className="mt-4">
           <h4>Booking Confirmation</h4>
           <BookingDetails
@@ -105,7 +106,7 @@ function NewBookingForm(props) {
         </div>
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 }

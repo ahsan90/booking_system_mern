@@ -129,6 +129,19 @@ export const search_users = createAsyncThunk(
     }
 )
 
+export const search_user_by_username_email = createAsyncThunk(
+    'users/by_username_email', 
+    async (userSearchText, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await userServices.search_user_by_username_email({userSearchText}, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -265,7 +278,7 @@ export const userSlice = createSlice({
                 
             })
             .addCase(search_users.pending, (state) => {
-                //state.isLoading = true
+                state.isLoading = true
             })
             .addCase(search_users.fulfilled, (state, action) => {
                 //state.isLoading = false
@@ -276,11 +289,30 @@ export const userSlice = createSlice({
                 state.message = null
             })
             .addCase(search_users.rejected, (state, action) => {
-                //state.isLoading = false
+                state.isLoading = false
                 state.isSuccess = false
                 state.isError = true
                 state.user = null
                 state.users = null
+                state.message = action.payload
+            })
+            .addCase(search_user_by_username_email.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(search_user_by_username_email.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.user = action.payload
+                state.singleUserDetails = action.payload
+                state.message = null
+            })
+            .addCase(search_user_by_username_email.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.user = null
+                state.singleUserDetails = null
                 state.message = action.payload
             })
             
