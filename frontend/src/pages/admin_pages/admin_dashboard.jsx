@@ -18,23 +18,16 @@ import {
   resetProfile,
 } from "../../features/profile/profileSlice";
 import ClientList from "../../components/client_components/ClientList";
-import { useNavigate } from "react-router-dom";
-import ROLES from "../../helper/util";
 
 function AdminDashboard() {
   const [key, setKey] = useState("users");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { loggedInUser } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (!loggedInUser) {
-      navigate("/login");
-    }
-    if (loggedInUser && loggedInUser.role !== ROLES.Admin) {
+/*   useEffect(() => {
+    if (loggedInUser.role !== ROLES.Admin) {
       navigate("/unauthorized");
     }
-  }, [loggedInUser, navigate]);
+  }, [loggedInUser, navigate]); */
 
   useEffect(() => {
       dispatch(get_allUsers());
@@ -46,7 +39,7 @@ function AdminDashboard() {
       dispatch(resetReservation());
       dispatch(resetProfile());
     };
-  }, [ dispatch]);
+  }, [dispatch]);
 
   return (
     <>

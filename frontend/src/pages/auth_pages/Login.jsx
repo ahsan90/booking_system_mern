@@ -4,24 +4,30 @@ import "./auth.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
+import Spinner from "react-bootstrap/Spinner";
 import Row from "react-bootstrap/Row";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login, resetAuth } from "../../features/auth/authSlice";
-import Spinner from "../../components/CustomSpinner";
+//import Spinner from "../../components/CustomSpinner";
 import validation_helper from "../../helper/validation_helper";
-import ROLES from "../../helper/util";
+import ROLES from "../../helper/allowedRoles";
 
 function Login() {
   const [formData, setFormData] = useState({
     username_or_email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
   const { username_or_email, password } = formData;
   let [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [fromPath, setFromPath] = useState({
+    from: location.state?.from?.pathname || "/"
+  })
+  
 
   const { loggedInUser, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -29,17 +35,17 @@ function Login() {
 
   const [validated, setValidated] = useState(false);
 
-  useEffect(() => {
-    if (isSuccess || loggedInUser) {
+  /* useEffect(() => {
+    if (isSuccess && loggedInUser) {
       if (loggedInUser && loggedInUser.role === ROLES.Admin) {
         navigate("/admin");
-      } else if (loggedInUser && loggedInUser.role === ROLES.Client) {
-        navigate(`/users/profile/${loggedInUser._id.toString()}`);
-      } else {
-        navigate("/login");
       }
+      
+      if (loggedInUser && loggedInUser.role === ROLES.Client) {
+        navigate(`/users/profile/${loggedInUser._id.toString()}`);
+      } 
     }
-  }, [loggedInUser, isSuccess, navigate]);
+  }, [isSuccess, navigate]); */
 
   useEffect(() => {
     if (isError) {
@@ -50,13 +56,28 @@ function Login() {
         //toast.error(element.msg)
         setErrors(validation_helper.validateFormError({ message }));
         //});
+        
       } else {
         setErrors(() => {});
       }
       toast.error(message.error);
+      navigate('/login')
+    }
+    if (isSuccess || loggedInUser !== null) {
+      if (loggedInUser.role === ROLES.Admin) {
+        fromPath.from = '/admin'
+      }
+      if (loggedInUser.role === ROLES.Client) {
+        fromPath.from = `/users/profile/${loggedInUser._id}`
+      }
+      if (location.state?.from?.pathname) {
+        fromPath.from = location.state?.from?.pathname;
+      }
+      
+      navigate(fromPath.from, { replace: true });
     }
     dispatch(resetAuth());
-  }, [isError, message, dispatch]);
+  }, [isError, isSuccess, message, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -73,11 +94,8 @@ function Login() {
     };
     setValidated(true);
     dispatch(login(userData));
+    //navigate(from, { replace: true });
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <>
@@ -136,7 +154,15 @@ function Login() {
           </Row>
           <Form.Group className=" mt-3 d-grid gap-2">
             <Button type="submit" variant="primary">
-              Submit
+              {isLoading? 
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              : 'Submit'}
             </Button>
           </Form.Group>
           <div>

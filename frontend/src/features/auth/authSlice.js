@@ -6,7 +6,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 
 
 const initialState = {
-    loggedInUser: user? user : null,
+    loggedInUser: user ? user : null,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -31,12 +31,12 @@ export const login = createAsyncThunk(
     }
 )
 //Logout user
-export const logout = createAsyncThunk(
+/* export const logout = createAsyncThunk(
     'auth/logout',
     async () => {
         await authService.logout()
     }
-)
+) */
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -47,6 +47,11 @@ export const authSlice = createSlice({
             state.isSuccess = false
             state.isError = false
             state.message = null
+        },
+        logout: (state) => {
+            localStorage.removeItem('user')
+            state.loggedInUser = null
+            localStorage.clear()
         }
     },
     extraReducers: (builder) => {
@@ -58,7 +63,7 @@ export const authSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.loggedInUser= action.payload
+                state.loggedInUser = action.payload
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false
@@ -67,11 +72,11 @@ export const authSlice = createSlice({
                 state.message = action.payload
                 state.loggedInUser = null
             })
-            .addCase(logout.fulfilled, (state, action) => {
-                state.loggedInUser = null
-            })
+        /* .addCase(logout.fulfilled, (state, action) => {
+            state.loggedInUser = null
+        }) */
     }
 })
 
-export const { resetAuth } = authSlice.actions
+export const { resetAuth, logout } = authSlice.actions
 export default authSlice.reducer

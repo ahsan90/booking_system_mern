@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { logout, resetAuth } from "../features/auth/authSlice";
 
 import { Link } from "react-router-dom";
-import ROLES from "../helper/util";
+import ROLES from "../helper/allowedRoles";
 import { resetUser } from "../features/user/userSlice";
 import { resetProfile } from "../features/profile/profileSlice";
 import { resetReservation } from "../features/reservation/reservationSlice";
@@ -22,12 +22,12 @@ function Header() {
   const { loggedInUser } = useSelector((state) => state.auth);
 
   const onLogout = () => {
-    dispatch(logout({ navigate }));
     dispatch(resetAuth());
     dispatch(resetUser())
     dispatch(resetProfile())
     dispatch(resetReservation())
-    return navigate("/login");
+    dispatch(logout());
+    navigate("/login");
   };
 
   return (

@@ -11,7 +11,7 @@ const validateBookingDate = () => {
 const validateUSer = () => {
     return [
         check('username').notEmpty().withMessage('Username cannot be empty'),
-        check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
+        check('password', 'Please enter a password of at least 6 characters long').isLength({ min: 6 }),
         check('email').isEmail().withMessage('Please enter a valid email address')
     ]
 }
@@ -20,7 +20,7 @@ const validateUserData = () => {
     return [
         check('role').notEmpty().withMessage('Select an user role'),
         check('username').notEmpty().withMessage('Username cannot be empty'),
-        check('password', 'Please enter a password of at least 5 characters long').isLength({ min: 6 }),
+        check('password', 'Please enter a password of at least 6 characters long').isLength({ min: 6 }),
         check('email').isEmail().withMessage('Please enter a valid email address')
     ]
 }
@@ -29,7 +29,7 @@ const profileValidationAtUserCreation = (name, phone) => {
     const errors = []
     if (name === undefined || name === "") {
 
-        errors.push({ msg: 'Please enter client name', param: "name"})
+        errors.push({ msg: 'Please enter client name', param: "name" })
     }
     if (phone === undefined || phone === "" || isNaN(phone)) {
         errors.push({ msg: 'Please enter client\'s valid phone number', param: "phone" })

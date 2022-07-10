@@ -148,8 +148,7 @@ function ReservationList() {
             )}
           </InputGroup>
           {showBookingForm && <NewBookingForm />}
-          {errorText && <p style={{color: 'red'}}>{ message?.error }</p>}
-
+          {errorText && <p style={{ color: "red" }}>{message?.error}</p>}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -208,7 +207,7 @@ function ReservationList() {
           </Card.Body>
         </Card>
       </Row>
-      {bookings?.length > 0 && (
+      {bookings?.length > 0 && bookings?.length > 9 && (
         <div className="mt-3">
           <ReactPaginate
             previousLabel={"<<Previous"}

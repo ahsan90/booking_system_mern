@@ -19,6 +19,7 @@ import Spinner from "react-bootstrap/Spinner";
 //import "./admin.css";
 import { toast } from "react-toastify";
 import { get_allUsers } from "../../features/user/userSlice";
+import { login } from "../../features/auth/authSlice";
 
 function ClientCreateUpdateForm(props) {
   const { isFromAdminDashboard } = props;
@@ -26,10 +27,15 @@ function ClientCreateUpdateForm(props) {
   const dispatch = useDispatch();
   let [errors, setErrors] = useState({});
   const [isClient, setisClient] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [userProfileCreated, setUserProfileCreated] = useState(false);
+  const navigate = useNavigate();
 
   const [validated, setValidated] = useState(false);
-  let { profile, profiles, isLoading, isError, isSuccess, message } =
-    useSelector((state) => state.profile);
+  let { profile, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.profile
+  );
+  const { loggedInUser } = useSelector((state) => ({ ...state.auth }));
 
   //const { profile } = useSelector((state) => state.profile)
 
@@ -59,14 +65,30 @@ function ClientCreateUpdateForm(props) {
       //toast.error(message?.error);
     }
 
+    if (isSuccess && isSubmitted) {
+      console.log("Succeeded!");
+      dispatch(login({ username_or_email: username, password }));
+    }
+
+    if (isSuccess && loggedInUser && !isFromAdminDashboard) {
+      navigate(`/users/profile/${loggedInUser._id}`);
+    }
+
+    if (loggedInUser && !isFromAdminDashboard)
+      return navigate(`/users/profile/${loggedInUser._id}`);
+
     /* return () => {
       dispatch(resetProfile())
     } */
-  }, [isError, message, dispatch]);
+    setIsSubmitted(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError, loggedInUser, isSuccess, dispatch]);
+
+  //console.log(isSuccess)
 
   useEffect(() => {
-    dispatch(get_allUsers())
-  }, [profile, dispatch])
+    if (isFromAdminDashboard) dispatch(get_allUsers());
+  }, [profile, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -101,6 +123,7 @@ function ClientCreateUpdateForm(props) {
       message = null;
     } else {
       dispatch(create_profile(profilePayload));
+      setIsSubmitted(true);
     }
   };
 
@@ -110,6 +133,7 @@ function ClientCreateUpdateForm(props) {
   classForRegistrationScreen = isFromAdminDashboard
     ? ""
     : classForRegistrationScreen;
+
   return (
     <>
       <div className={classForRegistrationScreen}>

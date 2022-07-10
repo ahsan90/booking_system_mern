@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { delete_profile } from "../../features/profile/profileSlice";
 import { get_user, resetUser } from "../../features/user/userSlice";
 import { useParams } from "react-router-dom";
+import ROLES from "../../helper/allowedRoles";
 
 function UserProfileInformation() {
   const [show, setShow] = useState(false);
@@ -24,6 +25,7 @@ function UserProfileInformation() {
   const dispatch = useDispatch();
   let { profile } = useSelector((state) => state.profile);
   const { singleUserDetails } = useSelector((state) => state.user);
+  const { loggedInUser } = useSelector(state => state.auth)
   const { id } = useParams();
 
   useEffect(() => {
@@ -61,9 +63,11 @@ function UserProfileInformation() {
                   <Card.Text>
                     <b>Email:</b> {singleUserDetails?.email}
                   </Card.Text>
-                  <Card.Text>
-                    <b>Role:</b> {singleUserDetails?.role?.roletype}
-                  </Card.Text>
+                  {loggedInUser.role === ROLES.Admin && (
+                    <Card.Text>
+                      <b>Role:</b> {singleUserDetails?.role?.roletype}
+                    </Card.Text>
+                  )}
                 </Card.Body>
               </Card>
             </Col>

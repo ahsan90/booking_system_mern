@@ -149,7 +149,7 @@ export const reservationSlice = createSlice({
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
-                toast.error(state.message.error)
+                toast.error(state.message?.error)
             })
             .addCase(create_booking.pending, (state) => {
                 state.isLoading = true

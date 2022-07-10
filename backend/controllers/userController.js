@@ -11,6 +11,7 @@ const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
 const Profile = require('../models/profileModel')
 const { isCurrentAuthUser } = require('../middleware/authMiddleware')
 const Reservation = require('../models/reservationModel')
+const mongoose = require('mongoose')
 
 
 
@@ -33,6 +34,8 @@ const getAllRoles = asyncHandler(async (req, res) => {
 })
 
 const getUser = asyncHandler(async (req, res) => {
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) { return res.status(404).json({ error: 'User not found' }) }
 
     let user = await User.findById(req.params.id).select('-password')
     const profile = await Profile.findOne({ user })
@@ -120,39 +123,44 @@ const createUser = asyncHandler(async (req, res, next) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
+    try {
+        if ((await User.find({ email: req.body.email })).filter(x => x.id !== req.params.id).length > 0) {
+            return res.status(400).json({ error: 'Email is already used by someone else' })
+        }
+        if ((await User.find({ username: req.body.username })).filter(x => x.id !== req.params.id).length > 0) {
+            return res.status(400).json({ error: 'Username is already used by someone else' })
+        }
 
-    if ((await User.find({ email: req.body.email })).filter(x => x.id !== req.params.id).length > 0) {
-        return res.status(400).json({ error: 'Email is already used by someone else' })
-    }
-    if ((await User.find({ username: req.body.username })).filter(x => x.id !== req.params.id).length > 0) {
-        return res.status(400).json({ error: 'Username is already used by someone else' })
+        const profile = await Profile.findOne({ user: await User.findById(req.params.id) })
+
+        let currentUserRole = await Role.findById(req.user.role._id)
+        if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(403).json({ message: 'Forbidden!' })
+        const user = await User.findById(req.params.id)
+        if (!user) {
+            res.status(400).json({ error: 'No user found' })
+        }
+
+        const { role } = req.body
+        let userRole = await Role.findOne({ roletype: role })
+        if (!userRole) {
+            let { role } = await User.findById(req.params.id)
+            userRole = await Role.findOne({ _id: role })
+        }
+
+        let userData = { role: userRole, username: req.body.username, email: req.body.email, name: req.body.name, phone: req.body.phone }
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, userData, { new: true })
+        const xProfile = await Profile.findOne({ user: updatedUser })
+        if (xProfile) {
+            let profileData = { email: updatedUser.email, name: req.body.name, phone: req.body.phone }
+            //console.log(profileData)
+            await Profile.findByIdAndUpdate(xProfile._id.toString(), profileData, { new: true })
+        }
+        res.status(200).json(updatedUser)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error: '500 Internal Server Error' })
     }
 
-    const profile = await Profile.findOne({ user: await User.findById(req.params.id) })
-
-    let currentUserRole = await Role.findById(req.user.role._id)
-    if (!isCurrentAuthUser(req.user, currentUserRole.roletype, profile)) return res.status(403).json({ message: 'Forbidden!' })
-    const user = await User.findById(req.params.id)
-    if (!user) {
-        res.status(400).json({ error: 'No user found' })
-    }
-
-    const { role } = req.body
-    let userRole = await Role.findOne({ roletype: role })
-    if (!userRole) {
-        let { role } = await User.findById(req.params.id)
-        userRole = await Role.findOne({ _id: role })
-    }
-
-    let userData = { role: userRole, username: req.body.username, email: req.body.email, name: req.body.name, phone: req.body.phone }
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, userData, { new: true })
-    const xProfile = await Profile.findOne({ user: updatedUser })
-    if (xProfile) {
-        let profileData = { email: updatedUser.email, name: req.body.name, phone: req.body.phone }
-        //console.log(profileData)
-        await Profile.findByIdAndUpdate(xProfile._id.toString(), profileData, { new: true })
-    }
-    res.status(200).json(updatedUser)
 })
 
 const createUserProfile = asyncHandler(async (req, res) => {
@@ -232,7 +240,7 @@ const getUserByUsernameEmail = asyncHandler(async (req, res) => {
         if (user) {
             return res.status(200).json(user)
         } else {
-            return res.status(404).json({error: 'No record found wih this username/email'})
+            return res.status(404).json({ error: 'No record found wih this username/email' })
         }
     } catch (error) {
         return res.status(404).json({ error: 'Something went wrong!' })
