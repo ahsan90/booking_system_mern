@@ -14,7 +14,9 @@ const initialState = {
     isSuccess: false,
     isLoading: false,
     message: null,
-    isAuthorirzed: false
+    isAuthorirzed: false,
+    isSeeded: false,
+    isReset: false
 }
 
 
@@ -88,7 +90,7 @@ export const get_allRoles = createAsyncThunk(
 export const update_user = createAsyncThunk(
     'users/update',
     async (user, thunkAPI) => {
-        const {id, userData} = user
+        const { id, userData } = user
         //console.log(userData)
         try {
             const token = thunkAPI.getState().auth.loggedInUser.token
@@ -130,11 +132,37 @@ export const search_users = createAsyncThunk(
 )
 
 export const search_user_by_username_email = createAsyncThunk(
-    'users/by_username_email', 
+    'users/by_username_email',
     async (userSearchText, thunkAPI) => {
         try {
             const token = thunkAPI.getState().auth.loggedInUser.token
-            return await userServices.search_user_by_username_email({userSearchText}, token)
+            return await userServices.search_user_by_username_email({ userSearchText }, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const seed_data = createAsyncThunk(
+    'seed_data',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await userServices.seed_data(token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
+export const reset_data = createAsyncThunk(
+    'reset_data',
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await userServices.reset_data(token)
         } catch (error) {
             const message = error.response.data
             return thunkAPI.rejectWithValue(message)
@@ -146,7 +174,9 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        resetUser: (state) => initialState
+        resetUser: (state) => initialState,
+        //reset_seeder: (state) => state.isSeeded = false,
+        //reset_app_data: (state) => state.isReset = false
     },
     extraReducers: (builder) => {
         builder
@@ -181,7 +211,7 @@ export const userSlice = createSlice({
                 state.user = action.payload
                 state.users = state.users.map((user) => user._id === action.payload._id ? action.payload : user)
                 //console.log(action.payload)
-                
+
                 toast.success(`User updated successfully!`)
             })
             .addCase(update_user.rejected, (state, action) => {
@@ -202,6 +232,7 @@ export const userSlice = createSlice({
             .addCase(get_allUsers.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isError = false
+                state.isSeeded = false
                 state.isSuccess = true
                 state.users = action.payload
             })
@@ -251,7 +282,7 @@ export const userSlice = createSlice({
             .addCase(create_user_profile.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.singleUserDetails  = action.payload
+                state.singleUserDetails = action.payload
                 toast.success('Profile Added successfully!')
             })
             .addCase(create_user_profile.rejected, (state, action) => {
@@ -275,7 +306,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
-                
+
             })
             .addCase(search_users.pending, (state) => {
                 state.isLoading = true
@@ -315,7 +346,50 @@ export const userSlice = createSlice({
                 state.singleUserDetails = null
                 state.message = action.payload
             })
-            
+            .addCase(seed_data.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(seed_data.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.isSeeded = true
+                //state.user = action.payload
+                //state.singleUserDetails = action.payload
+                state.message = action.payload
+            })
+            .addCase(seed_data.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.isSeeded = false
+                //state.user = null
+                //state.singleUserDetails = null
+                state.message = action.payload
+            })
+            .addCase(reset_data.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(reset_data.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.isReset = true
+                //state.user = action.payload
+                //state.singleUserDetails = action.payload
+                state.users = { ...state.users }
+                state.message = action.payload
+            })
+            .addCase(reset_data.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.isReset = false
+                //state.user = null
+                //state.singleUserDetails = null
+                state.message = action.payload
+            })
+
     }
 })
 

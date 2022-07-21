@@ -18,9 +18,11 @@
 .user-listing-card{
     display: flex;
     text-align: center;
+    align-items: center;
     height: 200;
     width: 300px;
     background-color: rgb(229, 226, 231);
+    overflow: hidden;
 }
 .adminSideBar{
     max-width: 20%;

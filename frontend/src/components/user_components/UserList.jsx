@@ -9,7 +9,10 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
-import { get_allUsers, search_users } from "../../features/user/userSlice";
+import {
+  get_allUsers,
+  search_users,
+} from "../../features/user/userSlice";
 import ReactPaginate from "react-paginate";
 
 function UsersListing() {
@@ -54,15 +57,15 @@ function UsersListing() {
   };
 
   const usersPerPage = 8;
-  const pageCount = Math.ceil(users.length / usersPerPage);
+  const pageCount = Math.ceil(users?.length / usersPerPage);
   const pagesVisited = pageNumber * usersPerPage;
-  const displayUsers = users.slice(pagesVisited, pagesVisited + usersPerPage).map((userData) => {
-    return (
-      <div className="col-md-6 col-lg-3 mb-4" key={userData._id}>
-        <UserComponent userData={userData} />
-      </div>
-    );
-  });
+  const displayUsers = users?.slice(pagesVisited, pagesVisited + usersPerPage).map((userData) => {
+      return (
+        <div className="col-md-6 col-lg-3 mb-4" key={userData._id}>
+          <UserComponent userData={userData} />
+        </div>
+      );
+    });
 
   const handlePageClick = ({ selected }) => {
     setPageNumber(selected);
@@ -95,7 +98,10 @@ function UsersListing() {
       </div>
 
       <div className="clientListHead mb-3">
-        <h4>Users Listings</h4>
+        <h4>
+          Users Listings{" "}(
+          <span className="text-danger">total: {users?.length}</span>)
+        </h4>
         <InputGroup className="client_search">
           <Typeahead
             clearButton
@@ -111,13 +117,14 @@ function UsersListing() {
         </InputGroup>
       </div>
       <hr></hr>
-      <div className="container-fluid justify-content-center">
-        <div className="row">
-          {displayUsers}
-        </div>
+      <div
+        className="container-fluid justify-content-center"
+        style={{ alignItem: "center" }}
+      >
+        <div className="row">{displayUsers}</div>
       </div>
-      {users?.length > 0 && (
-        <div className="">
+      {users?.length > usersPerPage && (
+        <div style={{ alignItem: "center" }}>
           <ReactPaginate
             previousLabel={"<<Previous"}
             nextLabel={"Next>>"}

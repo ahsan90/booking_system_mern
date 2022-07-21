@@ -14,6 +14,9 @@ const ADMIN_EMAIL = 'ahrony90@gmail.com'
 
 const CLIENT_USERNAME = 'steve123'
 const CLIENT_EMAIL = 'steve123@mail.com'
+const DEFAULT_GRAVATAR_IMG = 'https://secure.gravatar.com/avatar/a0070841b8bf8cf069378215b4ba00b7?s=256&r=g'
+const DUMMY_COMMON_USERNAME = 'fakeuser'
+const DUMMY_COMMON_PASSWORD = 'fakepass'
 
 
 const defaultRolesAndUsers = expressAsyncHandler(async () => {
@@ -50,10 +53,10 @@ const get_avatar = (email) => {
     return gravatar.url(email, {
         s: '200',
         r: 'pg',
-        d: 'mm'
+        d: DEFAULT_GRAVATAR_IMG
     })
 }
 
 module.exports = {
-    defaultRolesAndUsers, ADMIN, CLIENT, ADMIN_EMAIL, ADMIN_USERNAME, CLIENT_EMAIL, CLIENT_USERNAME
+    defaultRolesAndUsers, ADMIN, CLIENT, ADMIN_EMAIL, ADMIN_USERNAME, CLIENT_EMAIL, CLIENT_USERNAME, DEFAULT_GRAVATAR_IMG, DUMMY_COMMON_USERNAME, DUMMY_COMMON_PASSWORD, get_avatar
 }

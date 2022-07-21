@@ -7,11 +7,15 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 //const { validateprofile } = require('../helper/profileHelper')
 const { profileValidationAtUserCreation } = require('../helper/validationHelper')
-const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
+const  defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
 const Profile = require('../models/profileModel')
 const { isCurrentAuthUser } = require('../middleware/authMiddleware')
 const Reservation = require('../models/reservationModel')
 const mongoose = require('mongoose')
+const MD5 = require('crypto-js/md5')
+const { faker } = require('@faker-js/faker');
+//const { usersCreated } = require('../config/seed')
+
 
 
 
@@ -40,7 +44,7 @@ const getUser = asyncHandler(async (req, res) => {
     let user = await User.findById(req.params.id).select('-password')
     const profile = await Profile.findOne({ user })
     let role = await Role.findById(req.user.role._id)
-    const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user._id.toString() === user._id.toString()
+    const isCurrentAuthoriziedUser = role.roletype === defaultRolesAndUsers.ADMIN || req.user?._id.toString() === user?._id.toString()
     if (!isCurrentAuthoriziedUser) { return res.status(403).json({ error: 'Forbidded!' }) }
     //throw new Error('Stop')
     //if (!isCurrentAuthUser(req.user, role.roletype, profile)) return res.status(401).json({ error: 'Unauthorized!' })
@@ -68,6 +72,11 @@ const createUser = asyncHandler(async (req, res, next) => {
     }
     const { role, username, email, password, name, phone } = req.body
 
+    /* const m = `https://www.gravatar.com/avatar/${MD5(email).toString()}?s=200&r=pg&d=404`
+
+    console.log(MD5(email).toString())
+    console.log(m) */
+
     try {
         let user = await User.findOne({ $or: [{ email }, { username }] })
         let userRole = await Role.findOne({ roletype: role })
@@ -92,11 +101,16 @@ const createUser = asyncHandler(async (req, res, next) => {
             return res.status(400).json({ error: 'Username already exists' })
         }
 
+        const defaultAvatar = 'https://secure.gravatar.com/avatar/a0070841b8bf8cf069378215b4ba00b7?s=256&r=g'
+
         const avatar = gravatar.url(email, {
             s: '200',
             r: 'pg',
-            d: 'mm'
+            d: defaultAvatar
         })
+        console.log(avatar)
+
+        //throw new Error('Error')
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
@@ -247,6 +261,73 @@ const getUserByUsernameEmail = asyncHandler(async (req, res) => {
     }
 })
 
+const seedData = asyncHandler(async (req, res) => {
+    if (((await User.find()).length) >= 200) return res.status(400).json({ error: 'No Seed data required. Enough data already exists!' })
+
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(defaultRolesAndUsers.DUMMY_COMMON_PASSWORD, salt)
+    const USERS = []
+    const PROFILES = []
+    const junks = []
+    //Math.floor(Math.random() * 2) == 0 ? userRole('Admin') : userRole('Client')
+    const Admin = (await Role.find({ roletype: defaultRolesAndUsers.ADMIN }))[0]
+    const Client = (await Role.find({ roletype: defaultRolesAndUsers.CLIENT }))[0]
+
+    const userData = () => {
+        return {
+            username: faker.internet.userName(),
+            email: faker.internet.email(),
+            role: Math.floor(Math.random() * 2) == 0 ? Admin : Client,
+            password: hashedPassword,
+            avatar: faker.internet.avatar()
+        }
+    }
+
+    const profileData = () => {
+        return {
+            name: faker.name.findName(),
+            phone: faker.phone.number(),
+        }
+    }
+
+
+    Array.from({ length: 200 }).forEach(() => USERS.push(userData()))
+    //Array.from({ length: 50 }).forEach(() => PROFILES.push(profileData()))
+
+    await User.insertMany(USERS)
+
+    const dummy_user = async (email) => await Profile.findOne({ email })
+
+    for (let i = 0; i < USERS.length; i++) {
+        const data = profileData()
+        const user = await User.findOne({ email: USERS[i].email })
+        dummy_user(USERS[i].email).then(x => {
+            if (x === null) {
+                const pr = Profile({
+                    name: data.name, phone: data.phone, email: USERS[i].email, user
+                })
+                pr.save()
+            }
+        })
+    }
+    //res.status(200).json({ message: 'Seed Data Added Successfully!' })
+    res.status(200).json({ message: 'Seed Data Added Successfully!' })
+})
+
+const reseData = asyncHandler(async (req, res) => {
+    try {
+        await User.deleteMany()
+        await Profile.deleteMany()
+        await Reservation.deleteMany()
+        defaultRolesAndUsers.defaultRolesAndUsers()
+        res.status(200).json({ message: 'App data reset successfully!' })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({error: '500 Internal server error!'})
+    }
+})  
+
+
 
 module.exports = {
     getAllUsers,
@@ -257,5 +338,7 @@ module.exports = {
     deleteUser,
     getUsersBySearchQuery,
     getAllRoles,
-    getUserByUsernameEmail
+    getUserByUsernameEmail,
+    seedData,
+    reseData
 }

@@ -31,9 +31,9 @@ function UserComponent({ userData }) {
     handleClose();
   }, [user]);
 
-  /* useEffect(() => {
-    //if (user) dispatch(get_allProfiles());
-  }, [user, dispatch]); */
+  useEffect(() => {
+    if (user) dispatch(get_allProfiles());
+  }, [user, dispatch]);
 
   const deleteItem = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -52,7 +52,7 @@ function UserComponent({ userData }) {
             <Card.Body className="text-dark">
               <img className="avatar" src={userData.avatar} alt="" />
               <Card.Text>Username: {userData.username}</Card.Text>
-              <Card.Text>Email: {userData.email}</Card.Text>
+              {/* <Card.Text>Email: {userData.email}</Card.Text> */}
               <Card.Link>
                 <Link
                   to={`/users/profile/${userData._id}`}

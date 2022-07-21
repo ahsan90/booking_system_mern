@@ -61,7 +61,7 @@ function ReservationItem({ booking }) {
 
   return (
     <>
-      <Modal show={showDetails} onHide={handleClose} style={{ width: "100%" }}>
+      <Modal show={showDetails} onHide={handleClose} style={{ minWidth: "500px" }}>
         <Modal.Header closeButton>
           <Modal.Title>Reservation Details</Modal.Title>
         </Modal.Header>
@@ -109,6 +109,7 @@ function ReservationItem({ booking }) {
       <td>{booking.booking_reference}</td>
       <td>{moment(booking.reservation_date).format("ll")}</td>
       <td>{moment(booking.createdAt).format("LLL")}</td>
+      <td>{moment(booking.updatedAt).format("LLL")}</td>
       <td>
         <button
           onClick={() => {

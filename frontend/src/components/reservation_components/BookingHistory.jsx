@@ -36,6 +36,7 @@ export default function BookingHistory() {
                 <th>Booking Reference</th>
                 <th>Reservation Date</th>
                 <th>Booking Creation Date</th>
+                <th>Last Updated</th>
                 <th>Actions</th>
               </tr>
             </thead>

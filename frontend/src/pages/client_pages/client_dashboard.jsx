@@ -19,6 +19,8 @@ import ROLES from "../../helper/allowedRoles";
 export default function ClientDashboard() {
   const { bookings } = useSelector((state) => state.reservation);
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { singleUserDetails } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.profile);
   const navigate = useNavigate()
 
   const dispatch = useDispatch();
@@ -53,6 +55,7 @@ export default function ClientDashboard() {
             {"<< Back to Admin Pannel"}
           </Link>
         )}
+        {loggedInUser?._id === id && <h2 style={{textAlign: 'center', borderBottom: '1px dotted green', marginTop: '10px'}}>Welcome { singleUserDetails?.profile?.name }</h2>}
         <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
           <Tab eventKey="user_profile" title="User Profile Information">
             <div className="container-fluid justify-center mt-5">

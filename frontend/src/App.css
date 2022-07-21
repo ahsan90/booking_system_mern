@@ -51,3 +51,8 @@ body{
 .nab_item:hover{
   color: whitesmoke;
 }
+
+.dummy_data_loading {
+  position: relative;
+  z-index: 10;
+}

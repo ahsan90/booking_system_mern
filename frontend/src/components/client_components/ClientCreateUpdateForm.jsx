@@ -20,6 +20,8 @@ import Spinner from "react-bootstrap/Spinner";
 import { toast } from "react-toastify";
 import { get_allUsers } from "../../features/user/userSlice";
 import { login } from "../../features/auth/authSlice";
+import { useParams } from "react-router-dom";
+import ROLES from "../../helper/allowedRoles";
 
 function ClientCreateUpdateForm(props) {
   const { isFromAdminDashboard } = props;
@@ -30,6 +32,7 @@ function ClientCreateUpdateForm(props) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [userProfileCreated, setUserProfileCreated] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [validated, setValidated] = useState(false);
   let { profile, isLoading, isError, isSuccess, message } = useSelector(
@@ -53,6 +56,7 @@ function ClientCreateUpdateForm(props) {
     formData;
 
   //console.log(message.status === 401)
+  //console.log(userProfile.user)
 
   useEffect(() => {
     //dispatch(get_allProfiles())
@@ -66,28 +70,22 @@ function ClientCreateUpdateForm(props) {
     }
 
     if (isSuccess && isSubmitted) {
-      console.log("Succeeded!");
       dispatch(login({ username_or_email: username, password }));
     }
 
-    if (isSuccess && loggedInUser && !isFromAdminDashboard) {
+    if (isSuccess &&
+      loggedInUser &&
+      loggedInUser.role === ROLES.Client
+    ) {
       navigate(`/users/profile/${loggedInUser._id}`);
     }
 
-    if (loggedInUser && !isFromAdminDashboard)
-      return navigate(`/users/profile/${loggedInUser._id}`);
-
-    /* return () => {
-      dispatch(resetProfile())
-    } */
     setIsSubmitted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, loggedInUser, isSuccess, dispatch]);
 
-  //console.log(isSuccess)
-
   useEffect(() => {
-    if (isFromAdminDashboard) dispatch(get_allUsers());
+    if (isFromAdminDashboard === true) dispatch(get_allUsers());
   }, [profile, dispatch]);
 
   const onChange = (e) => {
@@ -130,9 +128,8 @@ function ClientCreateUpdateForm(props) {
   let classForRegistrationScreen = userProfile
     ? ""
     : "container-fluid dflex justify-content-center mt-4 col-lg-6 col-md-8 col-sm-12";
-  classForRegistrationScreen = isFromAdminDashboard
-    ? ""
-    : classForRegistrationScreen;
+  classForRegistrationScreen =
+    isFromAdminDashboard === true ? "" : classForRegistrationScreen;
 
   return (
     <>

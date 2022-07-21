@@ -82,15 +82,23 @@ export default function ClientList() {
     }));
   }, [searchText, dispatch]);
 
-  const clientPerPage = 8;
-  const pageCount = Math.ceil(profiles.length / clientPerPage);
-  const pagesVisited = pageNumber * clientPerPage;
+  const clientsPerPage = 8;
+  const pageCount = Math.ceil(profiles.length / clientsPerPage);
+  const pagesVisited = pageNumber * clientsPerPage;
   const displayProfiles = profiles
-    .slice(pagesVisited, pagesVisited + clientPerPage)
+    .slice(pagesVisited, pagesVisited + clientsPerPage)
     .map((profileData) => {
       return (
         <tr key={profileData._id}>
-          <td>{profileData.name}</td>
+          <td>
+            {profileData.name === "Ahsan Rony" ? (
+              <span className="text-danger">{profileData.name} (Built In)</span>
+            ) : profileData.name === "Steve Mathew" ? (
+              <span className="text-danger">{profileData.name} (Built In)</span>
+            ) : (
+              <>{profileData.name}</>
+            )}
+          </td>
           <td>{profileData.email}</td>
           <td>{profileData.phone}</td>
           <td>{moment(profileData.createdAt).format("LLL")}</td>
@@ -175,6 +183,10 @@ export default function ClientList() {
       <Card>
         {profiles.length > 0 ? (
           <>
+            <h3 className="ml-auto">
+              Profile Listing (
+              <span className="text-danger">total: {profiles?.length}</span>)
+            </h3>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -195,7 +207,7 @@ export default function ClientList() {
           </>
         )}
       </Card>
-      {profiles?.length > 0 && (
+      {profiles?.length > clientsPerPage && (
         <div className="mt-3">
           <ReactPaginate
             previousLabel={"<<Previous"}

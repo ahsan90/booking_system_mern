@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <Router>
-        <Header />
+        <Header></Header>
         <div className="container">
           <Routes>
             {/* Public Routes */}
@@ -41,7 +41,8 @@ function App() {
               <Route path='/users/profile/:id' element={< ClientDashboard />} />
             </Route>
           </Routes>
-        </div>
+          </div>
+        
       </Router>
       <ToastContainer />
     </>

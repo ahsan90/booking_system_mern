@@ -33,7 +33,7 @@ export default function BookingDetails({ booking_details }) {
         </Card.Body>
       </Card>
       <Card className="mt-4">
-        {booking_details[1] !== null ? (
+        {(booking_details[1] !== null && singleUserDetails !== null) ? (
           <>
             <Card.Body>
               <Card.Title><FaUser/> Customer Information</Card.Title>

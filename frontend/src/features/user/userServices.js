@@ -60,8 +60,8 @@ const get_allRoles = async (token) => {
         }
     }
 
-    const response = await axios.get(API_URL +'roles', config)
-    
+    const response = await axios.get(API_URL + 'roles', config)
+
     return response.data
 }
 
@@ -95,9 +95,29 @@ const search_user_by_username_email = async (searchText, token) => {
     return response.data
 }
 
+const seed_data = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + 'seed', config)
+    return response.data
+}
+
+const reset_data = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + 'reset', config)
+    return response.data
+}
+
 
 const userServices = {
-    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles, create_user_profile, search_users, search_user_by_username_email
+    create_user, update_user, get_allUsers, get_user, delete_user, get_allRoles, create_user_profile, search_users, search_user_by_username_email, seed_data, reset_data
 }
 
 export default userServices

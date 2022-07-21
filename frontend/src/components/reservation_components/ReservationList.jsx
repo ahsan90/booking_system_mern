@@ -137,6 +137,7 @@ function ReservationList() {
               placeholder="Enter Registered Email/Username"
               aria-describedby="basic-addon1"
               style={{ display: "inline-block", width: "90%" }}
+              autoComplete="off"
             />
             {userSearchText.length > 0 && (
               <InputGroup.Text
@@ -164,7 +165,10 @@ function ReservationList() {
         <Card style={{ width: "100%" }}>
           <Card.Body>
             <div className="clientListHead mb-3">
-              <h4>All Reservation Listings</h4>
+              <h4>
+                All Reservation Listings (
+                <span className="text-danger">total: {bookings?.length}</span>)
+              </h4>
               <InputGroup className="client_search">
                 <Form.Control
                   type="text"
@@ -193,6 +197,7 @@ function ReservationList() {
                       <th>Booking Reference</th>
                       <th>Reservation Date</th>
                       <th>Booking Creation Date</th>
+                      <th>Last Updated</th>
                       <th>Actions</th>
                     </tr>
                   </thead>

@@ -71,10 +71,11 @@ function NewBookingForm(props) {
   //console.log(booked_days?.map((x) => x));
   const isBooked = (date) => {
     let formatedDate = moment(date).format("ll");
-    for (let index = 0; index < booked_days.length; index++) {
+    /* for (let index = 0; index < booked_days.length; index++) {
       if (formatedDate === booked_days[index]) return true;
-    }
-    return false;
+    } */
+    return booked_days.includes(formatedDate)
+    //return false;
   };
   
   return (

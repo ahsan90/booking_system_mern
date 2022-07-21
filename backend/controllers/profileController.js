@@ -48,7 +48,7 @@ const registerProfile = asyncHandler(async (req, res) => {
         const avatar = gravatar.url(email, {
             s: '200',
             r: 'pg',
-            d: 'mm'
+            d: defaultRolesAndUsers.DEFAULT_GRAVATAR_IMG
         })
 
         const salt = await bcrypt.genSalt(10)

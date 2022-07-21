@@ -5,7 +5,9 @@ const { errroHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const { roleSeedDb } = require('./helper/roleHelper')
 const { defaultRolesAndUsers } = require('./config/defaultRolesAndUsers')
+//const { usersCreated } = require('./config/seed')
 const port = process.env.PORT || 5000
+const User = require('./models/userModel')
 
 
 //roleSeedDb()
@@ -29,3 +31,6 @@ app.use('/api/bookings', require('./routes/bookingRoutes'))
 app.use('/api/auth', require('./routes/authRoutes'))
 //app.use('/api/auth', (req,res)=>{res.send("stuff")})
 app.use(errroHandler)
+
+//console.log(User.create(usersCreated()[0]))
+//console.log(Math.floor(Math.random() * 2))

@@ -23,20 +23,23 @@ function AdminDashboard() {
   const [key, setKey] = useState("users");
   const dispatch = useDispatch();
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     if (loggedInUser.role !== ROLES.Admin) {
       navigate("/unauthorized");
     }
   }, [loggedInUser, navigate]); */
 
   useEffect(() => {
-      dispatch(get_allUsers());
-      dispatch(get_all_bookings());
-      dispatch(get_allProfiles());
-      dispatch(get_allRoles());
+    dispatch(get_allRoles());
+  }, []);
+
+  useEffect(() => {
+    dispatch(get_allUsers());
+    //dispatch(get_all_bookings());
+    dispatch(get_allProfiles());
     return () => {
       dispatch(resetUser());
-      dispatch(resetReservation());
+      //dispatch(resetReservation());
       dispatch(resetProfile());
     };
   }, [dispatch]);
@@ -56,7 +59,7 @@ function AdminDashboard() {
                 <Tab eventKey="users" title="Manage Users">
                   <UsersListing />
                 </Tab>
-                <Tab eventKey="clients" title="Manage Clients">
+                <Tab eventKey="clients" title="Manage Users Profiles">
                   <ClientList />
                 </Tab>
                 <Tab eventKey="bookings" title="Manage Bookings">
