@@ -16,7 +16,8 @@ const initialState = {
     message: null,
     isAuthorirzed: false,
     isSeeded: false,
-    isReset: false
+    isReset: false, 
+    isSeeding: false
 }
 
 
@@ -234,6 +235,8 @@ export const userSlice = createSlice({
                 state.isError = false
                 state.isSeeded = false
                 state.isSuccess = true
+                state.isSeeded = false
+                state.isSeeding = false
                 state.users = action.payload
             })
             .addCase(get_allUsers.rejected, (state, action) => {
@@ -272,8 +275,8 @@ export const userSlice = createSlice({
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
-                if (state.message?.message) {
-                    toast.error(state.message?.message)
+                if (state.message?.error) {
+                    toast.error(state.message?.error)
                 }
             })
             .addCase(create_user_profile.pending, (state) => {
@@ -348,12 +351,14 @@ export const userSlice = createSlice({
             })
             .addCase(seed_data.pending, (state) => {
                 state.isLoading = true
+                state.isSeeding = true
             })
             .addCase(seed_data.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
                 state.isSeeded = true
+                state.isSeeding = true
                 //state.user = action.payload
                 //state.singleUserDetails = action.payload
                 state.message = action.payload

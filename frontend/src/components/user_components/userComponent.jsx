@@ -25,7 +25,6 @@ function UserComponent({ userData }) {
   const handleShow = () => setShow(true);
   //const navigate = useNavigate();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     handleClose();

@@ -18,10 +18,13 @@ import {
   resetProfile,
 } from "../../features/profile/profileSlice";
 import ClientList from "../../components/client_components/ClientList";
+import CustomSpinner from "../../components/CustomSpinner";
+import Spinner from "react-bootstrap/Spinner";
 
 function AdminDashboard() {
   const [key, setKey] = useState("users");
   const dispatch = useDispatch();
+  const { isSeeding } = useSelector((state) => state.user);
 
   /*   useEffect(() => {
     if (loggedInUser.role !== ROLES.Admin) {
@@ -47,8 +50,17 @@ function AdminDashboard() {
   return (
     <>
       <div className="admin-dashboard">
-        <h1>Welcome to Admin Pannel</h1>
-        <div>
+        {isSeeding === true && (
+          <div className="seed_data_loading" style={{ opacity: 1 }}>
+            <p className="">Loading Seed Data....</p>
+            <Spinner animation="border" role="status" variant="dark" style={{ opacity: 1 }}>
+              <span className="visually-hidden">Loading....</span>
+            </Spinner>
+          </div>
+        )}
+
+        <div style={{ opacity: isSeeding ? 0.5 : 1 }}>
+          <h1>Welcome to Admin Pannel</h1>
           <Row>
             <Col xs={12} md={12} className="">
               <Tabs

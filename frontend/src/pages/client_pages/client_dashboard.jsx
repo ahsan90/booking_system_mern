@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Card, Table, Tabs, Tab, Button } from "react-bootstrap";
+import { Tabs, Tab} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { GrView } from "react-icons";
+//import { GrView } from "react-icons";
 import { get_user, resetUser } from "../../features/user/userSlice";
-import CustomSpinner from "../../components/CustomSpinner";
+//import CustomSpinner from "../../components/CustomSpinner";
 import UserProfileInformation from "../../components/user_components/UserProfileInformation";
 import BookingHistory from "../../components/reservation_components/BookingHistory";
 import NewBookingForm from "../../components/reservation_components/NewBookingForm";
@@ -17,10 +17,10 @@ import BookingSearchComponent from "../../components/reservation_components/Book
 import ROLES from "../../helper/allowedRoles";
 
 export default function ClientDashboard() {
-  const { bookings } = useSelector((state) => state.reservation);
+  //const { bookings } = useSelector((state) => state.reservation);
   const { loggedInUser } = useSelector((state) => state.auth);
   const { singleUserDetails } = useSelector((state) => state.user);
-  const { profile } = useSelector((state) => state.profile);
+  //const { profile } = useSelector((state) => state.profile);
   const navigate = useNavigate()
 
   const dispatch = useDispatch();

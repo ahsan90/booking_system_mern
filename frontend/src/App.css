@@ -1,18 +1,17 @@
-
-body{
+body {
   background-color: white;
 }
 .spin {
   margin-top: 50px;
-  background-image: url('../public/spinner.gif');
-  background-size:auto;
+  background-image: url("../public/spinner.gif");
+  background-size: auto;
   background-position: center;
   background-repeat: no-repeat;
   text-align: center;
   height: 200px;
   background-color: white;
 }
-.validation_text{
+.validation_text {
   text-align: left;
 }
 
@@ -24,18 +23,17 @@ body{
   display: d-flex;
 }
 .booking h2 {
-  
 }
 .booking_form {
   width: 100%;
 }
 
-.clientListHead{
+.clientListHead {
   display: flex;
   justify-content: space-between;
 }
 
-.client_search{
+.client_search {
   max-width: 40%;
 }
 
@@ -48,11 +46,8 @@ body{
   text-decoration: none;
   color: gainsboro;
 }
-.nab_item:hover{
+.nab_item:hover {
   color: whitesmoke;
 }
 
-.dummy_data_loading {
-  position: relative;
-  z-index: 10;
-}
+

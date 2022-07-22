@@ -37,9 +37,8 @@ function Header(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loggedInUser } = useSelector((state) => state.auth);
-  const { isLoading, users, isSeeded, isReset, message } = useSelector(
-    (state) => state.user
-  );
+  const { isLoading, users, isSeeded, isReset, message } =
+    useSelector((state) => state.user);
   const [loginExpired, setLoginExpired] = useState(false);
   const token = loggedInUser?.token;
 
@@ -103,13 +102,20 @@ function Header(props) {
   };
 
   const handleResetData = (e) => {
-    dispatch(resetAuth());
-    dispatch(resetProfile());
-    dispatch(resetReservation());
-    //setLoginSessionExpired(false);
-    dispatch(reset_data());
-    dispatch(logout());
+    if (
+      window.confirm(
+        "Are you sure (this will wipe out the data and reset with built-in user/profile. You will be logged out...!)?"
+      )
+    ) {
+      dispatch(resetAuth());
+      dispatch(resetProfile());
+      dispatch(resetReservation());
+      //setLoginSessionExpired(false);
+      dispatch(reset_data());
+      dispatch(logout());
+    }
   };
+
   return (
     <div style={{ marginBottom: "" }}>
       <Navbar bg="dark" expand="lg" variant="dark">
@@ -151,18 +157,9 @@ function Header(props) {
                   )}
 
                   <NavDropdown
-                    title={loggedInUser.username}
+                    title={loggedInUser?.username}
                     id="basic-nav-dropdown"
                   >
-                    {/* <NavDropdown.Item>
-                      <Link
-                        to={`/users/profile/${loggedInUser._id}`}
-                        style={{ color: "black", textDecoration: "none" }}
-                      >
-                        <GrUserSettings /> Profile
-                      </Link>
-                    </NavDropdown.Item> 
-                    <NavDropdown.Divider />*/}
                     {loggedInUser?.role === ROLES.Client && (
                       <NavDropdown.Item>
                         <Link
