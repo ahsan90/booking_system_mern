@@ -114,7 +114,7 @@ function Login() {
               <InputGroup hasValidation>
                 <Form.Control
                   type="text"
-                  placeholder="Username/Email"
+                  placeholder="Username/Email (Case sensetive...)"
                   name="username_or_email"
                   value={username_or_email}
                   onChange={onChange}

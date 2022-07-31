@@ -1,42 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { delete_booking } from "../../features/reservation/reservationSlice";
 import {
-  get_allUsers,
-  get_user,
-  resetUser,
-} from "../../features/user/userSlice";
+  delete_booking,
+  get_all_bookings,
+  get_bookings_by_user,
+  get_booking_by_id,
+} from "../../features/reservation/reservationSlice";
+import { get_allUsers, get_user } from "../../features/user/userSlice";
 import { FaEdit } from "react-icons/fa";
 import { BiTrash } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
 import { Modal, Button, Card, Table, Spinner } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BookingDetails from "./BookingDetails";
 import NewBookingForm from "./NewBookingForm";
 import CustomSpinner from "../CustomSpinner";
+import ROLES from "../../helper/allowedRoles";
 
 function ReservationItem({ booking }) {
   const dispatch = useDispatch();
-  let { user, singleUserDetails, isLoading } = useSelector(
+  let { isLoading } = useSelector(
     (state) => state.user
   );
+  const { loggedInUser } = useSelector((state) => state.auth);
+  const { id } = useParams();
 
   const [showDetails, setShowDetails] = useState(false);
   const [showEditBooking, setShowEditBooking] = useState(false);
   //const [bookingToBeUpdated, setBookingToBeUpdated] = useState({bookingObj: null});
+  const [bookingDetails, setBookingDetails] = useState({
+    singleUserDetails: null,
+    booking: null
+  }) 
 
   useEffect(() => {
     setShowEditBooking(false);
   }, [booking]);
 
   const handleClose = () => {
+    
+     if (loggedInUser?.role === ROLES.Admin) {
+      dispatch(get_allUsers())
+    }
     setShowDetails(false);
     setShowEditBooking(false);
-    /* setBookingToBeUpdated(() => ({
-      bookingObj: null,
-    })); */
+    
   };
+
   const handShowDetails = () => setShowDetails(true);
 
   const onDelete = (bookingId) => {
@@ -47,32 +58,31 @@ function ReservationItem({ booking }) {
   const updateBooking = () => {
     setShowEditBooking(true);
   };
-  //console.log(bookingToBeUpdated?.bookingObj)
 
-  const onDetails = (booking) => {
-    dispatch(get_user(booking?.user.toString()));
+  const onDetails = (b) => {
+    dispatch(get_user(b?.user.toString()));
     handShowDetails();
-  };
-
-  const booking_details = {
-    booking,
-    singleUserDetails,
   };
 
   return (
     <>
-      <Modal show={showDetails} onHide={handleClose} style={{ minWidth: "500px" }}>
+      <Modal
+        show={showDetails}
+        size='lg'
+        onHide={handleClose}
+        style={{}}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Reservation Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isLoading ? (
-            <div style={{ }}>
+            <div style={{}}>
               {/* <Spinner animation="border" variant="success" /> */}
-              <CustomSpinner/>
+              <CustomSpinner />
             </div>
           ) : (
-            <BookingDetails booking_details={booking_details} />
+            <BookingDetails booking={booking} />
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -87,6 +97,7 @@ function ReservationItem({ booking }) {
       </Modal>
       <Modal
         show={showEditBooking}
+        size='lg'
         onHide={handleClose}
         style={{ width: "100%" }}
       >

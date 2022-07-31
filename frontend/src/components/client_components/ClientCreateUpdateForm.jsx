@@ -73,20 +73,13 @@ function ClientCreateUpdateForm(props) {
       dispatch(login({ username_or_email: username, password }));
     }
 
-    if (isSuccess &&
-      loggedInUser &&
-      loggedInUser.role === ROLES.Client
-    ) {
+    if (isSuccess && loggedInUser && loggedInUser.role === ROLES.Client) {
       navigate(`/users/profile/${loggedInUser._id}`);
     }
 
     setIsSubmitted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, loggedInUser, isSuccess, dispatch]);
-
-  useEffect(() => {
-    if (isFromAdminDashboard === true) dispatch(get_allUsers());
-  }, [profile, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({

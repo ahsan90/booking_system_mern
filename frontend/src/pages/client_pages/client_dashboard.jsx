@@ -3,7 +3,7 @@ import { Tabs, Tab} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
 //import { GrView } from "react-icons";
-import { get_user, resetUser } from "../../features/user/userSlice";
+import { get_allUsers, get_user, resetUser } from "../../features/user/userSlice";
 //import CustomSpinner from "../../components/CustomSpinner";
 import UserProfileInformation from "../../components/user_components/UserProfileInformation";
 import BookingHistory from "../../components/reservation_components/BookingHistory";
@@ -21,31 +21,45 @@ export default function ClientDashboard() {
   const { loggedInUser } = useSelector((state) => state.auth);
   const { singleUserDetails } = useSelector((state) => state.user);
   //const { profile } = useSelector((state) => state.profile);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const { id } = useParams();
   const [key, setKey] = useState("user_profile");
+  const [keys, setKeys] = useState({
+    user_profile: false,
+    bookings: false,
+    new_booking: false,
+  });
 
   const isAuthorized =
-    loggedInUser?._id === id || loggedInUser?.role === ROLES.Admin
+    loggedInUser?._id === id || loggedInUser?.role === ROLES.Admin;
 
   useEffect(() => {
     //dispatch(get_profile())
     if (!isAuthorized) {
       return navigate("/unauthorized");
     }
+    if (loggedInUser?.role === ROLES.Admin) {
+      //dispatch(get_allUsers());
+    }
     if (id) {
       dispatch(get_user(id));
-      dispatch(get_bookings_by_user(id));
-      dispatch(get_all_booked_dates());
+      //dispatch(get_bookings_by_user(id));
+      //dispatch(get_all_booked_dates());
     }
     return () => {
+      //console.log("hellow from client dashboard");
       dispatch(resetUser());
       dispatch(resetReservation());
-    };
-  }, [id, dispatch]);
+    }; 
+  }, [id]);
+
+  //console.log(key)
+  const onSelectTab = () => {
+    //console.log("YOu clicked!");
+  }; 
 
   return (
     <>
@@ -55,8 +69,22 @@ export default function ClientDashboard() {
             {"<< Back to Admin Pannel"}
           </Link>
         )}
-        {loggedInUser?._id === id && <h2 style={{textAlign: 'center', borderBottom: '1px dotted green', marginTop: '10px'}}>Welcome { singleUserDetails?.profile?.name }</h2>}
-        <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
+        {loggedInUser?._id === id && (
+          <h2
+            style={{
+              textAlign: "center",
+              borderBottom: "1px dotted green",
+              marginTop: "10px",
+            }}
+          >
+            Welcome {singleUserDetails?.profile?.name}
+          </h2>
+        )}
+        <Tabs
+          activeKey={key}
+          onSelect={(k) => setKey(k)}
+          className="mb-3"
+        >
           <Tab eventKey="user_profile" title="User Profile Information">
             <div className="container-fluid justify-center mt-5">
               <UserProfileInformation />

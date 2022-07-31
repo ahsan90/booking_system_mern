@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { update_user } from "../../features/user/userSlice";
+import { get_allUsers, update_user } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import validation_helper from "../../helper/validation_helper";
 //import Spinner from ".././components/Spinner";
@@ -14,10 +14,8 @@ import Spinner from "react-bootstrap/Spinner";
 import { toast } from "react-toastify";
 
 function UserEditForm({ passedUser }) {
-  
-  const { users, user, roles, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.user
-  );
+  const { users, user, roles, isLoading, isError, isSuccess, message } =
+    useSelector((state) => state.user);
   const { profiles } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
 
@@ -53,16 +51,16 @@ function UserEditForm({ passedUser }) {
       }
       //toast.error(message.error);
     }
-    /* if (isSuccess) {
-      //dispatch(get_allProfiles());
-    } */
   }, [isError]);
-
+  
+  
   useEffect(() => {
     if (user) {
+      dispatch(get_allUsers())
       dispatch(get_allProfiles())
     }
-  }, [user, dispatch])
+  }, [user])
+ 
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -77,7 +75,6 @@ function UserEditForm({ passedUser }) {
       [e.target.name]: e.target.value,
     }));
   };
-
 
   const onSubmit = (e) => {
     e.preventDefault();

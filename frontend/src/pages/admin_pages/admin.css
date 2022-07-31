@@ -19,7 +19,7 @@
     display: flex;
     text-align: center;
     align-items: center;
-    height: 200;
+    height: 250px;
     width: 300px;
     background-color: rgb(229, 226, 231);
     overflow: hidden;
@@ -36,20 +36,6 @@
     position: relative;
 }
 
-.seed_data_loading {
-  position: absolute;
-  margin-top: 15%;
-  /* background-image: url("../../../public/spinner.gif"); */
-  background-size: auto;
-  background-position: center;
-  background-repeat: no-repeat;
-  text-align: center;
-  justify-content: center;
-  height: 200px;
-  width: 100%;
-  opacity: 1;
-  z-index: 2;
- }
  .background_opacity {
     opacity: 0.5;
  }

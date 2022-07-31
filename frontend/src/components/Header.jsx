@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaSignInAlt, FaSignOutAlt, FaUser, FaHome } from "react-icons/fa";
 import { BiReset } from "react-icons/bi";
 import { FiDatabase } from "react-icons/fi";
+import { MdApi } from "react-icons/md";
 import { GrUserSettings, GrDashboard } from "react-icons/gr";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -37,13 +38,30 @@ function Header(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loggedInUser } = useSelector((state) => state.auth);
-  const { isLoading, users, isSeeded, isReset, message } =
-    useSelector((state) => state.user);
+  const { isLoading, users, isSeeded, isReset, message } = useSelector(
+    (state) => state.user
+  );
   const [loginExpired, setLoginExpired] = useState(false);
-  const token = loggedInUser?.token;
+  const token = loggedInUser ? loggedInUser?.token : null;
 
   useEffect(() => {
-    if (token) {
+    if (isSeeded) {
+      toast.success(message?.message);
+      dispatch(get_allUsers());
+      dispatch(get_all_bookings());
+      dispatch(get_allProfiles());
+    }
+    if (isReset) {
+      dispatch(logout());
+      dispatch(resetAuth());
+      dispatch(resetUser());
+      dispatch(resetProfile());
+      dispatch(resetReservation());
+      toast.success(message?.message);
+      navigate("/login");
+    }
+
+    if (token !== null) {
       const decodedToken = decode(token);
       const isExpired = decodedToken.exp * 1000 < new Date().getTime();
       if (isExpired) {
@@ -63,14 +81,15 @@ function Header(props) {
         setLoginExpired(false);
       }
     }
-    if (!token) {
+
+    /* if (!token) {
       dispatch(resetAuth());
       dispatch(resetUser());
       dispatch(resetProfile());
       dispatch(resetReservation());
       navigate("/login");
-    }
-  }, [token, loginExpired, dispatch, navigate]);
+    } */
+  }, [token, isSeeded, isReset, loginExpired, dispatch, navigate]);
 
   const onLogout = () => {
     dispatch(resetAuth());
@@ -82,20 +101,10 @@ function Header(props) {
     navigate("/login");
   };
 
-  useEffect(() => {
-    if (isSeeded) {
-      toast.success(message?.message);
-      dispatch(get_allUsers());
-      dispatch(get_all_bookings());
-      dispatch(get_allProfiles());
-    }
-    if (isReset) {
-      dispatch(resetUser());
-      toast.success(message?.message);
-      navigate("/login");
-    }
+  /* useEffect(() => {
+    
     //dispatch(reset_seeder())
-  }, [isSeeded, isReset]);
+  }, [isSeeded, isReset]); */
 
   const handleSeedData = () => {
     dispatch(seed_data());
@@ -107,12 +116,12 @@ function Header(props) {
         "Are you sure (this will wipe out the data and reset with built-in user/profile. You will be logged out...!)?"
       )
     ) {
-      dispatch(resetAuth());
-      dispatch(resetProfile());
-      dispatch(resetReservation());
+      //dispatch(resetAuth());
+      //dispatch(resetProfile());
+      //dispatch(resetReservation());
       //setLoginSessionExpired(false);
       dispatch(reset_data());
-      dispatch(logout());
+      //dispatch(logout());
     }
   };
 
@@ -184,17 +193,23 @@ function Header(props) {
                         <NavDropdown.Item onClick={handleResetData}>
                           <BiReset /> Reset Data
                         </NavDropdown.Item>
-                        {users?.length < 200 && (
-                          <>
-                            <NavDropdown.Item onClick={handleSeedData}>
-                              <FiDatabase /> Seed Dummy Data
-                            </NavDropdown.Item>
-                          </>
-                        )}
+                        <NavDropdown.Item onClick={handleSeedData}>
+                          <FiDatabase /> Seed Dummy Data
+                        </NavDropdown.Item>
                       </>
                     )}
 
                     <NavDropdown.Divider />
+                    {loggedInUser?.role === ROLES.Admin && (
+                      <NavDropdown.Item>
+                        <Link
+                          to="/api_docs"
+                          style={{ color: "black", textDecoration: "none" }}
+                        >
+                          <MdApi /> API_DOCS
+                        </Link>
+                      </NavDropdown.Item>
+                    )}
                     <NavDropdown.Item onClick={onLogout}>
                       <FaSignOutAlt /> Logout
                     </NavDropdown.Item>

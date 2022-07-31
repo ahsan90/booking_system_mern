@@ -5,7 +5,7 @@ import { GrView } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { delete_user } from "../../features/user/userSlice";
+import { delete_user, get_allUsers } from "../../features/user/userSlice";
 import Spinner from "../CustomSpinner";
 //import "./admin.css";
 import Card from "react-bootstrap/Card";
@@ -27,12 +27,13 @@ function UserComponent({ userData }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if(users.includes)
     handleClose();
-  }, [user]);
+  }, [user]); 
 
-  useEffect(() => {
-    if (user) dispatch(get_allProfiles());
-  }, [user, dispatch]);
+  /* useEffect(() => {
+    //if (user) dispatch(get_allProfiles());
+  }, [user, dispatch]); */
 
   const deleteItem = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -45,7 +46,14 @@ function UserComponent({ userData }) {
   } */
   return (
     <>
-      <div className="container-fluid justify-content-center">
+      <div
+        className="container-fluid justify-content-center"
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        }}
+      >
         <div className="row">
           <Card className="user-listing-card">
             <Card.Body className="text-dark">

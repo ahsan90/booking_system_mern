@@ -8,6 +8,7 @@ import moment from "moment";
 import {
   create_booking,
   get_all_booked_dates,
+  get_booking_by_id,
   update_booking,
 } from "../../features/reservation/reservationSlice";
 import BookingDetails from "./BookingDetails";
@@ -34,7 +35,7 @@ function NewBookingForm(props) {
 
   useEffect(() => {
     dispatch(get_all_booked_dates());
-  }, [bookings, dispatch]);
+  }, [bookings]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -83,31 +84,39 @@ function NewBookingForm(props) {
       <div className="booking">
         <h3>{bookingObj ? "Reschedule Booking" : "New Booking"}</h3>
         <Form type="submit" className="booking_form">
-          <DatePicker
-            className={{ width: "50%" }}
-            selected={selectedDate?.bookingDate}
-            onChange={(date) => setSelectedDate({ bookingDate: date })}
-            minDate={new Date()}
-            maxDate={new Date(max_date)}
-            dateFormat="dd/MM/yyyy"
-            filterDate={(date) => !isBooked(date)}
-          />
-          <Button onClick={onSubmit}>Confirm Booking</Button>
+          <Form.Group style={{}}>
+            <DatePicker
+              className="form-control"
+              selected={selectedDate?.bookingDate}
+              onChange={(date) => setSelectedDate({ bookingDate: date })}
+              minDate={new Date()}
+              maxDate={new Date(max_date)}
+              dateFormat="dd/MM/yyyy"
+              filterDate={(date) => !isBooked(date)}
+            />
+          </Form.Group>
+          <Form.Group
+            className="gap-2"
+            style={{ marginLeft: "5px"}}
+          >
+            <Button onClick={onSubmit} style={{}}>
+              {isLoading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                "Confirm Booking"
+              )}
+            </Button>
+          </Form.Group>
         </Form>
-        {/* <div>
-          <p>{bookingObj}</p>
-        </div> */}
       </div>
-      {/* {!bookingObj && showBookingDetails ? (
+      {!bookingObj && booking ? (
         <div className="mt-4">
           <h4>Booking Confirmation</h4>
-          <BookingDetails
-            booking_details={[{ booking }, { singleUserDetails }]}
-          />{" "}
+          <BookingDetails booking={booking} />
         </div>
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 }

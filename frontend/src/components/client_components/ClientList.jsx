@@ -14,6 +14,7 @@ import {
   get_allProfiles,
   search_profiles,
 } from "../../features/profile/profileSlice";
+import {get_allUsers} from '../../features/user/userSlice'
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
@@ -42,13 +43,17 @@ export default function ClientList() {
   };
 
   useEffect(() => {
+    dispatch(get_allProfiles())
+  }, [])
+
+  useEffect(() => {
     if (profile) {
-      //dispatch(get_allProfiles());
-      //dispatch(get_allUsers());
-      handleClose();
-      handleCloseClientForm();
+      dispatch(get_allProfiles());
+      dispatch(get_allUsers());
     }
-  }, [profile, dispatch]);
+     handleClose();
+     handleCloseClientForm();
+  }, [profile]);
 
   const onEdit = (profileObj) => {
     setUserProfile(profileObj);

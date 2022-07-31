@@ -28,6 +28,20 @@ export const get_all_bookings = createAsyncThunk(
     }
 )
 
+// get all bookings
+export const get_booking_by_id = createAsyncThunk(
+    'booking/by_id',
+    async (bookingId, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.loggedInUser.token
+            return await reservationService.get_booking_by_id(bookingId, token)
+        } catch (error) {
+            const message = error.response.data
+            return thunkAPI.rejectWithValue(message)
+        }
+    }
+)
+
 // create_booking
 export const create_booking = createAsyncThunk(
     'create_booking',
@@ -142,6 +156,7 @@ export const reservationSlice = createSlice({
                 state.isLoading = false
                 state.isError = false
                 state.isSuccess = true
+                state.booking = null
                 state.bookings = action.payload
             })
             .addCase(get_all_bookings.rejected, (state, action) => {
@@ -159,6 +174,8 @@ export const reservationSlice = createSlice({
                 state.isSuccess = true
                 state.bookings.push(action.payload)
                 state.booking = action.payload
+                state.isError = false
+                state.message = []
                 toast.success('Booking Created Successfully')
             })
             .addCase(create_booking.rejected, (state, action) => {
@@ -169,8 +186,9 @@ export const reservationSlice = createSlice({
                 state.booking = null
                 if (state.message.errors !== undefined && state.message.errors?.length > 0) {
                     toast.error(state.message.errors[0].msg)
-                } else {
-                    toast.error(state.message.error)
+                }
+                else {
+                    toast.error(state.message?.error)
                 }
             })
             .addCase(delete_booking.pending, (state) => {
@@ -198,6 +216,7 @@ export const reservationSlice = createSlice({
                 state.isLoading = false
                 state.isError = false
                 state.isSuccess = true
+                state.booking = null
                 state.bookings = action.payload
             })
             .addCase(get_bookings_by_user.rejected, (state, action) => {
@@ -276,6 +295,25 @@ export const reservationSlice = createSlice({
                 toast.success('Booking Updated Successfully!')
             })
             .addCase(update_booking.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+                state.booking = null
+            })
+            .addCase(get_booking_by_id.pending, (state, action) => {
+                state.isLoading = true
+                state.booking = null
+            })
+            .addCase(get_booking_by_id.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.booking = action.payload
+                //console.log(action.payload)
+                state.bookings = { ...state.bookings }
+            })
+            .addCase(get_booking_by_id.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false

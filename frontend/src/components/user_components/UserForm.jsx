@@ -5,11 +5,7 @@ import Form from "react-bootstrap/Form";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  create_user,
-  get_allUsers,
-  reset,
-} from "../../features/user/userSlice";
+import { create_user, get_allUsers } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import validation_helper from "../../helper/validation_helper";
 import Spinner from "react-bootstrap/Spinner";
@@ -31,7 +27,7 @@ function UserForm() {
   );
   const { profiles } = useSelector((state) => state.profile);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [userCreated, setUserCreated] = useState(false)
+  const [userCreated, setUserCreated] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -58,6 +54,14 @@ function UserForm() {
     }
   }, [role, isError, message, dispatch]);
 
+  useEffect(() => {
+    if (user) {
+      dispatch(get_allUsers());
+      dispatch(get_allProfiles());
+    }
+  }, [user])
+  
+
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -74,17 +78,6 @@ function UserForm() {
       [e.target.name]: e.target.value,
     }));
   };
-
-  
-  useEffect(() => {
-    /* if (formSubmitted) {
-      console.log("Here");
-      dispatch(get_allProfiles());
-    }
-    setFormSubmitted(false); */
-    if(user) dispatch(get_allProfiles())
-  }, [user, dispatch]);
-
 
   const onSubmit = (e) => {
     e.preventDefault();

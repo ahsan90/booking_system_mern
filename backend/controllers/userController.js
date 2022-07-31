@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 //const { validateprofile } = require('../helper/profileHelper')
 const { profileValidationAtUserCreation } = require('../helper/validationHelper')
-const  defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
+const defaultRolesAndUsers = require('../config/defaultRolesAndUsers')
 const Profile = require('../models/profileModel')
 const { isCurrentAuthUser } = require('../middleware/authMiddleware')
 const Reservation = require('../models/reservationModel')
@@ -262,7 +262,7 @@ const getUserByUsernameEmail = asyncHandler(async (req, res) => {
 })
 
 const seedData = asyncHandler(async (req, res) => {
-    if (((await User.find()).length) >= 200) return res.status(400).json({ error: 'No Seed data required. Enough data already exists!' })
+    if (((await User.find()).length) >= 400) return res.status(400).json({ error: 'No Seed data required. Enough data already exists!' })
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(defaultRolesAndUsers.DUMMY_COMMON_PASSWORD, salt)
@@ -310,8 +310,7 @@ const seedData = asyncHandler(async (req, res) => {
             }
         })
     }
-    //res.status(200).json({ message: 'Seed Data Added Successfully!' })
-    res.status(200).json({ message: 'Seed Data Added Successfully!' })
+    res.status(200).json({ message: 'Seed Data Loaded Successfully!' })
 })
 
 const reseData = asyncHandler(async (req, res) => {
@@ -320,12 +319,12 @@ const reseData = asyncHandler(async (req, res) => {
         await Profile.deleteMany()
         await Reservation.deleteMany()
         defaultRolesAndUsers.defaultRolesAndUsers()
-        res.status(200).json({ message: 'App data reset successfully!' })
+        res.status(200).json({ message: 'App data reset successfully! Please Login to continue....' })
     } catch (error) {
         console.log(error)
-        res.status(500).json({error: '500 Internal server error!'})
+        res.status(500).json({ error: '500 Internal server error!' })
     }
-})  
+})
 
 
 

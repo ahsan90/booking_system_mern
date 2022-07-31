@@ -17,20 +17,33 @@ import {
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
 import NewBookingForm from "./NewBookingForm";
-import { resetUser, search_users, search_user_by_username_email } from "../../features/user/userSlice";
+import {
+  get_allUsers,
+  search_users,
+  search_user_by_username_email,
+} from "../../features/user/userSlice";
 
 function ReservationList() {
   const dispatch = useDispatch();
   const { bookings } = useSelector((state) => state.reservation);
-  let { user, message, isLoading, isError } = useSelector(state => state.user)
+  let { user, singleUserDetails, message, isLoading, isError } = useSelector(
+    (state) => state.user
+  );
   const [searchQuery, setSearchQuery] = useState({
     searchText: "",
-    userSearchText: ""
+    userSearchText: "",
   });
   const [pageNumber, setPageNumber] = useState(0);
   const [showNewBooking, setShowNewBooking] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
-  const [errorText, setErrorText] = useState(null)
+  const [errorText, setErrorText] = useState(null);
+
+  const bookingsPerPage = 9;
+  const pageCount = Math.ceil(bookings.length / bookingsPerPage);
+  const pagesVisited = pageNumber * bookingsPerPage;
+  const [displayBookings, setDisplayBookings] = useState({
+    bookingListings: null,
+  });
 
   let searchPlaceHolder = `Search Reservation By Booking Reference...`;
   const { searchText, userSearchText } = searchQuery;
@@ -38,40 +51,52 @@ function ReservationList() {
   useEffect(() => {
     if (searchText?.length > 2) {
       dispatch(search_bookings(searchText));
-    } else {
+    }
+    if (searchText?.length === 0) {
       dispatch(get_all_bookings());
     }
-  }, [searchText?.length, dispatch]);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (bookings?.length > 0) {
+      setDisplayBookings({
+        bookingListings: bookings,
+      })
+    }
+  }, [bookings]);
 
   useEffect(() => {
     if (userSearchText?.length > 2) {
-      dispatch(search_user_by_username_email(userSearchText))
+      dispatch(search_user_by_username_email(userSearchText));
+    }
+    if (userSearchText?.length === 0) {
+      dispatch(get_all_bookings());
     }
     if (userSearchText?.length <= 2) {
-      setShowBookingForm(false)
+      setShowBookingForm(false);
       setErrorText(null);
     }
     if (isError && userSearchText?.length > 2) {
       setErrorText(message?.error);
     } else {
-      setErrorText(null)
+      setErrorText(null);
     }
-  }, [userSearchText?.length, isError, dispatch])
+  }, [userSearchText, isError]);
 
   useEffect(() => {
-    if (user) {
-      setShowBookingForm(true)
+    if (singleUserDetails) {
+      setShowBookingForm(true);
     } else {
-      setShowBookingForm(false)
+      setShowBookingForm(false);
     }
-  }, [user])
+  }, [singleUserDetails]);
 
   const clearSearch = () => {
     setSearchQuery(() => ({
       searchText: "",
-      userSearchText: ""
+      userSearchText: "",
     }));
-    setErrorText(null)
+    setErrorText(null);
   };
 
   const handleSearch = (e) => {
@@ -80,19 +105,6 @@ function ReservationList() {
       [e.target.name]: e.target.value,
     }));
   };
-
-  const bookingsPerPage = 9;
-  const pageCount = Math.ceil(bookings.length / bookingsPerPage);
-  const pagesVisited = pageNumber * bookingsPerPage;
-  const displayBookings = bookings
-    .slice(pagesVisited, pagesVisited + bookingsPerPage)
-    .map((booking) => {
-      return (
-        <tr key={booking._id}>
-          <ReservationItem booking={booking} />
-        </tr>
-      );
-    });
 
   const handlePageClick = ({ selected }) => {
     setPageNumber(selected);
@@ -104,9 +116,9 @@ function ReservationList() {
 
   const handleClose = () => {
     setShowNewBooking(false);
-    setShowBookingForm(false)
-    setSearchQuery(() => ({ userSearchText: "", searchText: "" }))
-    setErrorText(null)
+    setShowBookingForm(false);
+    setSearchQuery(() => ({ userSearchText: "", searchText: "" }));
+    setErrorText(null);
   };
 
   const handleSearchProfileByEmailUsername = (e) => {
@@ -114,18 +126,18 @@ function ReservationList() {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-  }
+  };
 
   return (
     <>
-      <Button onClick={addBooking}>+Add Booking</Button>
       <Modal
         show={showNewBooking}
+        size='lg'
         onHide={handleClose}
         style={{ width: "100%" }}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add Booking Item</Modal.Title>
+          <Modal.Title>Add A New Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="">
@@ -161,12 +173,14 @@ function ReservationList() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Button onClick={addBooking}>+Add Booking</Button>
       <Row className="mt-3">
         <Card style={{ width: "100%" }}>
           <Card.Body>
             <div className="clientListHead mb-3">
               <h4>
-                All Reservation Listings (
+                All Reservation Listings- (
                 <span className="text-danger">total: {bookings?.length}</span>)
               </h4>
               <InputGroup className="client_search">
@@ -188,7 +202,7 @@ function ReservationList() {
                 )}
               </InputGroup>
             </div>
-            {bookings?.length > 0 ? (
+            {displayBookings?.bookingListings?.length > 0 ? (
               <>
                 <Card.Title></Card.Title>
                 <Table striped bordered hover>
@@ -201,7 +215,17 @@ function ReservationList() {
                       <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody>{displayBookings}</tbody>
+                  <tbody>
+                    {displayBookings?.bookingListings
+                      ?.slice(pagesVisited, pagesVisited + bookingsPerPage)
+                      .map((booking) => {
+                        return (
+                          <tr key={booking._id}>
+                            <ReservationItem booking={booking} />
+                          </tr>
+                        );
+                      })}
+                  </tbody>
                 </Table>
               </>
             ) : (
@@ -212,7 +236,7 @@ function ReservationList() {
           </Card.Body>
         </Card>
       </Row>
-      {bookings?.length > 0 && bookings?.length > 9 && (
+      {bookings?.length > bookingsPerPage && (
         <div className="mt-3">
           <ReactPaginate
             previousLabel={"<<Previous"}

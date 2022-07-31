@@ -17,7 +17,8 @@ const initialState = {
     isAuthorirzed: false,
     isSeeded: false,
     isReset: false, 
-    isSeeding: false
+    isSeeding: false,
+    isReseting: false
 }
 
 
@@ -153,6 +154,9 @@ export const seed_data = createAsyncThunk(
             return await userServices.seed_data(token)
         } catch (error) {
             const message = error.response.data
+            if (message?.error) {
+                toast.error(message?.error)
+            }
             return thunkAPI.rejectWithValue(message)
         }
     }
@@ -237,6 +241,8 @@ export const userSlice = createSlice({
                 state.isSuccess = true
                 state.isSeeded = false
                 state.isSeeding = false
+                state.user = null
+                state.singleUserDetails = null
                 state.users = action.payload
             })
             .addCase(get_allUsers.rejected, (state, action) => {
@@ -337,7 +343,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.user = action.payload
+                state.user = null
                 state.singleUserDetails = action.payload
                 state.message = null
             })
@@ -368,18 +374,22 @@ export const userSlice = createSlice({
                 state.isSuccess = false
                 state.isError = true
                 state.isSeeded = false
+                state.isSeeding = false
                 //state.user = null
                 //state.singleUserDetails = null
                 state.message = action.payload
+
             })
             .addCase(reset_data.pending, (state) => {
                 state.isLoading = true
+                state.isReseting = true
             })
             .addCase(reset_data.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
                 state.isReset = true
+                state.isReseting = false
                 //state.user = action.payload
                 //state.singleUserDetails = action.payload
                 state.users = { ...state.users }
@@ -390,6 +400,7 @@ export const userSlice = createSlice({
                 state.isSuccess = false
                 state.isError = true
                 state.isReset = false
+                state.isReseting = false
                 //state.user = null
                 //state.singleUserDetails = null
                 state.message = action.payload

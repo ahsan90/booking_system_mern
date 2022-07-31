@@ -152,7 +152,7 @@ export const profileSlice = createSlice({
                 state.isError = false
                 state.profile = action.payload
                 state.message = null
-                state.profiles.push(action.payload)
+                //state.profiles.push(action.payload)
                 toast.success(`New Client (${action.payload.name}) Added Successfully!`)
             })
             .addCase(create_profile.rejected, (state, action) => {
@@ -171,7 +171,7 @@ export const profileSlice = createSlice({
                 state.isError = false
                 state.isSuccess = true
                 state.profile = action.payload
-                state.profiles = state.profiles.map(profile => profile._id === action.payload._id? action.payload : profile)
+                //state.profiles = state.profiles.map(profile => profile._id === action.payload._id? action.payload : profile)
                 toast.success('Profile updated!')
             })
             .addCase(update_profile.rejected, (state, action) => {
@@ -190,7 +190,7 @@ export const profileSlice = createSlice({
                 state.isError = false
                 state.isSuccess = true
                 state.profile = action.payload
-                state.profiles = state.profiles.filter(prof => prof._id !== state.profile._id)
+                //state.profiles = state.profiles.filter(prof => prof._id !== state.profile._id)
                 toast.success('Profile deleted!')
             })
             .addCase(delete_profile.rejected, (state, action) => {

@@ -8,7 +8,7 @@ import { BiTrash } from "react-icons/bi";
 import CustomSpinner from "../CustomSpinner";
 import { useSelector, useDispatch } from "react-redux";
 import { delete_profile } from "../../features/profile/profileSlice";
-import { get_user, resetUser } from "../../features/user/userSlice";
+import { get_user } from "../../features/user/userSlice";
 import { useParams } from "react-router-dom";
 import ROLES from "../../helper/allowedRoles";
 
@@ -24,7 +24,7 @@ function UserProfileInformation() {
 
   const dispatch = useDispatch();
   let { profile } = useSelector((state) => state.profile);
-  const { singleUserDetails } = useSelector((state) => state.user);
+  const { singleUserDetails, message } = useSelector((state) => state.user);
   const { loggedInUser } = useSelector(state => state.auth)
   const { id } = useParams();
 
@@ -169,7 +169,8 @@ function UserProfileInformation() {
         </>
       ) : (
         <>
-          <CustomSpinner />
+            {/* <CustomSpinner /> */}
+            <p>{ message?.error}</p>
         </>
       )}
     </>

@@ -4,22 +4,28 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import {RiReservedFill} from "react-icons/ri"
+import { useSelector } from "react-redux";
 
-export default function BookingDetails({ booking_details }) {
-  const { booking, singleUserDetails } = booking_details;
+export default function BookingDetails({booking}) {
+  const {singleUserDetails} = useSelector(state => state.user)
+  //const {booking} = props
   const { id } = useParams()
   
   return (
     <div>
       <Card>
         <Card.Body>
-          <Card.Title><RiReservedFill/> Reservation information</Card.Title>
+          <Card.Title>
+            <RiReservedFill /> Reservation information
+          </Card.Title>
           <Table striped bordered hover>
             <thead>
-              <th>Booking Reference</th>
-              <th>Reservation Date</th>
-              <th>Reservation Booked Date</th>
-              <th>Last Updated</th>
+              <tr>
+                <th>Booking Reference</th>
+                <th>Reservation Date</th>
+                <th>Reservation Booked Date</th>
+                <th>Last Updated</th>
+              </tr>
             </thead>
             <tbody>
               <tr>
@@ -33,10 +39,12 @@ export default function BookingDetails({ booking_details }) {
         </Card.Body>
       </Card>
       <Card className="mt-4">
-        {(booking_details[1] !== null && singleUserDetails !== null) ? (
+        {singleUserDetails !== null ? (
           <>
             <Card.Body>
-              <Card.Title><FaUser/> Customer Information</Card.Title>
+              <Card.Title>
+                <FaUser /> Customer Information
+              </Card.Title>
               <hr />
               <img className="avatar" src={singleUserDetails?.avatar} alt="" />
               <Card.Text>

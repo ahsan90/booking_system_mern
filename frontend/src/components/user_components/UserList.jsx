@@ -9,10 +9,8 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
-import {
-  get_allUsers,
-  search_users,
-} from "../../features/user/userSlice";
+import { get_allUsers, search_users } from "../../features/user/userSlice";
+import { get_allProfiles } from "../../features/profile/profileSlice";
 import ReactPaginate from "react-paginate";
 
 function UsersListing() {
@@ -30,6 +28,10 @@ function UsersListing() {
   const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
+    //update profile list after an user gets deleted
+    if (!users?.includes(user)) {
+      dispatch(get_allProfiles());
+    }
     handleClose();
   }, [user]);
 
@@ -43,6 +45,10 @@ function UsersListing() {
       searchText: "",
     }));
   }, [searchQuery.searchText, dispatch]);
+
+  useEffect(() => {
+    dispatch(get_allUsers());
+  }, []);
 
   //let { searchText } = searchQuery;
   const handleSearchUsers = (e) => {
@@ -59,13 +65,17 @@ function UsersListing() {
   const usersPerPage = 8;
   const pageCount = Math.ceil(users?.length / usersPerPage);
   const pagesVisited = pageNumber * usersPerPage;
-  const displayUsers = users?.slice(pagesVisited, pagesVisited + usersPerPage).map((userData) => {
+  /*
+  const displayUsers = users
+    ?.slice(pagesVisited, pagesVisited + usersPerPage)
+    .map((userData) => {
       return (
         <div className="col-md-6 col-lg-3 mb-4" key={userData._id}>
           <UserComponent userData={userData} />
         </div>
       );
     });
+  */
 
   const handlePageClick = ({ selected }) => {
     setPageNumber(selected);
@@ -99,7 +109,7 @@ function UsersListing() {
 
       <div className="clientListHead mb-3">
         <h4>
-          Users Listings{" "}(
+          Users Listings (
           <span className="text-danger">total: {users?.length}</span>)
         </h4>
         <InputGroup className="client_search">
@@ -121,7 +131,18 @@ function UsersListing() {
         className="container-fluid justify-content-center"
         style={{ alignItem: "center" }}
       >
-        <div className="row">{displayUsers}</div>
+        {users?.length > 0? <div className="row">
+          {users
+            ?.slice(pagesVisited, pagesVisited + usersPerPage)
+            .map((userData) => {
+              return (
+                <div className="col-md-6 col-lg-3 mb-4" key={userData._id}>
+                  <UserComponent userData={userData} />
+                </div>
+              );
+            })}
+        </div> : <p>No users found</p>}
+        
       </div>
       {users?.length > usersPerPage && (
         <div style={{ alignItem: "center" }}>

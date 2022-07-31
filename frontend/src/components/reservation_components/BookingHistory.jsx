@@ -12,7 +12,7 @@ export default function BookingHistory() {
   const bookingsPerPage = 10;
   const pageCount = Math.ceil(bookings.length / bookingsPerPage);
   const pagesVisited = pageNumber * bookingsPerPage;
-  const displayBookings = bookings
+  /* const displayBookings = bookings
     .slice(pagesVisited, pagesVisited + bookingsPerPage)
     .map((booking) => {
       return (
@@ -20,7 +20,7 @@ export default function BookingHistory() {
           <ReservationItem booking={booking} />
         </tr>
       );
-    });
+    }); */
 
   const handlePageClick = ({ selected }) => {
     setPageNumber(selected);
@@ -28,7 +28,7 @@ export default function BookingHistory() {
 
   return (
     <div>
-      {bookings.length > 0 ? (
+      {bookings?.length > 0 ? (
         <>
           <Table striped bordered hover>
             <thead>
@@ -40,13 +40,23 @@ export default function BookingHistory() {
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>{displayBookings}</tbody>
+            <tbody>
+              {bookings
+                ?.slice(pagesVisited, pagesVisited + bookingsPerPage)
+                .map((booking) => {
+                  return (
+                    <tr key={booking._id}>
+                      <ReservationItem booking={booking} />
+                    </tr>
+                  );
+                })}
+            </tbody>
           </Table>
         </>
       ) : (
         <h3>No Booking History Found</h3>
       )}
-      {bookings.length > 0 && (
+      {bookings?.length > bookingsPerPage && (
         <div className="mt-3">
           <ReactPaginate
             previousLabel={"<<Previous"}
