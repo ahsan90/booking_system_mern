@@ -17,6 +17,7 @@ import BookingDetails from "./BookingDetails";
 import NewBookingForm from "./NewBookingForm";
 import CustomSpinner from "../CustomSpinner";
 import ROLES from "../../helper/allowedRoles";
+import ShowTooltip from "../utils/Tooltip";
 
 function ReservationItem({ booking }) {
   const dispatch = useDispatch();
@@ -66,12 +67,7 @@ function ReservationItem({ booking }) {
 
   return (
     <>
-      <Modal
-        show={showDetails}
-        size='lg'
-        onHide={handleClose}
-        style={{}}
-      >
+      <Modal show={showDetails} size="lg" onHide={handleClose} style={{}}>
         <Modal.Header closeButton>
           <Modal.Title>Reservation Details</Modal.Title>
         </Modal.Header>
@@ -97,7 +93,7 @@ function ReservationItem({ booking }) {
       </Modal>
       <Modal
         show={showEditBooking}
-        size='lg'
+        size="lg"
         onHide={handleClose}
         style={{ width: "100%" }}
       >
@@ -122,28 +118,34 @@ function ReservationItem({ booking }) {
       <td>{moment(booking.createdAt).format("LLL")}</td>
       <td>{moment(booking.updatedAt).format("LLL")}</td>
       <td>
-        <button
-          onClick={() => {
-            onDetails(booking);
-          }}
-          className="btn btn-primary"
-          style={{ marginRight: "3px" }}
-        >
-          <AiOutlineEye />
-        </button>
-        <button
-          onClick={() => updateBooking()}
-          className="btn btn-warning"
-          style={{ marginRight: "3px" }}
-        >
-          <FaEdit />
-        </button>
-        <button
-          onClick={() => onDelete(booking._id)}
-          className="btn btn-danger"
-        >
-          <BiTrash />
-        </button>
+        <ShowTooltip text={"Booking details"}>
+          <button
+            onClick={() => {
+              onDetails(booking);
+            }}
+            className="btn btn-primary"
+            style={{ marginRight: "3px" }}
+          >
+            <AiOutlineEye />
+          </button>
+        </ShowTooltip>
+        <ShowTooltip text={"Reschedule booking"}>
+          <button
+            onClick={() => updateBooking()}
+            className="btn btn-warning"
+            style={{ marginRight: "3px" }}
+          >
+            <FaEdit />
+          </button>
+        </ShowTooltip>
+        <ShowTooltip text={"Delete booking"}>
+          <button
+            onClick={() => onDelete(booking._id)}
+            className="btn btn-danger"
+          >
+            <BiTrash />
+          </button>
+        </ShowTooltip>
       </td>
     </>
   );

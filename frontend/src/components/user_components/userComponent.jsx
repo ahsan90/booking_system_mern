@@ -59,7 +59,18 @@ function UserComponent({ userData }) {
           <Card className="user-listing-card">
             <Card.Body className="text-dark">
               <img className="avatar" src={userData.avatar} alt="" />
-              <Card.Text>Username: {userData.username}</Card.Text>
+              {userData?.username === "ahsan90" ||
+              userData?.username === "steve123" ? (
+                <Card.Text>
+                  Username:{" "}
+                  <ShowTooltip text={'Built in user'}>
+                    <span className="text-danger">{userData.username}</span>
+                  </ShowTooltip>
+                </Card.Text>
+              ) : (
+                <Card.Text>Username: {userData.username}</Card.Text>
+              )}
+
               {/* <Card.Text>Email: {userData.email}</Card.Text> */}
               <Card.Link>
                 <ShowTooltip text={"User profile"}>

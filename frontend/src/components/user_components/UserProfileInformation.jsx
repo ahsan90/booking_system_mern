@@ -11,6 +11,7 @@ import { delete_profile } from "../../features/profile/profileSlice";
 import { get_user } from "../../features/user/userSlice";
 import { useParams } from "react-router-dom";
 import ROLES from "../../helper/allowedRoles";
+import ShowTooltip from "../utils/Tooltip";
 
 function UserProfileInformation() {
   const [show, setShow] = useState(false);
@@ -119,20 +120,26 @@ function UserProfileInformation() {
                           )}
                         </td>
                         <td>
-                          <button
-                            className="btn btn-warning"
-                            onClick={handleShowEdit}
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            className="btn btn-danger"
-                            onClick={() =>
-                              onDelete(singleUserDetails?.profile?._id)
-                            }
-                          >
-                            <BiTrash />
-                          </button>
+                          <ShowTooltip text={'Edit profile'}>
+                            <button
+                              className="btn btn-warning"
+                              onClick={handleShowEdit}
+                            >
+                              <FaEdit />
+                            </button>
+                          </ShowTooltip>
+
+                          <ShowTooltip text={"Delete profile"}>
+                            <button
+                              className="btn btn-danger"
+                              onClick={() =>
+                                onDelete(singleUserDetails?.profile?._id)
+                              }
+                              style={{marginLeft: '10px'}}
+                            >
+                              <BiTrash />
+                            </button>
+                          </ShowTooltip>
                         </td>
                       </tr>
                     </tbody>

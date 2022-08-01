@@ -14,9 +14,10 @@ import {
   get_allProfiles,
   search_profiles,
 } from "../../features/profile/profileSlice";
-import {get_allUsers} from '../../features/user/userSlice'
+import { get_allUsers } from "../../features/user/userSlice";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import ShowTooltip from "../utils/Tooltip";
 
 export default function ClientList() {
   const [userProfile, setUserProfile] = useState(null);
@@ -43,16 +44,16 @@ export default function ClientList() {
   };
 
   useEffect(() => {
-    dispatch(get_allProfiles())
-  }, [])
+    dispatch(get_allProfiles());
+  }, []);
 
   useEffect(() => {
     if (profile) {
       dispatch(get_allProfiles());
       dispatch(get_allUsers());
     }
-     handleClose();
-     handleCloseClientForm();
+    handleClose();
+    handleCloseClientForm();
   }, [profile]);
 
   const onEdit = (profileObj) => {
@@ -109,26 +110,34 @@ export default function ClientList() {
           <td>{moment(profileData.createdAt).format("LLL")}</td>
           <td>{moment(profileData.updatedAt).format("LLL")}</td>
           <td>
-            <Link
-              className="btn btn-primary"
-              style={{ marginRight: "3px" }}
-              to={`/users/profile/${profileData?.user?.toString()}`}
-            >
-              <AiOutlineEye />
-            </Link>
-            <button
-              className="btn btn-warning"
-              onClick={() => onEdit(profileData)}
-              style={{ marginRight: "3px" }}
-            >
-              <FaEdit />
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={() => onDelete(profileData._id)}
-            >
-              <BiTrash />
-            </button>
+            <ShowTooltip text={"Go to profile"}>
+              <Link
+                className="btn btn-primary"
+                style={{ marginRight: "3px" }}
+                to={`/users/profile/${profileData?.user?.toString()}`}
+              >
+                <AiOutlineEye />
+              </Link>
+            </ShowTooltip>
+
+            <ShowTooltip text={"Edit profile"}>
+              <button
+                className="btn btn-warning"
+                onClick={() => onEdit(profileData)}
+                style={{ marginRight: "3px" }}
+              >
+                <FaEdit />
+              </button>
+            </ShowTooltip>
+
+            <ShowTooltip text={'Delete profile'}>
+              <button
+                className="btn btn-danger"
+                onClick={() => onDelete(profileData._id)}
+              >
+                <BiTrash />
+              </button>
+            </ShowTooltip>
           </td>
         </tr>
       );
