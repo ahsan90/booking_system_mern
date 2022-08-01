@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import {RiReservedFill} from "react-icons/ri"
 import { useSelector } from "react-redux";
+import ShowTooltip from "../utils/Tooltip";
 
 export default function BookingDetails({booking}) {
   const {singleUserDetails} = useSelector(state => state.user)
@@ -52,10 +53,15 @@ export default function BookingDetails({booking}) {
                 {id !== null && id !== undefined ? (
                   <span>{singleUserDetails?.username}</span>
                 ) : (
-                  <Link to={`/users/profile/${singleUserDetails?._id}`}>
-                    {" "}
-                    {singleUserDetails?.username}
-                  </Link>
+                  <ShowTooltip text={'User details'}>
+                    <Link
+                      to={`/users/profile/${singleUserDetails?._id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      {" "}
+                      {singleUserDetails?.username}
+                    </Link>
+                  </ShowTooltip>
                 )}
               </Card.Text>
               <Card.Text>

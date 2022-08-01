@@ -41,25 +41,22 @@ export default function ClientDashboard() {
     if (!isAuthorized) {
       return navigate("/unauthorized");
     }
-    if (loggedInUser?.role === ROLES.Admin) {
-      //dispatch(get_allUsers());
-    }
+    
     if (id) {
-      dispatch(get_user(id));
+      //dispatch(get_user(id));
       //dispatch(get_bookings_by_user(id));
       //dispatch(get_all_booked_dates());
     }
     return () => {
-      //console.log("hellow from client dashboard");
       dispatch(resetUser());
       dispatch(resetReservation());
     }; 
-  }, [id]);
+  }, [id, isAuthorized]);
 
   //console.log(key)
-  const onSelectTab = () => {
+  //const onSelectTab = () => {
     //console.log("YOu clicked!");
-  }; 
+  //}; 
 
   return (
     <>

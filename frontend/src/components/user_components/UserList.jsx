@@ -9,9 +9,10 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
-import { get_allUsers, search_users } from "../../features/user/userSlice";
+import { get_allUsers, search_users, resetUser } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import ReactPaginate from "react-paginate";
+import CustomSpinner from "../CustomSpinner";
 
 function UsersListing() {
   const dispatch = useDispatch();
@@ -48,6 +49,9 @@ function UsersListing() {
 
   useEffect(() => {
     dispatch(get_allUsers());
+    return () => {
+      dispatch(resetUser())
+    }
   }, []);
 
   //let { searchText } = searchQuery;
@@ -127,45 +131,60 @@ function UsersListing() {
         </InputGroup>
       </div>
       <hr></hr>
-      <div
-        className="container-fluid justify-content-center"
-        style={{ alignItem: "center" }}
-      >
-        {users?.length > 0? <div className="row">
-          {users
-            ?.slice(pagesVisited, pagesVisited + usersPerPage)
-            .map((userData) => {
-              return (
-                <div className="col-md-6 col-lg-3 mb-4" key={userData._id}>
-                  <UserComponent userData={userData} />
-                </div>
-              );
-            })}
-        </div> : <p>No users found</p>}
-        
-      </div>
-      {users?.length > usersPerPage && (
-        <div style={{ alignItem: "center" }}>
-          <ReactPaginate
-            previousLabel={"<<Previous"}
-            nextLabel={"Next>>"}
-            breakLabel={"..."}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination justify-content-center"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link"}
-            breakClassName={"page-item"}
-            breakLinkClassName={"page-link"}
-            activeClassName={"active"}
-          />
-        </div>
+      {users?.length > 0 ? (
+        <>
+          <div
+            className="container-fluid justify-content-center"
+            style={{ alignItem: "center" }}
+          >
+            {users?.length > 0 ? (
+              <div className="row">
+                {users
+                  ?.slice(pagesVisited, pagesVisited + usersPerPage)
+                  .map((userData) => {
+                    return (
+                      <div
+                        className="col-md-6 col-lg-3 mb-4"
+                        key={userData._id}
+                      >
+                        <UserComponent userData={userData} />
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <p>No users found</p>
+            )}
+          </div>
+          {users?.length > usersPerPage && (
+            <div style={{ alignItem: "center" }}>
+              <ReactPaginate
+                previousLabel={"<<Previous"}
+                nextLabel={"Next>>"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination justify-content-center"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                breakClassName={"page-item"}
+                breakLinkClassName={"page-link"}
+                activeClassName={"active"}
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {isLoading && <CustomSpinner />}
+          {!isLoading && users?.length === 0 && <p>No user found...!</p>}
+        </>
       )}
     </>
   );

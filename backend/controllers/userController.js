@@ -262,7 +262,7 @@ const getUserByUsernameEmail = asyncHandler(async (req, res) => {
 })
 
 const seedData = asyncHandler(async (req, res) => {
-    if (((await User.find()).length) >= 400) return res.status(400).json({ error: 'No Seed data required. Enough data already exists!' })
+    if (((await User.find()).length) >= 200) return res.status(400).json({ error: 'No Seed data required. Enough data already exists!' })
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(defaultRolesAndUsers.DUMMY_COMMON_PASSWORD, salt)
@@ -291,7 +291,7 @@ const seedData = asyncHandler(async (req, res) => {
     }
 
 
-    Array.from({ length: 200 }).forEach(() => USERS.push(userData()))
+    Array.from({ length: 100 }).forEach(() => USERS.push(userData()))
     //Array.from({ length: 50 }).forEach(() => PROFILES.push(profileData()))
 
     await User.insertMany(USERS)

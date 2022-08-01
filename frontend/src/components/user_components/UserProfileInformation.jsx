@@ -24,7 +24,7 @@ function UserProfileInformation() {
 
   const dispatch = useDispatch();
   let { profile } = useSelector((state) => state.profile);
-  const { singleUserDetails, message } = useSelector((state) => state.user);
+  const { singleUserDetails, message, isLoading } = useSelector((state) => state.user);
   const { loggedInUser } = useSelector(state => state.auth)
   const { id } = useParams();
 
@@ -42,7 +42,7 @@ function UserProfileInformation() {
 
   return (
     <>
-      {singleUserDetails ? (
+      {singleUserDetails !== null ? (
         <>
           <Row>
             <Col xs={12}>
@@ -169,8 +169,8 @@ function UserProfileInformation() {
         </>
       ) : (
         <>
-            {/* <CustomSpinner /> */}
-            <p>{ message?.error}</p>
+          {isLoading && <CustomSpinner />}
+          <p>{message?.error}</p>
         </>
       )}
     </>

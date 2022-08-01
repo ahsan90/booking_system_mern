@@ -15,6 +15,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserEditForm from "./userEditForm";
 import { get_allProfiles } from "../../features/profile/profileSlice";
+import ShowTooltip from "../utils/Tooltip";
 
 function UserComponent({ userData }) {
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -61,25 +62,31 @@ function UserComponent({ userData }) {
               <Card.Text>Username: {userData.username}</Card.Text>
               {/* <Card.Text>Email: {userData.email}</Card.Text> */}
               <Card.Link>
-                <Link
-                  to={`/users/profile/${userData._id}`}
-                  className="btn btn-outline-primary"
-                >
-                  <GrView />
-                </Link>
+                <ShowTooltip text={"User profile"}>
+                  <Link
+                    to={`/users/profile/${userData._id}`}
+                    className="btn btn-outline-primary"
+                  >
+                    <GrView />
+                  </Link>
+                </ShowTooltip>
               </Card.Link>
               <Card.Link>
-                <button onClick={handleShow} className="btn btn-warning">
-                  <BiEditAlt />
-                </button>
+                <ShowTooltip text={"Edit user"}>
+                  <button onClick={handleShow} className="btn btn-warning">
+                    <BiEditAlt />
+                  </button>
+                </ShowTooltip>
               </Card.Link>
               <Card.Link>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => deleteItem(userData._id)}
-                >
-                  <GoTrashcan />
-                </button>
+                <ShowTooltip text={"Delete user"}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => deleteItem(userData._id)}
+                  >
+                    <GoTrashcan />
+                  </button>
+                </ShowTooltip>
               </Card.Link>
             </Card.Body>
           </Card>

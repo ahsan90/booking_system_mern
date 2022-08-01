@@ -206,7 +206,7 @@ function Header(props) {
                           to="/api_docs"
                           style={{ color: "black", textDecoration: "none" }}
                         >
-                          <MdApi /> API_DOCS
+                          <MdApi /> API_Docs
                         </Link>
                       </NavDropdown.Item>
                     )}

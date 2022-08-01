@@ -1,10 +1,19 @@
 
 import Card from "react-bootstrap/Card";
+import home_page_card_image from '../assets/home_page_card_image.png'
+import booking_image from '../assets/booking_image.png'
 
 function Home() {
   return (
     <div className="home_page">
-      <Card>
+      <Card
+        style={{
+          backgroundColor: "#f1f1f1",
+          backgroundImage: `url(${home_page_card_image})`,
+          color: "red",
+          minHeight: "900px",
+        }}
+      >
         {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
         <Card.Title>
           <h1>Welocme to the Booking System Application</h1>
