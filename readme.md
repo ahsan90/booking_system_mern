@@ -1,4 +1,10 @@
-Following Table shows the default login credentials for both admin and client user
+Application in a nutshel
+
+---
+
+This is a Booking System Management Application using FullStack MERN with Redux/toolkit state management. The Application can be operated based on Role based Authorization. Reservation Can be booked after successfully login into the application either as an Admin or Client user. There is also a member registration option. After successfully registering a member will be autometically logged into the system and redirected to his own dashboard. The other operations are described as below-
+
+## Following Table shows the default login credentials for both admin and client user
 
 | Username | Email              | Role   | Password   |
 | -------- | ------------------ | ------ | ---------- |
@@ -6,12 +12,6 @@ Following Table shows the default login credentials for both admin and client us
 | steve123 | steve123@mail.com  | Client | clientpass |
 
 ---
-
--:Application in a nutshel:-
-
----
-
-This is a Booking System Management Application using FullStack MERN with Redux/toolkit state management. The Application can be operated based on Role based Authorization. Reservation Can be booked after successfully login into the application either as an Admin or Client user. There is also a member registration option. After successfully registering a member will be autometically logged into the system and redirected to his own dashboard. The other operations are described as below-
 
 ## Client user is only perform based on his rules of operation. Following Rules Applied to Client user-
 
