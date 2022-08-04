@@ -25,7 +25,7 @@ import {
 
 function ReservationList() {
   const dispatch = useDispatch();
-  const { bookings } = useSelector((state) => state.reservation);
+  const {booking, bookings } = useSelector((state) => state.reservation);
   let { user, singleUserDetails, message, isLoading, isError } = useSelector(
     (state) => state.user
   );

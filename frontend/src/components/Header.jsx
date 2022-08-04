@@ -46,6 +46,7 @@ function Header(props) {
 
   useEffect(() => {
     if (isSeeded) {
+      
       toast.success(message?.message);
       dispatch(get_allUsers());
       dispatch(get_all_bookings());
@@ -101,11 +102,6 @@ function Header(props) {
     navigate("/login");
   };
 
-  /* useEffect(() => {
-    
-    //dispatch(reset_seeder())
-  }, [isSeeded, isReset]); */
-
   const handleSeedData = () => {
     dispatch(seed_data());
   };
@@ -116,12 +112,7 @@ function Header(props) {
         "Are you sure (this will wipe out the data and reset with built-in user/profile. You will be logged out...!)?"
       )
     ) {
-      //dispatch(resetAuth());
-      //dispatch(resetProfile());
-      //dispatch(resetReservation());
-      //setLoginSessionExpired(false);
       dispatch(reset_data());
-      //dispatch(logout());
     }
   };
 

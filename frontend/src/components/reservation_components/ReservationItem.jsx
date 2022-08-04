@@ -19,12 +19,12 @@ import CustomSpinner from "../CustomSpinner";
 import ROLES from "../../helper/allowedRoles";
 import ShowTooltip from "../utils/Tooltip";
 
-function ReservationItem({ booking }) {
+function ReservationItem(props) {
+  const bookingPayload = props.booking
   const dispatch = useDispatch();
-  let { isLoading } = useSelector(
-    (state) => state.user
-  );
+  let { isLoading } = useSelector((state) => state.user);
   const { loggedInUser } = useSelector((state) => state.auth);
+  const {booking} = useSelector(state => state.reservation)
   const { id } = useParams();
 
   const [showDetails, setShowDetails] = useState(false);
@@ -32,21 +32,21 @@ function ReservationItem({ booking }) {
   //const [bookingToBeUpdated, setBookingToBeUpdated] = useState({bookingObj: null});
   const [bookingDetails, setBookingDetails] = useState({
     singleUserDetails: null,
-    booking: null
-  }) 
+    booking: null,
+  });
 
   useEffect(() => {
-    setShowEditBooking(false);
+    if (booking !== null) {
+      setShowEditBooking(false);
+    }
   }, [booking]);
 
   const handleClose = () => {
-    
-     if (loggedInUser?.role === ROLES.Admin) {
+    /* if (loggedInUser?.role === ROLES.Admin) {
       dispatch(get_allUsers())
-    }
+    } */
     setShowDetails(false);
     setShowEditBooking(false);
-    
   };
 
   const handShowDetails = () => setShowDetails(true);
@@ -78,7 +78,7 @@ function ReservationItem({ booking }) {
               <CustomSpinner />
             </div>
           ) : (
-            <BookingDetails booking={booking} />
+            <BookingDetails booking={bookingPayload} />
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -101,7 +101,7 @@ function ReservationItem({ booking }) {
           <Modal.Title>Update Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <NewBookingForm bookingObj={booking} />
+          <NewBookingForm bookingObj={bookingPayload} />
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -113,15 +113,15 @@ function ReservationItem({ booking }) {
           </Button>
         </Modal.Footer>
       </Modal>
-      <td>{booking.booking_reference}</td>
-      <td>{moment(booking.reservation_date).format("ll")}</td>
-      <td>{moment(booking.createdAt).format("LLL")}</td>
-      <td>{moment(booking.updatedAt).format("LLL")}</td>
+      <td>{bookingPayload.booking_reference}</td>
+      <td>{moment(bookingPayload.reservation_date).format("ll")}</td>
+      <td>{moment(bookingPayload.createdAt).format("LLL")}</td>
+      <td>{moment(bookingPayload.updatedAt).format("LLL")}</td>
       <td>
         <ShowTooltip text={"Booking details"}>
           <button
             onClick={() => {
-              onDetails(booking);
+              onDetails(bookingPayload);
             }}
             className="btn btn-primary"
             style={{ marginRight: "3px" }}
@@ -140,7 +140,7 @@ function ReservationItem({ booking }) {
         </ShowTooltip>
         <ShowTooltip text={"Delete booking"}>
           <button
-            onClick={() => onDelete(booking._id)}
+            onClick={() => onDelete(bookingPayload._id)}
             className="btn btn-danger"
           >
             <BiTrash />

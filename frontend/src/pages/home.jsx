@@ -1,9 +1,12 @@
-
 import Card from "react-bootstrap/Card";
-import home_page_card_image from '../assets/home_page_card_image.png'
-import booking_image from '../assets/booking_image.png'
+import home_page_card_image from "../assets/home_page_card_image.png";
+import booking_image from "../assets/booking_image.png";
+import ROLES from '../helper/allowedRoles'
+import { Link } from "react-router-dom";
+import {useSelector} from 'react-redux'
 
 function Home() {
+  const {loggedInUser} = useSelector(state => state.auth)
   return (
     <div className="home_page">
       <Card
@@ -18,15 +21,52 @@ function Home() {
         <Card.Title>
           <h1>Welocme to the Booking System Application</h1>
         </Card.Title>
-        <Card.Body>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </Card.Text>
+        <Card.Body style={{ color: "black", fontSize: "1.5rem" }}>
+          <div className="p-3">
+            {loggedInUser === null ? (
+              <>
+                <Card.Text>
+                  <Link to={"/register"} style={{ textDecoration: "none" }}>
+                    Sign Up
+                  </Link>
+                  {"/"}
+                  <Link to={"/login"} style={{ textDecoration: "none" }}>
+                    Login
+                  </Link>{" "}
+                  to book your reservation!
+                </Card.Text>
+              </>
+            ) : (
+              <>
+                <Card.Text>
+                  {loggedInUser.role === ROLES.Admin ? (
+                    <>
+                      <Link to={"/admin"} style={{ textDecoration: "none" }}>
+                        Admin Pannel
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to={`/users/profile/${loggedInUser?._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        Dashboard Link
+                      </Link>
+                    </>
+                  )}
+                </Card.Text>
+              </>
+            )}
+            <Card.Text>
+              <Link to={"/about"}>Click here</Link> to learn more about the
+              application and default login credential for admin/client user!
+            </Card.Text>
+          </div>
         </Card.Body>
       </Card>
     </div>
   );
 }
 
-export default Home
+export default Home;

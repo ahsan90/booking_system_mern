@@ -1,8 +1,116 @@
+import { Card, Table } from "react-bootstrap";
+import moment from "moment";
 
 function About() {
   return (
-    <div>About</div>
-  )
+    <div>
+      <h4
+        className="mt-5"
+        style={{
+          textAlign: "center",
+          borderBottom: "1px solid red",
+          padding: "3px",
+        }}
+      >
+        Following Table shows the default login credentials for both admin and
+        client user
+      </h4>
+      <Table className="mt-5">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Password</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ahsan90</td>
+            <td>ahrony90@gmail.com</td>
+            <td>Admin</td>
+            <td>adminpass</td>
+          </tr>
+          <tr>
+            <td>steve123</td>
+            <td>steve123@mail.com</td>
+            <td>Client</td>
+            <td>clientpass</td>
+          </tr>
+        </tbody>
+      </Table>
+      <div style={{ marginTop: "90px" }}>
+        <Card>
+          <Card.Header>
+            <Card.Title>Application in a nutshell</Card.Title>
+          </Card.Header>
+          <Card.Body>
+            <Card.Text>
+              This is a Booking System Management Application. The Application
+              can be operated based on Role based Authorization. Reservation Can
+              be booked after successfully login into the application either as
+              an Admin or Client user. There is also a member registration
+              option. After successfully registering a member will be
+              autometically logged into the system and redirected to his own
+              dashboard. The other operations are described as below-
+            </Card.Text>
+            <Card.Text>
+              <h5
+                style={{
+                  borderBottom: "2px dashed black",
+                  marginBottom: "10px",
+                  padding: "10px",
+                }}
+              >
+                Client user is only perform based on his rules of operation.
+                Following Rules Applied to Client user-
+              </h5>
+              <ul>
+                <li>
+                  Client is able to see his own Dashboard to see his
+                  user/profile information including Booking History and able to
+                  book his Reservation
+                </li>
+                <li>CRUD operation for his own profile</li>
+                <li>CRUD for Booking his own reservation</li>
+              </ul>
+            </Card.Text>
+            <Card.Text>
+              <h5
+                style={{
+                  borderBottom: "2px dashed black",
+                  marginBottom: "10px",
+                  padding: "10px",
+                }}
+              >
+                Admin user can perform following operation
+              </h5>
+              <ul>
+                <li>Has Access to Admin Pannel to perform admin operation</li>
+                <li>
+                  Allowed to perform all of Client operations as stated in
+                  Client user rules
+                </li>
+                <li>Able to Manage Users/Clients/Bookings from admin pannel</li>
+                <li>CRUD operation for Users/Clients/Bookings</li>
+                <li>
+                  Admin is able to Generate Seed data and Reseting App data
+                  <span className="text-danger">**</span>
+                </li>
+              </ul>
+              <p>
+                <span className="text-danger">**</span>For generated Seed data
+                use password: <span className="text-danger">fakepass</span>
+              </p>
+            </Card.Text>
+          </Card.Body>
+        </Card>
+        <p style={{ textAlign: "center", marginTop: "10px", color: 'black', fontStyle: 'italic' }}>
+          <strong>&copy;{moment(Date()).format("y")} MD AHSANUL HOQUE</strong>
+        </p>
+      </div>
+    </div>
+  );
 }
 
-export default About
+export default About;

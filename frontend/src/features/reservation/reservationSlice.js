@@ -232,6 +232,7 @@ export const reservationSlice = createSlice({
             .addCase(get_all_booked_dates.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isError = false
+                //state.booking = null
                 state.isSuccess = true
                 state.bookedDates = action.payload
             })

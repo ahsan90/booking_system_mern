@@ -1,5 +1,7 @@
 body {
   background-color: white;
+  box-sizing: border-box;
+  fill-opacity: inherit;
 }
 .spin {
   margin-top: 50px;

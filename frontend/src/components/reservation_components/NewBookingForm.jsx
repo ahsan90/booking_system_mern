@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 //import Calendar from "react-calendar";
 import DatePicker from "react-datepicker";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner, Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
@@ -12,6 +12,7 @@ import {
   update_booking,
 } from "../../features/reservation/reservationSlice";
 import BookingDetails from "./BookingDetails";
+import ShowTooltip from "../utils/Tooltip";
 
 function NewBookingForm(props) {
   let { bookingObj } = props;
@@ -35,6 +36,10 @@ function NewBookingForm(props) {
 
   useEffect(() => {
     dispatch(get_all_booked_dates());
+  }, []);
+
+  useEffect(() => {
+    if (booking) dispatch(get_all_booked_dates());
   }, [bookings]);
 
   const onSubmit = (e) => {
@@ -75,10 +80,10 @@ function NewBookingForm(props) {
     /* for (let index = 0; index < booked_days.length; index++) {
       if (formatedDate === booked_days[index]) return true;
     } */
-    return booked_days.includes(formatedDate)
+    return booked_days.includes(formatedDate);
     //return false;
   };
-  
+
   return (
     <div className="">
       <div className="booking">
@@ -95,25 +100,24 @@ function NewBookingForm(props) {
               filterDate={(date) => !isBooked(date)}
             />
           </Form.Group>
-          <Form.Group
-            className="gap-2"
-            style={{ marginLeft: "5px"}}
-          >
+          <Form.Group className="gap-2" style={{ marginLeft: "5px" }}>
             <Button onClick={onSubmit} style={{}}>
               {isLoading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                "Confirm Booking"
+                <ShowTooltip text={'Confirm Booking'}>
+                  <span style={{ fontSize: "1rem" }}>+</span>
+                </ShowTooltip>
               )}
             </Button>
           </Form.Group>
         </Form>
       </div>
       {!bookingObj && booking ? (
-        <div className="mt-4">
-          <h4>Booking Confirmation</h4>
-          <BookingDetails booking={booking} />
-        </div>
+          <div className="mt-4">
+            <h4>Booking Confirmation</h4>
+            <BookingDetails booking={booking} />
+          </div>
       ) : (
         ""
       )}

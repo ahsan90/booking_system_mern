@@ -16,10 +16,12 @@ import Modal from "react-bootstrap/Modal";
 import UserEditForm from "./userEditForm";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import ShowTooltip from "../utils/Tooltip";
+import { logout } from "../../features/auth/authSlice";
 
 function UserComponent({ userData }) {
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
   const { user, users } = useSelector((state) => state.user);
+  const { loggedInUser } = useSelector((state) => state.auth);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -28,7 +30,12 @@ function UserComponent({ userData }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(users.includes)
+    //if(users.includes(user))
+    
+      if (user?._id === loggedInUser?._id && !users?.includes(user)) {
+        dispatch(logout());
+      }
+    
     handleClose();
   }, [user]); 
 

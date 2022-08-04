@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import userServices from './userServices'
+import decode from 'jwt-decode'
 
 const loggedInUser = JSON.parse(localStorage.getItem('user'))
 
@@ -68,7 +69,13 @@ export const delete_user = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const token = thunkAPI.getState().auth.loggedInUser.token
-            return await userServices.delete_user(id, token)
+            const deletedUserId = await userServices.delete_user(id, token)
+            if (decode(token).id === deletedUserId?.id) {
+                toast.success('Currently loggedIn user deleted. Please login with an existing user!')
+            } else {
+                toast.success('User deleted successfully!')
+            }
+            return deletedUserId
         } catch (error) {
             const message = error.response.data
             return thunkAPI.rejectWithValue(message)
@@ -272,9 +279,8 @@ export const userSlice = createSlice({
             .addCase(delete_user.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.user = state.users.filter(x => x._id === action.payload.id)
+                state.user = state.users.filter(x => x._id === action.payload.id)[0]
                 state.users = state.users.filter(x => x._id !== action.payload.id)
-                toast.success('User deleted successfully!')
             })
             .addCase(delete_user.rejected, (state, action) => {
                 state.isLoading = false
@@ -308,6 +314,7 @@ export const userSlice = createSlice({
             })
             .addCase(get_allRoles.fulfilled, (state, action) => {
                 state.isLoading = false
+                state.isError = false
                 state.isSuccess = true
                 state.roles = action.payload
             })
@@ -315,7 +322,7 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
-
+                state.isSuccess = false
             })
             .addCase(search_users.pending, (state) => {
                 state.isLoading = true
