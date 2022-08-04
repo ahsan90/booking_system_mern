@@ -16,16 +16,23 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 ## Client user is only perform based on his rules of operation. Following Rules Applied to Client user-
 
 ->Client is able to see his own Dashboard to see his user/profile information including Booking History and able to book his Reservation
+
 ->CRUD operation for his own profile
+
 ->CRUD for Booking his own reservation
 
 ## Admin user can perform following operation
 
 ->Has Access to Admin Pannel to perform admin operation
+
 ->Allowed to perform all of Client operations as stated in Client user rules
+
 ->Able to Manage Users/Clients/Bookings from admin pannel
+
 ->CRUD operation for Users/Clients/Bookings
+
 ->Admin is able to Generate Seed data and Reseting App data\*\*
+
 \*\*For generated Seed data use password: fakepass
 
-Developed by: Md Ahsanul Hoque
+Developed by: Md Ahsanul Hoque, contact: ahrony90@gmail.com
