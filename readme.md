@@ -1,4 +1,4 @@
-Application in a nutshel
+Application in a nutshell
 
 ---
 
