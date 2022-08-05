@@ -8,6 +8,8 @@ const { defaultRolesAndUsers } = require('./config/defaultRolesAndUsers')
 //const { usersCreated } = require('./config/seed')
 const port = process.env.PORT || 5000
 const User = require('./models/userModel')
+const cors = require('cors')
+const morgan = require('morgan')
 
 
 //roleSeedDb()
@@ -16,12 +18,15 @@ const User = require('./models/userModel')
 const app = express()
 dotenv.config()
 
+
+app.use(morgan('server_prod'))
 app.listen(port, () => console.log(`Server is running on port ${port}`))
 connectDB()
 defaultRolesAndUsers()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cors())
 
 /* app.use('/', (req, res) => {
     res.send('Welcome to Booking System MERN API')

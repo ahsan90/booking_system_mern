@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_URL = '/api/users/'
+const base_url = 'https://booking-mern-api.herokuapp.com'
+const API_URL = `${base_url}/api/users/`
 
 const create_user = async (userData, token) => {
     const config = {

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_URL = '/api/profiles/'
+const base_url = 'https://booking-mern-api.herokuapp.com'
+const API_URL = `${base_url}/api/profiles/`
 
 const create_profile = async (userProfileData) => {
     const response = await axios.post(API_URL, userProfileData)

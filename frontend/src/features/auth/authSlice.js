@@ -3,6 +3,7 @@ import authService from './authService'
 import { useNavigate } from 'react-router-dom'
 
 const user = JSON.parse(localStorage.getItem('user'))
+const devEnv = process.env.NODE_ENV === "production"
 
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
 export const login = createAsyncThunk(
     'auth/login',
     async (loggedInUser, thunkAPI) => {
+    
         try {
             return await authService.login(loggedInUser)
         } catch (error) {

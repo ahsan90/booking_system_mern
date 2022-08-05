@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const API_URL = '/api/bookings/'
+
+
+const base_url = 'https://booking-mern-api.herokuapp.com'
+const API_URL = `${base_url}/api/bookings/`
 
 
 const get_all_bookings = async (token) => {
