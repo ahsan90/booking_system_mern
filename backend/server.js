@@ -1,6 +1,6 @@
 const express = require('express')
 const colors = require('colors')
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
 const { errroHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const { roleSeedDb } = require('./helper/roleHelper')
@@ -14,6 +14,7 @@ const User = require('./models/userModel')
 
 
 const app = express()
+dotenv.config()
 
 app.listen(port, () => console.log(`Server is running on port ${port}`))
 connectDB()
@@ -22,6 +23,9 @@ defaultRolesAndUsers()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+app.use('/', (req, res) => {
+    res.send('Welcome to Booking System MERN API')
+})
 app.use('/api/users', require('./routes/userRoutes'))
 
 app.use('/api/profiles', require('./routes/profileRoutes'))

@@ -4,6 +4,19 @@ import moment from "moment";
 function About() {
   return (
     <div>
+      <Card>
+        <Card.Body>
+          <Card.Text>
+            This is a Booking System Management Application. The Application can
+            be operated based on Role based Authorization. Reservation Can be
+            booked after successfully login into the application either as an
+            Admin or Client user. There is also a member registration option.
+            After successfully registering, a member will be autometically
+            logged into the system and redirected to his own dashboard. Default
+            login credentials and other operations are described as follow-
+          </Card.Text>
+        </Card.Body>
+      </Card>
       <h4
         className="mt-5"
         style={{
@@ -45,15 +58,6 @@ function About() {
             <Card.Title>Application in a nutshell</Card.Title>
           </Card.Header>
           <Card.Body>
-            <Card.Text>
-              This is a Booking System Management Application. The Application
-              can be operated based on Role based Authorization. Reservation Can
-              be booked after successfully login into the application either as
-              an Admin or Client user. There is also a member registration
-              option. After successfully registering a member will be
-              autometically logged into the system and redirected to his own
-              dashboard. The other operations are described as below-
-            </Card.Text>
             <Card.Text>
               <h5
                 style={{
@@ -105,7 +109,14 @@ function About() {
             </Card.Text>
           </Card.Body>
         </Card>
-        <p style={{ textAlign: "center", marginTop: "10px", color: 'black', fontStyle: 'italic' }}>
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "10px",
+            color: "black",
+            fontStyle: "italic",
+          }}
+        >
           <strong>&copy;{moment(Date()).format("y")} MD AHSANUL HOQUE</strong>
         </p>
       </div>
