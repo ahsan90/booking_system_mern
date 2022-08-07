@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const base_url = 'https://booking-mern-api.herokuapp.com'
+const devEnv = process.env.NODE_ENV === "production"
+
+const base_url = devEnv ? 'https://booking-mern-api.herokuapp.com' : ''
 const API_URL = `${base_url}/api/users/`
 
 const create_user = async (userData, token) => {

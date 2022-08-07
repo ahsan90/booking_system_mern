@@ -2,14 +2,13 @@ import axios from 'axios'
 
 const devEnv = process.env.NODE_ENV === "production"
 
-const base_url = 'https://booking-mern-api.herokuapp.com'
+const base_url = devEnv ? 'https://booking-mern-api.herokuapp.com' : ''
 
 const API_URL = `${base_url}/api/auth/`
 
 
 const login = async (userData) => {
 
-    console.log('h- ' + API_URL)
     const response = await axios.post(API_URL + 'login', userData)
 
     if (response.data) {

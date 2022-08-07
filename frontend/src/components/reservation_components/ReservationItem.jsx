@@ -114,7 +114,7 @@ function ReservationItem(props) {
         </Modal.Footer>
       </Modal>
       <td>{bookingPayload.booking_reference}</td>
-      <td>{moment(bookingPayload.reservation_date).format("ll")}</td>
+      <td>{moment(bookingPayload.reservation_date).toLocaleString('ll')}</td>
       <td>{moment(bookingPayload.createdAt).format("LLL")}</td>
       <td>{moment(bookingPayload.updatedAt).format("LLL")}</td>
       <td>
