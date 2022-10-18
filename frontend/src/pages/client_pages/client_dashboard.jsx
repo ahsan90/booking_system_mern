@@ -62,7 +62,7 @@ export default function ClientDashboard() {
     <>
       <div>
         {loggedInUser && loggedInUser.role === ROLES.Admin && (
-          <Link to={"/admin"} className="btn btn-primary mb-2 mt-2">
+          <Link to={"/admin/users"} className="btn btn-primary mb-2 mt-2">
             {"<< Back to Admin Pannel"}
           </Link>
         )}

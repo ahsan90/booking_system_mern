@@ -1,60 +1,59 @@
-import { useEffect, useState } from "react";
+import { useEffect,} from "react";
 import "./admin.css";
-import { Row, Col, Tabs, Tab } from "react-bootstrap";
-import {
-  get_allRoles,
-  get_allUsers,
-  resetUser,
-} from "../../features/user/userSlice";
-import { useSelector, useDispatch } from "react-redux";
-import UsersListing from "../../components/user_components/UserList";
-import ReservationList from "../../components/reservation_components/ReservationList";
-import {
-  get_allProfiles,
-  resetProfile,
-} from "../../features/profile/profileSlice";
-import ClientList from "../../components/client_components/ClientList";
-import CustomSpinner from "../../components/CustomSpinner";
-import Spinner from "react-bootstrap/Spinner";
+import { Row, Col, } from "react-bootstrap";
+import { get_allRoles } from "../../features/user/userSlice";
+import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 
-function AdminDashboard() {
-  const [key, setKey] = useState("users");
+function AdminDashboard({ children }) {
+
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(get_allRoles());
-  }, []);
+
 /* 
   useEffect(() => {
-    //dispatch(get_allRoles());
-  }, []);
+    dispatch(get_allRoles());
+  }, []); */
 
-  useEffect(() => {
-    //dispatch(get_allUsers());
-    //dispatch(get_all_bookings());
-    //(get_allProfiles());
-      return () => {
-      //dispatch(resetUser());
-      //dispatch(resetReservation());
-      //dispatch(resetProfile());
-    }; 
-  }, []);
- */
+
   return (
     <div className="admin-dashboard">
       <h1>Welcome to Admin Pannel</h1>
       <Row>
         <Col xs={12} md={12} className="">
-          <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
-            <Tab eventKey="users" title="Manage Users">
-              <UsersListing />
-            </Tab>
-            <Tab eventKey="clients" title="Manage Users Profiles">
-              <ClientList />
-            </Tab>
-            <Tab eventKey="bookings" title="Manage Bookings">
-              <ReservationList />
-            </Tab>
-          </Tabs>
+          <ul className="nav nav-tabs mb-3">
+            <li className="nav-item">
+              <NavLink
+                to={"/admin/users"}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+                aria-current="page"
+              >
+                Manage Users
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                to={"/admin/clients"}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
+                Manage Users Profiles
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                to={"/admin/bookings"}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
+                Manage Bookings
+              </NavLink>
+            </li>
+          </ul>
+          {children}
         </Col>
       </Row>
     </div>

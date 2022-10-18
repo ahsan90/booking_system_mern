@@ -150,7 +150,7 @@ function Header(props) {
                 <>
                   {loggedInUser.role === ROLES.Admin && (
                     <Nav.Link>
-                      <Link to="/admin" className="nab_item">
+                      <Link to="/admin/users" className="nab_item">
                         <GrDashboard /> Admin Pannel
                       </Link>
                     </Nav.Link>

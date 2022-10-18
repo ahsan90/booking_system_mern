@@ -65,7 +65,7 @@ function Login() {
     }
     if (isSuccess || loggedInUser !== null) {
       if (loggedInUser.role === ROLES.Admin) {
-        fromPath.from = '/admin'
+        fromPath.from = '/admin/users'
       }
       if (loggedInUser.role === ROLES.Client) {
         fromPath.from = `/users/profile/${loggedInUser._id}`

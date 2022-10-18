@@ -41,7 +41,7 @@ function Home() {
                 <Card.Text>
                   {loggedInUser.role === ROLES.Admin ? (
                     <>
-                      <Link to={"/admin"} style={{ textDecoration: "none" }}>
+                      <Link to={"/admin/users"} style={{ textDecoration: "none" }}>
                         Admin Pannel
                       </Link>
                     </>

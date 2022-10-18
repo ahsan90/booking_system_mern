@@ -18,6 +18,9 @@ import ROLES from './helper/allowedRoles';
 import { useSelector } from 'react-redux'
 import Spinner from "react-bootstrap/Spinner";
 import { get_allRoles } from './features/user/userSlice';
+import UsersList from './pages/admin_pages/users_list';
+import ClientsList from './pages/admin_pages/clients_list';
+import BookingsList from './pages/admin_pages/bookings_list';
 
 
 
@@ -57,7 +60,9 @@ function App() {
             <Route path='/about' element={<About />} />
             {/* Private Routes */}
             <Route element={<PrivateRoutes allowedRoles={[ROLES.Admin]} />}>
-              <Route path='/admin' element={<AdminDashboard />} />
+              <Route path='/admin/users' element={<UsersList />} />
+              <Route path='/admin/clients' element={<ClientsList/>} />
+              <Route path='/admin/bookings' element={<BookingsList/>} />
               <Route path='/api_docs' element={<API_DOCS />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={[ROLES.Client, ROLES.Admin]} />}>

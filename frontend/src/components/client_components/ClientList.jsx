@@ -50,7 +50,7 @@ export default function ClientList() {
   useEffect(() => {
     if (profile) {
       dispatch(get_allProfiles());
-      dispatch(get_allUsers());
+      //dispatch(get_allUsers());
     }
     handleClose();
     handleCloseClientForm();

@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const devEnv = process.env.NODE_ENV === "production"
+const prodEnv = process.env.NODE_ENV === "production"
 
-const base_url = devEnv ? 'https://booking-mern-api.herokuapp.com' : ''
+const base_url = prodEnv ? 'https://booking-mern-api.herokuapp.com' : ''
 const API_URL = `${base_url}/api/users/`
 
 const create_user = async (userData, token) => {
@@ -12,7 +12,7 @@ const create_user = async (userData, token) => {
         }
     }
     const response = await axios.post(API_URL, userData, config)
-    //console.log("Hello: "+response.data.toString())
+    
     return response.data
 }
 const update_user = async (id, userData, token) => {
@@ -22,7 +22,7 @@ const update_user = async (id, userData, token) => {
         }
     }
     const response = await axios.put(API_URL + id, userData, config)
-    //console.log("Hello: "+response.data.toString())
+    
     return response.data
 }
 const get_user = async (id, token) => {
@@ -32,7 +32,6 @@ const get_user = async (id, token) => {
         }
     }
     const response = await axios.get(API_URL + id, config)
-    //console.log("Hello: "+response.data.toString())
     return response.data
 }
 
@@ -43,7 +42,6 @@ const delete_user = async (id, token) => {
         }
     }
     const response = await axios.delete(API_URL + id, config)
-    //console.log("Hello: "+response.data.toString())
     return response.data
 }
 

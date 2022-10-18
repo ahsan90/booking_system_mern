@@ -54,13 +54,12 @@ function UserForm() {
     }
   }, [role, isError, message, dispatch]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (user) {
       dispatch(get_allUsers());
-      dispatch(get_allProfiles());
+      //dispatch(get_allProfiles());
     }
-  }, [user])
-  
+  }, [user]); */
 
   const onChange = (e) => {
     setFormData((prevState) => ({

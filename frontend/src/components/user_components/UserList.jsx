@@ -9,7 +9,11 @@ import UserForm from "./UserForm";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import UserComponent from "./userComponent";
-import { get_allUsers, search_users, resetUser } from "../../features/user/userSlice";
+import {
+  get_allUsers,
+  search_users,
+  resetUser,
+} from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import ReactPaginate from "react-paginate";
 import CustomSpinner from "../CustomSpinner";
@@ -29,12 +33,18 @@ function UsersListing() {
   const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
-    //update profile list after an user gets deleted
-    if (!users?.includes(user)) {
-      dispatch(get_allProfiles());
+    dispatch(get_allUsers());
+    return () => {
+      dispatch(resetUser());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      handleClose();
+      dispatch(get_allUsers());
     }
-    handleClose();
-  }, [user]);
+  }, [user, dispatch]);
 
   useEffect(() => {
     if (searchQuery.searchText.length > 0) {
@@ -46,13 +56,6 @@ function UsersListing() {
       searchText: "",
     }));
   }, [searchQuery.searchText, dispatch]);
-
-  useEffect(() => {
-    dispatch(get_allUsers());
-    return () => {
-      dispatch(resetUser())
-    }
-  }, []);
 
   //let { searchText } = searchQuery;
   const handleSearchUsers = (e) => {
