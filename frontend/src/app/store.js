@@ -11,4 +11,5 @@ export const store = configureStore({
     profile: profileReducer,
     reservation: reservationReducer
   },
+  devTools: process.env.NODE_ENV === "production" ? false : true
 });

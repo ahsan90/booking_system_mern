@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Tabs, Tab} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, NavLink, useNavigate } from "react-router-dom";
 //import { GrView } from "react-icons";
 import { get_allUsers, get_user, resetUser } from "../../features/user/userSlice";
 //import CustomSpinner from "../../components/CustomSpinner";
@@ -16,7 +16,7 @@ import {
 import BookingSearchComponent from "../../components/reservation_components/BookingSearchComponent";
 import ROLES from "../../helper/allowedRoles";
 
-export default function ClientDashboard() {
+export default function ClientDashboard({ children }) {
   //const { bookings } = useSelector((state) => state.reservation);
   const { loggedInUser } = useSelector((state) => state.auth);
   const { singleUserDetails } = useSelector((state) => state.user);
@@ -42,21 +42,11 @@ export default function ClientDashboard() {
       return navigate("/unauthorized");
     }
     
-    if (id) {
-      //dispatch(get_user(id));
-      //dispatch(get_bookings_by_user(id));
-      //dispatch(get_all_booked_dates());
-    }
-    return () => {
+    /* return () => {
       dispatch(resetUser());
       dispatch(resetReservation());
-    }; 
-  }, [id, isAuthorized]);
-
-  //console.log(key)
-  //const onSelectTab = () => {
-    //console.log("YOu clicked!");
-  //}; 
+    };  */
+  }, [isAuthorized, navigate]);
 
   return (
     <>
@@ -77,11 +67,7 @@ export default function ClientDashboard() {
             Welcome {singleUserDetails?.profile?.name}
           </h2>
         )}
-        <Tabs
-          activeKey={key}
-          onSelect={(k) => setKey(k)}
-          className="mb-3"
-        >
+        {/* <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
           <Tab eventKey="user_profile" title="User Profile Information">
             <div className="container-fluid justify-center mt-5">
               <UserProfileInformation />
@@ -94,7 +80,41 @@ export default function ClientDashboard() {
           <Tab eventKey="reservations" title="New Booking">
             <NewBookingForm />
           </Tab>
-        </Tabs>
+        </Tabs> */}
+        <ul className="nav nav-tabs mb-3">
+          <li className="nav-item">
+            <NavLink
+              to={`/users/profile/${id}`}
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+              aria-current="page"
+            >
+              User Profile Information
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to={`/users/profile/bookings/${id}`}
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+            >
+              Booking History
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
+              to={`/users/profile/newbooking/${id}`}
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+            >
+              New Booking
+            </NavLink>
+          </li>
+        </ul>
+        <div className="mt-4">{children}</div>
       </div>
     </>
   );

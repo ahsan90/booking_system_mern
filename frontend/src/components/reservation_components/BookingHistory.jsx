@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import { useDispatch, useEffect, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { get_user } from "../../features/user/userSlice";
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
+import { get_bookings_by_user, resetReservation } from "../../features/reservation/reservationSlice";
+import { useParams } from "react-router-dom";
+import CustomSpinner from "../CustomSpinner";
+
 
 export default function BookingHistory() {
-  const { bookings } = useSelector((state) => state.reservation);
+  const { bookings, isLoading } = useSelector((state) => state.reservation);
+  const dispatch = useDispatch()
+  const {id} = useParams()
   const [pageNumber, setPageNumber] = useState(0);
 
   const bookingsPerPage = 10;
   const pageCount = Math.ceil(bookings.length / bookingsPerPage);
   const pagesVisited = pageNumber * bookingsPerPage;
+
+  useEffect(() => {
+    dispatch(get_bookings_by_user(id))
+    return () => {
+      dispatch(resetReservation())
+    }
+  }, [id, dispatch])
   /* const displayBookings = bookings
     .slice(pagesVisited, pagesVisited + bookingsPerPage)
     .map((booking) => {
@@ -28,7 +41,8 @@ export default function BookingHistory() {
 
   return (
     <div>
-      {bookings?.length > 0 ? (
+      {isLoading && <CustomSpinner/>}
+      {(bookings?.length > 0 && isLoading === false) ? (
         <>
           <Table striped bordered hover>
             <thead>
@@ -54,7 +68,7 @@ export default function BookingHistory() {
           </Table>
         </>
       ) : (
-        <h3>No Booking History Found</h3>
+          isLoading? '' : <h3>No Booking History Found</h3>
       )}
       {bookings?.length > bookingsPerPage && (
         <div className="mt-3">

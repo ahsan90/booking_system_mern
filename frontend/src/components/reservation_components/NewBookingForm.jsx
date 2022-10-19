@@ -13,8 +13,11 @@ import {
 } from "../../features/reservation/reservationSlice";
 import BookingDetails from "./BookingDetails";
 import ShowTooltip from "../utils/Tooltip";
+import { useParams } from "react-router-dom";
+import { get_user } from "../../features/user/userSlice";
 
 function NewBookingForm(props) {
+  const {id} = useParams()
   let { bookingObj } = props;
   const [selectedDate, setSelectedDate] = useState({
     bookingDate: bookingObj ? new Date(bookingObj.reservation_date) : null,
@@ -34,13 +37,9 @@ function NewBookingForm(props) {
     currentDate.getDate() + numberOfDaysToAdd
   );
 
-  useEffect(() => {
+  const checkBookedDates = () => {
     dispatch(get_all_booked_dates());
-  }, []);
-
-  useEffect(() => {
-    if (booking) dispatch(get_all_booked_dates());
-  }, [bookings]);
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -70,7 +69,10 @@ function NewBookingForm(props) {
     } else {
       setShowBookingDetails(false);
     }
-  }, [booking]);
+    if (id) {
+      dispatch(get_user(id))
+    }
+  }, [id, booking]);
 
   let booked_days = [];
   bookedDates.map((x) => booked_days.push(moment(new Date(x)).format("ll")));
@@ -98,15 +100,16 @@ function NewBookingForm(props) {
               maxDate={new Date(max_date)}
               dateFormat="dd/MM/yyyy"
               filterDate={(date) => !isBooked(date)}
+              onCalendarOpen={checkBookedDates}
             />
           </Form.Group>
           <Form.Group className="gap-2" style={{ marginLeft: "5px" }}>
-            <Button onClick={onSubmit} style={{}}>
+            <Button onClick={onSubmit} style={{}} disabled={isLoading && true} on>
               {isLoading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                <ShowTooltip text={'Confirm Booking'}>
-                  <span style={{ fontSize: "1rem" }}>+</span>
+                <ShowTooltip text={"Confirm Booking"}>
+                  <span style={{ fontSize: "1rem" }}>Confirm</span>
                 </ShowTooltip>
               )}
             </Button>
@@ -114,10 +117,10 @@ function NewBookingForm(props) {
         </Form>
       </div>
       {!bookingObj && booking ? (
-          <div className="mt-4">
-            <h4>Booking Confirmation</h4>
-            <BookingDetails booking={booking} />
-          </div>
+        <div className="mt-4">
+          <h4>Booking Confirmation</h4>
+          <BookingDetails booking={booking} />
+        </div>
       ) : (
         ""
       )}

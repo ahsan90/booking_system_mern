@@ -13,7 +13,9 @@ import Unauthorized from './pages/unauthorized';
 import Notfound from './pages/notfound';
 import AdminDashboard from './pages/admin_pages/admin_dashboard';
 import ClientRegister from './pages/client_pages/client_register';
-import ClientDashboard from './pages/client_pages/client_dashboard';
+import ClientProfile from './pages/client_pages/client_profile';
+import ClientBookingHistory from './pages/client_pages/client_booking_history';
+import ClientNewBooking from './pages/client_pages/client_newbooking';
 import ROLES from './helper/allowedRoles';
 import { useSelector } from 'react-redux'
 import Spinner from "react-bootstrap/Spinner";
@@ -66,7 +68,9 @@ function App() {
               <Route path='/api_docs' element={<API_DOCS />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={[ROLES.Client, ROLES.Admin]} />}>
-              <Route path='/users/profile/:id' element={< ClientDashboard />} />
+              <Route path='/users/profile/:id' element={< ClientProfile />} />
+              <Route path='/users/profile/bookings/:id' element={< ClientBookingHistory />} />
+              <Route path='/users/profile/newbooking/:id' element={< ClientNewBooking />} />
             </Route>
           </Routes>
         </div>

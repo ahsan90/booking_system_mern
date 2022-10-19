@@ -153,7 +153,7 @@ function Login() {
             </Form.Group>
           </Row>
           <Form.Group className=" mt-3 d-grid gap-2">
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" disabled={isLoading? true : false}>
               {isLoading? 
                 <Spinner
                   as="span"
