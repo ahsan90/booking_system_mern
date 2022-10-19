@@ -57,6 +57,7 @@ function ReservationItem(props) {
     }
   };
   const updateBooking = () => {
+    console.log('From reservation item')
     setShowEditBooking(true);
   };
 

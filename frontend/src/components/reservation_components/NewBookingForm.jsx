@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 import { get_user } from "../../features/user/userSlice";
 
 function NewBookingForm(props) {
-  const {id} = useParams()
+  const { id } = useParams();
   let { bookingObj } = props;
   const [selectedDate, setSelectedDate] = useState({
     bookingDate: bookingObj ? new Date(bookingObj.reservation_date) : null,
@@ -38,7 +38,7 @@ function NewBookingForm(props) {
   );
 
   const checkBookedDates = () => {
-    dispatch(get_all_booked_dates());
+    //dispatch(get_all_booked_dates());
   };
 
   const onSubmit = (e) => {
@@ -70,9 +70,10 @@ function NewBookingForm(props) {
       setShowBookingDetails(false);
     }
     if (id) {
-      dispatch(get_user(id))
+      dispatch(get_user(id));
     }
-  }, [id, booking]);
+    
+  }, [id, bookings, booking, dispatch]);
 
   let booked_days = [];
   bookedDates.map((x) => booked_days.push(moment(new Date(x)).format("ll")));
@@ -100,11 +101,15 @@ function NewBookingForm(props) {
               maxDate={new Date(max_date)}
               dateFormat="dd/MM/yyyy"
               filterDate={(date) => !isBooked(date)}
-              onCalendarOpen={checkBookedDates}
             />
           </Form.Group>
           <Form.Group className="gap-2" style={{ marginLeft: "5px" }}>
-            <Button onClick={onSubmit} style={{}} disabled={isLoading && true} on>
+            <Button
+              onClick={onSubmit}
+              style={{}}
+              disabled={isLoading && true}
+              on
+            >
               {isLoading ? (
                 <Spinner animation="border" size="sm" />
               ) : (

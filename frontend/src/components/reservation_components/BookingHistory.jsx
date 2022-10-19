@@ -20,20 +20,12 @@ export default function BookingHistory() {
   const pagesVisited = pageNumber * bookingsPerPage;
 
   useEffect(() => {
-    dispatch(get_bookings_by_user(id))
+    if(id) dispatch(get_bookings_by_user(id))
     return () => {
       dispatch(resetReservation())
     }
   }, [id, dispatch])
-  /* const displayBookings = bookings
-    .slice(pagesVisited, pagesVisited + bookingsPerPage)
-    .map((booking) => {
-      return (
-        <tr key={booking._id}>
-          <ReservationItem booking={booking} />
-        </tr>
-      );
-    }); */
+  
 
   const handlePageClick = ({ selected }) => {
     setPageNumber(selected);
