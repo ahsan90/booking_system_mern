@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const prodEnv = process.env.NODE_ENV === "production"
 
-const base_url = prodEnv ? 'https://booking-mern-api.herokuapp.com' : ''
+const base_url = prodEnv ? 'https://booking-system-mern-api.vercel.app' : ''
 const API_URL = `${base_url}/api/users/`
 
 const create_user = async (userData, token) => {
