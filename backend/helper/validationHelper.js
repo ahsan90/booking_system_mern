@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator')
-const validator = require('validator')
+//const validator = require('validator')
 
 const validateBookingDate = () => {
     return [
