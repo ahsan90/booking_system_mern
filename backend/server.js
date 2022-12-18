@@ -28,9 +28,9 @@ app.use(cors())
 
 
 
-app.use('/', (req, res) => {
+/* app.use('/', (req, res) => {
     res.send('Welcome to Booking System MERN API')
-})
+}) */
 app.use('/api/users', require('./routes/userRoutes'))
 
 app.use('/api/profiles', require('./routes/profileRoutes'))
