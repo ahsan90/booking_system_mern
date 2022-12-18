@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "./backend/server.js",
@@ -12,8 +11,8 @@
       "dest": "/backend/server.js"
     },
     {
-      "src": "/backend/(.*)",
-      "dest": "/server.js"
+      "src": "/(.*)",
+      "dest": "/backend/server.js"
     }
   ]
 }
