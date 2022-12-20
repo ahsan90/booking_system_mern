@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { debounce } from "lodash";
 import {
   Row,
   Card,
@@ -12,6 +13,7 @@ import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
   get_all_bookings,
+  resetReservation,
   search_bookings,
 } from "../../features/reservation/reservationSlice";
 import ReservationItem from "./ReservationItem";
@@ -19,91 +21,48 @@ import ReactPaginate from "react-paginate";
 import NewBookingForm from "./NewBookingForm";
 import {
   get_allUsers,
+  resetUser,
   search_users,
   search_user_by_username_email,
 } from "../../features/user/userSlice";
 
 function ReservationList() {
   const dispatch = useDispatch();
-  const {booking, bookings } = useSelector((state) => state.reservation);
-  let { user, singleUserDetails, message, isLoading, isError } = useSelector(
-    (state) => state.user
-  );
+  const { booking, bookings } = useSelector((state) => state.reservation);
+  let {
+    user,
+    singleUserDetails,
+    message,
+    isLoading,
+    isError: errorTexting,
+  } = useSelector((state) => state.user);
   const [searchQuery, setSearchQuery] = useState({
-    searchText: "",
+    bookingSearchText: "",
     userSearchText: "",
   });
   const [pageNumber, setPageNumber] = useState(0);
   const [showNewBooking, setShowNewBooking] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
-  const [errorText, setErrorText] = useState(null);
+  const [errorText, setErrorText] = useState("");
 
   const bookingsPerPage = 9;
   const pageCount = Math.ceil(bookings.length / bookingsPerPage);
   const pagesVisited = pageNumber * bookingsPerPage;
-  const [displayBookings, setDisplayBookings] = useState({
+  /* const [displayBookings, setDisplayBookings] = useState({
     bookingListings: null,
-  });
+  }); */
 
   let searchPlaceHolder = `Search Reservation By Booking Reference...`;
-  const { searchText, userSearchText } = searchQuery;
+  const { bookingSearchText, userSearchText } = searchQuery;
 
-  useEffect(() => {
-    if (searchText?.length > 2) {
-      dispatch(search_bookings(searchText));
-    }
-    if (searchText?.length === 0) {
-      dispatch(get_all_bookings());
-    }
-  }, [searchText]);
-
-  useEffect(() => {
-    if (bookings?.length > 0) {
-      setDisplayBookings({
-        bookingListings: bookings,
-      })
-    }
-  }, [bookings]);
-
-  useEffect(() => {
-    if (userSearchText?.length > 2) {
-      dispatch(search_user_by_username_email(userSearchText));
-    }
-    if (userSearchText?.length === 0) {
-      dispatch(get_all_bookings());
-    }
-    if (userSearchText?.length <= 2) {
-      setShowBookingForm(false);
-      setErrorText(null);
-    }
-    if (isError && userSearchText?.length > 2) {
-      setErrorText(message?.error);
-    } else {
-      setErrorText(null);
-    }
-  }, [userSearchText, isError]);
-
-  useEffect(() => {
-    if (singleUserDetails) {
-      setShowBookingForm(true);
-    } else {
-      setShowBookingForm(false);
-    }
-  }, [singleUserDetails]);
-
-  const clearSearch = () => {
-    setSearchQuery(() => ({
-      searchText: "",
-      userSearchText: "",
-    }));
-    setErrorText(null);
+  const clearUserSearch = () => {
+    setSearchQuery(() => ({ bookingSearchText: "", userSearchText: "" }));
+    dispatch(resetUser());
   };
 
-  const handleSearch = (e) => {
-    setSearchQuery((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+  const clearBookingSearch = () => {
+    setSearchQuery(() => ({ bookingSearchText: "", userSearchText: "" }));
+    dispatch(get_all_bookings());
   };
 
   const handlePageClick = ({ selected }) => {
@@ -115,24 +74,51 @@ function ReservationList() {
   };
 
   const handleClose = () => {
+    setSearchQuery(() => ({ userSearchText: "", searchText: "" }));
     setShowNewBooking(false);
     setShowBookingForm(false);
-    setSearchQuery(() => ({ userSearchText: "", searchText: "" }));
-    setErrorText(null);
+    dispatch(resetUser());
+    dispatch(get_all_bookings());
   };
+
+  const debounceBookingSearchHandler = useCallback(
+    debounce((text) => {
+      dispatch(search_bookings(text));
+    }, 1000),
+    []
+  );
+
+  const handleBookingSearch = (e) => {
+    setSearchQuery((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+    const text = e.target.value + "";
+    debounceBookingSearchHandler(text);
+  };
+
+  const debounceUserSearchHandler = useCallback(
+    debounce((text) => {
+      dispatch(search_user_by_username_email(text));
+    }, 1500),
+    []
+  );
 
   const handleSearchProfileByEmailUsername = (e) => {
     setSearchQuery((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+
+    const text = e.target.value + "";
+    debounceUserSearchHandler(text);
   };
 
   return (
     <>
       <Modal
         show={showNewBooking}
-        size='lg'
+        size="lg"
         onHide={handleClose}
         style={{ width: "100%" }}
       >
@@ -154,14 +140,16 @@ function ReservationList() {
             {userSearchText.length > 0 && (
               <InputGroup.Text
                 className="clear_booking_search"
-                onClick={clearSearch}
+                onClick={clearUserSearch}
               >
                 X
               </InputGroup.Text>
             )}
           </InputGroup>
-          {showBookingForm && <NewBookingForm />}
-          {errorText && <p style={{ color: "red" }}>{message?.error}</p>}
+          {singleUserDetails && <NewBookingForm />}
+          {message?.error !== undefined && (
+            <p style={{ color: "red" }}>{message?.error}</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -186,23 +174,23 @@ function ReservationList() {
               <InputGroup className="client_search">
                 <Form.Control
                   type="text"
-                  name="searchText"
-                  value={searchText}
-                  onChange={handleSearch}
+                  name="bookingSearchText"
+                  value={bookingSearchText}
+                  onChange={handleBookingSearch}
                   placeholder={searchPlaceHolder}
                   aria-describedby="basic-addon1"
                 />
-                {searchText.length > 0 && (
+                {bookingSearchText?.length > 0 && (
                   <InputGroup.Text
                     className="clear_booking_search"
-                    onClick={clearSearch}
+                    onClick={clearBookingSearch}
                   >
                     X
                   </InputGroup.Text>
                 )}
               </InputGroup>
             </div>
-            {displayBookings?.bookingListings?.length > 0 ? (
+            {bookings?.length > 0 ? (
               <>
                 <Card.Title></Card.Title>
                 <Table striped bordered hover>
@@ -216,7 +204,7 @@ function ReservationList() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayBookings?.bookingListings
+                    {bookings
                       ?.slice(pagesVisited, pagesVisited + bookingsPerPage)
                       .map((booking) => {
                         return (

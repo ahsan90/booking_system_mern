@@ -3,7 +3,7 @@ import AdminDashboard from "./admin_dashboard";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { get_all_booked_dates } from "../../features/reservation/reservationSlice";
+import { get_all_booked_dates, get_all_bookings, resetReservation } from "../../features/reservation/reservationSlice";
 
 export default function BookingsList() {
 
@@ -11,10 +11,17 @@ export default function BookingsList() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(get_all_bookings())
+    return () => {
+      dispatch(resetReservation())
+    }
+  }, [])
+
+  useEffect(() => {
     if (bookings) {
       dispatch(get_all_booked_dates());
     }
-  }, [bookings]);
+  }, [bookings, dispatch]);
 
   return (
     <AdminDashboard>
