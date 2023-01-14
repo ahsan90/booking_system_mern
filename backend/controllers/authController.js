@@ -19,7 +19,7 @@ const loginUser = asyncHandler(async (req, res) => {
     })
 
     if (user && (await bcrypt.compare(password, user.password))) {
-        res.json({
+        res.status(200).json({
             _id: user.id,
             role: (await Role.findById(user.role.toString())).roletype,
             username: user.username,

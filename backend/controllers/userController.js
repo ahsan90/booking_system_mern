@@ -108,7 +108,7 @@ const createUser = asyncHandler(async (req, res, next) => {
             r: 'pg',
             d: defaultAvatar
         })
-        console.log(avatar)
+        //console.log(avatar)
 
         //throw new Error('Error')
         const salt = await bcrypt.genSalt(10)

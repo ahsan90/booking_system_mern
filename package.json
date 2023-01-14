@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Booking system using MERN",
   "main": "server.js",
+  "paths": {
+    "@swg/*": ["./backend/helper/swagger/*"]
+  },
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",

@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const morgan = require('morgan')
 const swaggerUI = require('swagger-ui-express')
-const swaggerDoc = require('swagger-jsdoc')
+const swaggerJsDoc = require('swagger-jsdoc')
 const { errroHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const { roleSeedDb } = require('./helper/roleHelper')
@@ -12,14 +12,29 @@ const { defaultRolesAndUsers } = require('./config/defaultRolesAndUsers')
 const port = process.env.PORT || 5000
 
 
+/* const options = {
+    definition: {
+        openapi: '3.0.n',
+        info: {
+            title: 'Booking system API',
+            version: '1.0.0',
+            description: 'Online Booking System (ExpressJS) API Library'
+        },
+        servers: [
+            {
+                url: process.env.NODE_ENV === 'production' ? "https://booking-system-mern-api.vercel.app" : "http://localhost:5000"
+            }
+        ]
+    },
+    apis: ['./routes/*.js']
+}
 
-//roleSeedDb()
-
-
-
+const specs = swaggerJsDoc(options)
+ */
 const app = express()
 dotenv.config()
 
+//app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 //app.use(morgan('server_prod'))
 app.listen(port, () => console.log(`Server is running on port ${port}`))
