@@ -6,7 +6,7 @@ import CreateUserDoc from '../components/api_docs/CreateUserDoc';
 
 
 export default function api_docs() {
-  const baseAPI_URL = process.env.NODE_ENV === 'production' ? 'https://booking-system-mern-api.vercel.app' : 'http:localhost:5000'
+  const baseAPI_URL = process.env.NODE_ENV === 'production' ? 'https://booking-system-mern-api.vercel.app' : 'http://localhost:5000'
   return (
     <div style={{ position: "", marginTop: "20px" }}>
       <div>
