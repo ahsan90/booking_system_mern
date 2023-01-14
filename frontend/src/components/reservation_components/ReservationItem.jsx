@@ -20,11 +20,11 @@ import ROLES from "../../helper/allowedRoles";
 import ShowTooltip from "../utils/Tooltip";
 
 function ReservationItem(props) {
-  const bookingPayload = props.booking
+  const bookingPayload = props.booking;
   const dispatch = useDispatch();
   let { isLoading } = useSelector((state) => state.user);
   const { loggedInUser } = useSelector((state) => state.auth);
-  const {booking} = useSelector(state => state.reservation)
+  const { booking } = useSelector((state) => state.reservation);
   const { id } = useParams();
 
   const [showDetails, setShowDetails] = useState(false);
@@ -57,7 +57,7 @@ function ReservationItem(props) {
     }
   };
   const updateBooking = () => {
-    console.log('From reservation item')
+    console.log("From reservation item");
     setShowEditBooking(true);
   };
 
@@ -115,7 +115,7 @@ function ReservationItem(props) {
         </Modal.Footer>
       </Modal>
       <td>{bookingPayload.booking_reference}</td>
-      <td>{moment(bookingPayload.reservation_date).toLocaleString('ll')}</td>
+      <td>{moment(bookingPayload.reservation_date).toLocaleString("ll")}</td>
       <td>{moment(bookingPayload.createdAt).format("LLL")}</td>
       <td>{moment(bookingPayload.updatedAt).format("LLL")}</td>
       <td>

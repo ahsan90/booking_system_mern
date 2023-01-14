@@ -1,16 +1,20 @@
 const express = require('express')
 const colors = require('colors')
 const dotenv = require('dotenv')
+const cors = require('cors')
+const morgan = require('morgan')
+const swaggerUI = require('swagger-ui-express')
+const swaggerDoc = require('swagger-jsdoc')
 const { errroHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const { roleSeedDb } = require('./helper/roleHelper')
 const { defaultRolesAndUsers } = require('./config/defaultRolesAndUsers')
 const port = process.env.PORT || 5000
-const cors = require('cors')
-const morgan = require('morgan')
+
 
 
 //roleSeedDb()
+
 
 
 const app = express()
@@ -38,6 +42,6 @@ app.use('/api/profiles', require('./routes/profileRoutes'))
 app.use('/api/bookings', require('./routes/bookingRoutes'))
 
 app.use('/api/auth', require('./routes/authRoutes'))
-//app.use('/api/auth', (req,res)=>{res.send("stuff")})
+
 app.use(errroHandler)
 

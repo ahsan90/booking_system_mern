@@ -101,7 +101,7 @@ const createUser = asyncHandler(async (req, res, next) => {
             return res.status(400).json({ error: 'Username already exists' })
         }
 
-        const defaultAvatar = 'https://secure.gravatar.com/avatar/a0070841b8bf8cf069378215b4ba00b7?s=256&r=g'
+        const defaultAvatar = defaultRolesAndUsers.DEFAULT_GRAVATAR_IMG
 
         const avatar = gravatar.url(email, {
             s: '200',
@@ -313,7 +313,7 @@ const seedData = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Seed Data Loaded Successfully!' })
 })
 
-const reseData = asyncHandler(async (req, res) => {
+const resetData = asyncHandler(async (req, res) => {
     try {
         await User.deleteMany()
         await Profile.deleteMany()
@@ -339,5 +339,5 @@ module.exports = {
     getAllRoles,
     getUserByUsernameEmail,
     seedData,
-    reseData
+    resetData
 }
