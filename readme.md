@@ -6,7 +6,7 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 
 ---
 
-Live Link [this link](https://booking-mern-md.netlify.app) | API Resoure [this link](https://booking-mern-md.netlify.app/api_docs)
+[Live](https://booking-mern-md.netlify.app) | [API Resources](https://booking-mern-md.netlify.app/api_docs)
 
 ## Following Table shows the default login credentials for both admin and client user
 
