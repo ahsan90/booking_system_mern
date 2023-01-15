@@ -24,7 +24,7 @@ function CreateUserDoc() {
             <div className='row'>
               <div className='col-sm'>
                 <h6>Request Method(type: json): Post</h6>
-                <h6>Note: For creating an user A user must be authenicated first as an Admin user</h6>
+                <h6>Note: For creating an user A user must be authenicated first as an Admin user (send Bearer token along with)</h6>
                 <h6>Request Body:</h6>
                 <ul>
                   <li>

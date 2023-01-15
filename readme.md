@@ -35,8 +35,10 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 
 ->CRUD operation for Users/Clients/Bookings
 
+->Search Operation for Users/Client/Bookings with suggestive search
+
 ->Admin is able to Generate Seed data and Reseting App data\*\*
 
-\*\*For generated Seed data use password: fakepass
+\*\*To Login with one of the generated user, use password: fakepass
 
 Developed by: Md Ahsanul Hoque, contact: ahrony90@gmail.com
