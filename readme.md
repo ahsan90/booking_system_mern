@@ -17,7 +17,20 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 
 ---
 
-## Client user is only perform based on his rules of operation. Following Rules Applied to Client user-
+
+## This application is based on Full Stack MERN Development. Tools and technology used to build this project are as follow:
+
+->ExpressJS for Backend Node API Development
+
+->MongoDB Cloud Database (Mongoose as ORM package)
+
+->React Frontend library along with react-router-dom for Frontend Development
+
+->@Redux/Toolkit for application state management
+
+->Bunnch of other npm packages as required
+
+## Client user can only perform tasks based on his rules of operation. Following Rules are Applied to Client user:
 
 ->Client is able to see his own Dashboard to see his user/profile information including Booking History and able to book his Reservation
 
@@ -25,7 +38,9 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 
 ->CRUD for Booking his own reservation
 
-## Admin user can perform following operation
+->Not able to alter someone else profile/user/booking information neither have access to them
+
+## Admin user can perform following operation:
 
 ->Has Access to Admin Pannel to perform admin operation
 

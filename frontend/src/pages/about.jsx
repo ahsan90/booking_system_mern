@@ -74,7 +74,7 @@ function About() {
               <ul>
                 <li>ExpressJS for Backend Node API Development</li>
                 <li>
-                  MongoDB Cloud Database (Mongoose as ORM operations)
+                  MongoDB Cloud Database (Mongoose as ORM package)
                 </li>
                 <li>React Frontend library along with react-router-dom for Frontend Development</li>
                 <li>@Redux/Toolkit for application state management</li>
