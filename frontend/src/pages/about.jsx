@@ -69,7 +69,27 @@ function About() {
                   padding: "10px",
                 }}
               >
-                Client user is only perform based on his rules of operation.
+                This application is based on Full Stack MERN Development. Tools and technology used to build this project are as follow:
+              </h5>
+              <ul>
+                <li>ExpressJS for Backend Node API Development</li>
+                <li>
+                  MongoDB Cloud Database (Mongoose as ORM operations)
+                </li>
+                <li>React Frontend library along with react-router-dom for Frontend Development</li>
+                <li>@Redux/Toolkit for application state management</li>
+                <li>Bunnch of other npm packages as required</li>
+              </ul>
+            </Card.Text>
+            <Card.Text>
+              <h5
+                style={{
+                  borderBottom: "2px dashed black",
+                  marginBottom: "10px",
+                  padding: "10px",
+                }}
+              >
+                Client user can only perform tasks based on his rules of operation.
                 Following Rules Applied to Client user-
               </h5>
               <ul>
@@ -80,6 +100,7 @@ function About() {
                 </li>
                 <li>CRUD operation for his own profile</li>
                 <li>CRUD for Booking his own reservation</li>
+                <li>Not able to alter someone else profile/user/booking information neither have access to them</li>
               </ul>
             </Card.Text>
             <Card.Text>
@@ -112,16 +133,14 @@ function About() {
             </Card.Text>
           </Card.Body>
         </Card>
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "10px",
-            color: "black",
-            fontStyle: "italic",
-          }}
-        >
-          <strong>&copy;{moment(Date()).format("y")} MD AHSANUL HOQUE</strong>
-        </p>
+        <p style={{
+          textAlign: "center",
+          marginTop: "10px",
+          color: "black",
+          fontStyle: "italic",
+          fontFamily: "arial",
+          fontSize: "11px"
+        }}><strong>&copy;{moment(Date()).format("y")} Md Ahsanul Hoque</strong></p>
       </div>
     </div>
   );

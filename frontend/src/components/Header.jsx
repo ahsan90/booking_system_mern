@@ -235,7 +235,7 @@ function Header(props) {
                 <>
                   <Nav.Link>
                     <NavLink to="/login" className={({ isActive }) =>
-                      isActive ? "nav-link active" : "nav-link"
+                      isActive ? "nav-link active text-center" : "nav-link text-center"
                     }
                       aria-current="page">
                       <FaSignInAlt /> Login

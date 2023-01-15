@@ -29,7 +29,15 @@ export default function api_docs() {
         <GetUserDoc/>
         <ClientRegisterDoc/>
         <h2>To be continued.....</h2>
-        <strong>&copy;{moment(Date()).format("y")} MD AHSANUL HOQUE</strong>
+        <p style={{
+          textAlign: "center",
+          marginTop: "10px",
+          color: "black",
+          fontStyle: "italic",
+          fontFamily: "arial", 
+          fontSize: "11px"
+        }}><strong>&copy;{moment(Date()).format("y")} Md Ahsanul Hoque</strong></p>
+        
       </div>
       
     </div>

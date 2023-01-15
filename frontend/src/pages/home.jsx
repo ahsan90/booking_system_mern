@@ -4,6 +4,7 @@ import booking_image from "../assets/booking_image.png";
 import ROLES from '../helper/allowedRoles'
 import { Link } from "react-router-dom";
 import {useSelector} from 'react-redux'
+import moment from "moment/moment";
 
 function Home() {
   const {loggedInUser} = useSelector(state => state.auth)
@@ -65,6 +66,14 @@ function Home() {
           </div>
         </Card.Body>
       </Card>
+      <p style={{
+        textAlign: "center",
+        marginTop: "10px",
+        color: "black",
+        fontStyle: "italic",
+        fontFamily: "arial",
+        fontSize: "11px"
+      }}><strong>&copy;{moment(Date()).format("y")} Md Ahsanul Hoque</strong></p>
     </div>
   );
 }
