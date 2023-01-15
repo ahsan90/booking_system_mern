@@ -1,6 +1,6 @@
 import { Card } from "react-bootstrap"
 
-function CreateUserDoc() {
+function ClientRegisterDoc() {
   return (
     <div>
       <h4
@@ -11,7 +11,7 @@ function CreateUserDoc() {
           padding: "3px",
         }}
       >
-        API for Creating an User
+        API for Client Registration
       </h4>
       <Card>
         <Card.Body>
@@ -19,7 +19,7 @@ function CreateUserDoc() {
             textAlign: "left",
             borderBottom: "1px solid gray",
             padding: "3px",
-          }}>Endpoint: <span className="text-danger">/api/users</span></Card.Title>
+          }}>Endpoint: <span className="text-danger">/api/profiles</span></Card.Title>
           <Card.Text>
             <div className='row'>
               <div className='col-sm'>
@@ -27,20 +27,22 @@ function CreateUserDoc() {
                 <h6>Note: For creating an user A user must be authenicated first as an Admin user (send Bearer token along with)</h6>
                 <h6>Request Body:</h6>
                 <ul>
-                  <li>role: string (coulbe either "Admin", "Client")</li>
+                  <li>username: string (coulbe either "Admin", "Client")</li>
                   <li>username: string</li>
                   <li>email: string</li>
-                  <li>name: string (this field is must if role type is selected as "Client" otherwise not required)</li>
-                  <li>phone: string (this field is must if role type is selected as "Client" otherwise not required)</li>
+                  <li>passwor: string (at least 6 characters)</li>
+                  <li>name: string</li>
+                  <li>phone: string</li>
                 </ul>
               </div>
               <div className='col-sm'>
                 <h6>Response Type: json (Object)</h6>
                 <h6>Type: Object(json); StatusCode: 201</h6>
                 <ul>
-                  <li>_id</li>
-                  <li>username</li>
+                  <li>user(Object)</li>
+                  <li>name</li>
                   <li>email</li>
+                  <li>phone</li>
                 </ul>
               </div>
             </div>
@@ -51,4 +53,4 @@ function CreateUserDoc() {
   )
 }
 
-export default CreateUserDoc
+export default ClientRegisterDoc

@@ -8,7 +8,7 @@ const API_URL = `${base_url}/api/profiles/`
 
 const create_profile = async (userProfileData) => {
     const response = await axios.post(API_URL, userProfileData)
-    //console.log("Hello: "+response.data.toString())
+    //console.log(response.data.toString())
     return response.data
 }
 
