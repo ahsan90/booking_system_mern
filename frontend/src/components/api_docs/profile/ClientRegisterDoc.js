@@ -23,7 +23,7 @@ function ClientRegisterDoc() {
           <Card.Text>
             <div className='row'>
               <div className='col-sm'>
-                <h6>Request Method(type: json): Post</h6>
+                <h6>Request Method(type: json): <span className="p-1 bg-success text-white rounded">POST</span></h6>
                 <h6>Request Body:</h6>
                 <ul>
                   <li>username: string</li>

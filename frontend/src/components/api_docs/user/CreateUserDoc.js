@@ -23,7 +23,7 @@ function CreateUserDoc() {
           <Card.Text>
             <div className='row'>
               <div className='col-sm'>
-                <h6>Request Method(type: json): Post</h6>
+                <h6>Request Method(type: json): <span className="p-1 bg-success text-white rounded">POST</span></h6>
                 <h6>Note: For creating an user A user must be authenicated first as an Admin user (send Bearer token along with)</h6>
                 <h6>Request Body:</h6>
                 <ul>

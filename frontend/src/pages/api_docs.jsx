@@ -1,9 +1,11 @@
 import React from 'react'
 import { Card, Table } from "react-bootstrap";
 import moment from "moment";
-import AuthDocs from '../components/api_docs/AuthDocs';
-import CreateUserDoc from '../components/api_docs/CreateUserDoc';
-import ClientRegisterDoc from '../components/api_docs/ClientRegisterDoc';
+import AuthDocs from '../components/api_docs/auth/AuthDocs';
+import CreateUserDoc from '../components/api_docs/user/CreateUserDoc';
+import ClientRegisterDoc from '../components/api_docs/profile/ClientRegisterDoc';
+import GetAllUsersDoc from '../components/api_docs/user/GetAllUsersDoc';
+import GetUserDoc from '../components/api_docs/user/GetUserDoc';
 
 
 export default function api_docs() {
@@ -23,6 +25,8 @@ export default function api_docs() {
         </Card>
         <AuthDocs/>
         <CreateUserDoc/>
+        <GetAllUsersDoc/>
+        <GetUserDoc/>
         <ClientRegisterDoc/>
         <h2>To be continued.....</h2>
         <strong>&copy;{moment(Date()).format("y")} MD AHSANUL HOQUE</strong>
