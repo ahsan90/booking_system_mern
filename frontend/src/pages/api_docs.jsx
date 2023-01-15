@@ -13,7 +13,7 @@ export default function api_docs() {
         <Card>
           <Card.Body>
             <Card.Text>
-              This is API resource of backend part of the Booking System applicaiton. API can be tested using Postman.
+              This is an API resource of the backend part of Booking System fullstack MERN applicaiton. API can be tested using Postman/Insomnia.
             </Card.Text>
             <Card.Text>
               Base API URL: <span className='alert-danger'>{baseAPI_URL}</span>
