@@ -26,7 +26,7 @@ This is a Booking System Management Application using FullStack MERN with Redux/
 
 ->React Frontend library along with react-router-dom for Frontend Development
 
-->@Redux/Toolkit for application state management
+->Redux Toolkit for application state management
 
 ->Bunnch of other npm packages as required
 

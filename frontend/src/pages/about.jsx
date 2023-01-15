@@ -77,7 +77,7 @@ function About() {
                   MongoDB Cloud Database (Mongoose as ORM package)
                 </li>
                 <li>React Frontend library along with react-router-dom for Frontend Development</li>
-                <li>@Redux/Toolkit for application state management</li>
+                <li>Redux/Toolkit for application state management</li>
                 <li>Bunnch of other npm packages as required</li>
               </ul>
             </Card.Text>
