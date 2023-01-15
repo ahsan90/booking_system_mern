@@ -10,10 +10,8 @@ import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Navbar from "react-bootstrap/Navbar";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logout, resetAuth } from "../features/auth/authSlice";
-
-import { Link } from "react-router-dom";
 import ROLES from "../helper/allowedRoles";
 import {
   resetUser,
@@ -130,25 +128,37 @@ function Header(props) {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="container justify-content-end">
               <Nav.Link>
-                <Link to="/" className="nab_item">
+                <NavLink to="/" className={({ isActive }) =>
+                  isActive ? "nav-link active text-center" : "nav-link text-center"
+                }
+                  aria-current="page">
                   <FaHome /> Home
-                </Link>
+                </NavLink>
               </Nav.Link>
               <Nav.Link>
-                <Link to="/about" className="nab_item">
+                <NavLink to="/about" className={({ isActive }) =>
+                  isActive ? "nav-link active text-center" : "nav-link text-center"
+                }
+                  aria-current="page">
                   About
-                </Link>
+                </NavLink>
               </Nav.Link>
               <Nav.Link>
-                <Link to="/api_docs" className="nab_item">
+                <NavLink to="/api_docs" className={({ isActive }) =>
+                  isActive ? "nav-link nab_item active text-center" : "nav-link text-center"
+                }
+                  aria-current="page">
                   <AiOutlineApi /> API_Docs
-                </Link>
+                </NavLink>
               </Nav.Link>
               {!loggedInUser && (
                 <Nav.Link>
-                  <Link to="/register" className="nab_item">
+                  <NavLink to="/register" className={({ isActive }) =>
+                    isActive ? "nav-link active text-center" : "nav-link text-center"
+                  }
+                    aria-current="page">
                     <FaUser /> Register
-                  </Link>
+                  </NavLink>
                 </Nav.Link>
               )}
 
@@ -156,24 +166,32 @@ function Header(props) {
                 <>
                   {loggedInUser.role === ROLES.Admin && (
                     <Nav.Link>
-                      <Link to="/admin/users" className="nab_item">
+                      <NavLink to="/admin/users" className={({ isActive }) =>
+                        isActive ? "nav-link active text-center" : "nav-link text-center"
+                      }
+                        aria-current="page">
                         <GrDashboard /> Admin Pannel
-                      </Link>
+                      </NavLink>
                     </Nav.Link>
                   )}
 
                   <NavDropdown
                     title={loggedInUser?.username}
                     id="basic-nav-dropdown"
+                    style={{textAlign: 'center', marginTop: '7px'}}
+                    aria-current="page"
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active text-center" : "nav-link text-center"
+                    }
                   >
                     {loggedInUser?.role === ROLES.Client && (
                       <NavDropdown.Item>
-                        <Link
+                        <NavLink
                           to={`/users/profile/${loggedInUser._id}`}
                           style={{ color: "black", textDecoration: "none" }}
                         >
                           <GrDashboard /> Dashboard
-                        </Link>
+                        </NavLink>
                       </NavDropdown.Item>
                     )}
 
@@ -216,9 +234,12 @@ function Header(props) {
               {!loggedInUser && (
                 <>
                   <Nav.Link>
-                    <Link to="/login" className="nab_item">
+                    <NavLink to="/login" className={({ isActive }) =>
+                      isActive ? "nav-link active" : "nav-link"
+                    }
+                      aria-current="page">
                       <FaSignInAlt /> Login
-                    </Link>
+                    </NavLink>
                   </Nav.Link>
                 </>
               )}
