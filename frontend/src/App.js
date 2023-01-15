@@ -53,6 +53,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path='/' element={<Home />} />
+            <Route path='/api_docs' element={<API_DOCS />} />
             <Route path='/login' element={<Login />} />
 
             <Route path='/unauthorized' element={< Unauthorized />} />
@@ -65,7 +66,6 @@ function App() {
               <Route path='/admin/users' element={<UsersList />} />
               <Route path='/admin/clients' element={<ClientsList/>} />
               <Route path='/admin/bookings' element={<BookingsList/>} />
-              <Route path='/api_docs' element={<API_DOCS />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={[ROLES.Client, ROLES.Admin]} />}>
               <Route path='/users/profile/:id' element={< ClientProfile />} />

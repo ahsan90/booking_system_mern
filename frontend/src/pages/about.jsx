@@ -13,7 +13,10 @@ function About() {
             Admin or Client user. There is also a member registration option.
             After successfully registering, a member will be autometically
             logged into the system and redirected to his own dashboard. Default
-            login credentials and other operations are described as follow-
+            login credentials and other operations are described as follow.
+          </Card.Text>
+          <Card.Text>
+            Code on Github repo: <a href="https://github.com/ahsan90/booking_system_mern" target="_blank" rel="noreferrer">Booking System MERN</a>
           </Card.Text>
         </Card.Body>
       </Card>

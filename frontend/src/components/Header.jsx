@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSignInAlt, FaSignOutAlt, FaUser, FaHome } from "react-icons/fa";
 import { BiReset } from "react-icons/bi";
+import { AiOutlineApi } from "react-icons/ai"
 import { FiDatabase } from "react-icons/fi";
 import { MdApi } from "react-icons/md";
 import { GrUserSettings, GrDashboard } from "react-icons/gr";
@@ -136,6 +137,11 @@ function Header(props) {
               <Nav.Link>
                 <Link to="/about" className="nab_item">
                   About
+                </Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to="/api_docs" className="nab_item">
+                  <AiOutlineApi /> API_Docs
                 </Link>
               </Nav.Link>
               {!loggedInUser && (

@@ -2,7 +2,11 @@ Application in a nutshell
 
 ---
 
-This is a Booking System Management Application using FullStack MERN with Redux/toolkit state management. The Application can be operated based on Role based Authorization. Reservation Can be booked after successfully login into the application either as an Admin or Client user. There is also a member registration option. After successfully registering a member will be autometically logged into the system and redirected to his own dashboard. The other operations are described as below-
+This is a Booking System Management Application using FullStack MERN with Redux/toolkit state management. The Application can be operated based on Role based Authorization. Reservation Can be booked after successfully login into the application either as an Admin or Client user. There is also a member registration option. After successfully registering a member will be autometically logged into the system and redirected to his own dashboard. The other operations are described as below.
+
+---
+
+Live Link [this link](https://booking-mern-md.netlify.app) | API Resoure [this link](https://booking-mern-md.netlify.app/api_docs)
 
 ## Following Table shows the default login credentials for both admin and client user
 
