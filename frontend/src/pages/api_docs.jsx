@@ -16,7 +16,7 @@ export default function api_docs() {
               This is an API resource of the backend part of Booking System fullstack MERN applicaiton. API can be tested using Postman/Insomnia.
             </Card.Text>
             <Card.Text>
-              Base API URL: <span className='alert-danger'>{baseAPI_URL}</span>
+              Base API URL: <span className='text-danger'>{baseAPI_URL}</span>
             </Card.Text>
           </Card.Body>
         </Card>

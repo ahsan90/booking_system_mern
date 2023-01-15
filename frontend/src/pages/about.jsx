@@ -100,14 +100,14 @@ function About() {
                 </li>
                 <li>Able to Manage Users/Clients/Bookings from admin pannel</li>
                 <li>CRUD operation for Users/Clients/Bookings</li>
+                <li>Search Operation for Users/Client/Bookings with suggestive search</li>
                 <li>
                   Admin is able to Generate Seed data and Reseting App data
                   <span className="text-danger">**</span>
                 </li>
               </ul>
               <p>
-                <span className="text-danger">**</span>For generated Seed data
-                use password: <span className="text-danger">fakepass</span>
+                <span className="text-danger">**</span>To Login with one of the generated user, use password: <span className="text-danger">fakepass</span>
               </p>
             </Card.Text>
           </Card.Body>

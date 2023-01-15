@@ -11,7 +11,7 @@ function AuthDocs() {
           padding: "3px",
         }}
       >
-        API for login a user
+        API to login an user
       </h4>
       <Card>
         <Card.Body>
@@ -19,7 +19,7 @@ function AuthDocs() {
             textAlign: "left",
             borderBottom: "1px solid gray",
             padding: "3px",
-          }}>Endpoint: <span>/api/auth/login</span></Card.Title>
+          }}>Endpoint: <span className="text-danger">/api/auth/login</span></Card.Title>
           <Card.Text>
             <div className='row'>
               <div className='col-sm'>

@@ -11,7 +11,7 @@ function CreateUserDoc() {
           padding: "3px",
         }}
       >
-        API for Create an User
+        API for Creating an User
       </h4>
       <Card>
         <Card.Body>
@@ -19,7 +19,7 @@ function CreateUserDoc() {
             textAlign: "left",
             borderBottom: "1px solid gray",
             padding: "3px",
-          }}>Endpoint: <span>/api/users</span></Card.Title>
+          }}>Endpoint: <span className="text-danger">/api/users</span></Card.Title>
           <Card.Text>
             <div className='row'>
               <div className='col-sm'>
