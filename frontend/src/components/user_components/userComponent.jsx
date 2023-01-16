@@ -5,7 +5,7 @@ import { GrView } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { delete_user, get_allUsers } from "../../features/user/userSlice";
+import { delete_user, get_allRoles, get_allUsers } from "../../features/user/userSlice";
 import Spinner from "../CustomSpinner";
 //import "./admin.css";
 import Card from "react-bootstrap/Card";
@@ -19,15 +19,17 @@ import ShowTooltip from "../utils/Tooltip";
 import { logout } from "../../features/auth/authSlice";
 
 function UserComponent({ userData }) {
+  const dispatch = useDispatch();
   //let loggedInUser = JSON.parse(localStorage.getItem("user"));
   const { user, users } = useSelector((state) => state.user);
   const { loggedInUser } = useSelector((state) => state.auth);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true)
+  };
   //const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     //if(users.includes(user))
@@ -52,6 +54,7 @@ function UserComponent({ userData }) {
   /*   if (isLoading) {
     return <Spinner />;
   } */
+ 
   return (
     <>
       <div

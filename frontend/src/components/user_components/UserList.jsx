@@ -13,6 +13,7 @@ import {
   get_allUsers,
   search_users,
   resetUser,
+  get_allRoles,
 } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import ReactPaginate from "react-paginate";
@@ -34,10 +35,12 @@ function UsersListing() {
 
   useEffect(() => {
     dispatch(get_allUsers());
+    dispatch(get_allProfiles())
+    dispatch(get_allRoles())
     return () => {
       dispatch(resetUser());
     };
-  }, []);
+  }, []); 
 
   useEffect(() => {
     if (user) {

@@ -17,7 +17,7 @@ router.route('/search').post(authenticateUser, authAdminUser, getUserByUsernameE
 router.route('/').post(authenticateUser, authAdminUser, validateUserData(), createUser)
 router.route('/profile/:id').post(authenticateUser, hasUser, validateProfile_name_phone(), createUserProfile)
 router.route('/:id').get(authenticateUser, hasUser, getUser)
-router.route('/:id').put(authenticateUser, protectBuiltInUsersAndProfile, updateUser)
+router.route('/:id').patch(authenticateUser, protectBuiltInUsersAndProfile, updateUser)
 router.route('/:id').delete(authenticateUser, protectBuiltInUsersAndProfile, deleteUser)
 
 

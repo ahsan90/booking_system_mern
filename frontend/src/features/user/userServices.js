@@ -22,8 +22,6 @@ const update_user = async (id, userData, token) => {
         }
     }
     const response = await axios.patch(API_URL + id, userData, config)
-
-    console.log(response)
     
     return response.data
 }

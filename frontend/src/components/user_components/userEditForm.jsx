@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { get_allUsers, update_user } from "../../features/user/userSlice";
+import { get_allRoles, get_allUsers, update_user } from "../../features/user/userSlice";
 import { get_allProfiles } from "../../features/profile/profileSlice";
 import validation_helper from "../../helper/validation_helper";
 //import Spinner from ".././components/Spinner";
@@ -57,9 +57,9 @@ function UserEditForm({ passedUser }) {
   useEffect(() => {
     if (user) {
       dispatch(get_allUsers())
-      dispatch(get_allProfiles())
     }
-  }, [user])
+    
+  }, [user, dispatch])
  
 
   const onChange = (e) => {
