@@ -6,6 +6,8 @@ import CreateUserDoc from '../components/api_docs/user/CreateUserDoc';
 import ClientRegisterDoc from '../components/api_docs/profile/ClientRegisterDoc';
 import GetAllUsersDoc from '../components/api_docs/user/GetAllUsersDoc';
 import GetUserDoc from '../components/api_docs/user/GetUserDoc';
+import UpdateUserDoc from '../components/api_docs/user/updateUserDoc';
+import DeleteUserDoc from '../components/api_docs/user/DeleteUserDoc';
 
 
 export default function api_docs() {
@@ -24,9 +26,12 @@ export default function api_docs() {
           </Card.Body>
         </Card>
         <AuthDocs/>
-        <CreateUserDoc/>
+        
+        <GetUserDoc />
         <GetAllUsersDoc/>
-        <GetUserDoc/>
+        <CreateUserDoc />
+        <UpdateUserDoc/>
+        <DeleteUserDoc/>
         <ClientRegisterDoc/>
         <h2>To be continued.....</h2>
         <p style={{

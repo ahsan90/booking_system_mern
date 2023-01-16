@@ -24,7 +24,7 @@ function GetAllUsersDoc() {
             <div className='row'>
               <div className='col-sm'>
                 <h6>Request Method(type: json): <span className="p-1 bg-primary text-white rounded">GET</span></h6>
-                <h6>A user must be authenicated as an Admin user to get all the users (send Bearer token as Authorization header)</h6>
+                <h6>A user must be authenicated as an Admin user to get all the users (send Bearer token as an Authorization header)</h6>
               </div>
               <div className='col-sm'>
                 <h6>Response Type: json (Objects)</h6>

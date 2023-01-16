@@ -21,7 +21,9 @@ const update_user = async (id, userData, token) => {
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.put(API_URL + id, userData, config)
+    const response = await axios.patch(API_URL + id, userData, config)
+
+    console.log(response)
     
     return response.data
 }

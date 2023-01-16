@@ -27,7 +27,7 @@ function GetUserDoc() {
                 <h6>A user must be authenicated as an Admin/Client (if client then he/she is only allowed get his own user details) user to get an user by Id (send Bearer token as Authorization header)</h6>
                 <h6>Parameter:</h6>
                 <ul>
-                  <li>{':id'}</li>
+                  <li>{'id'}</li>
                 </ul>
               </div>
               <div className='col-sm'>
