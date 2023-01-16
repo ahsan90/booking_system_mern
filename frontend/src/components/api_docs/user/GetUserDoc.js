@@ -3,16 +3,6 @@ import { Card } from "react-bootstrap"
 function GetUserDoc() {
   return (
     <div>
-      <h4
-        className="mt-5"
-        style={{
-          textAlign: "left",
-          borderBottom: "1px solid red",
-          padding: "3px",
-        }}
-      >
-        API for Getting an User By ID
-      </h4>
       <Card>
         <Card.Body>
           <Card.Title style={{
