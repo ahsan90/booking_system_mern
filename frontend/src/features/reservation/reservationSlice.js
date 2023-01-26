@@ -176,7 +176,9 @@ export const reservationSlice = createSlice({
                 state.booking = action.payload
                 state.isError = false
                 state.message = []
-                toast.success('Booking Created Successfully')
+                toast.success("Booking Created Successfully", {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                });
             })
             .addCase(create_booking.rejected, (state, action) => {
                 state.isLoading = false
@@ -199,7 +201,9 @@ export const reservationSlice = createSlice({
                 state.isError = false
                 state.isSuccess = true
                 state.bookings = state.bookings.filter(booking => booking._id !== action.payload._id)
-                toast.success('Booking Deleted Successfully')
+                toast.success("Booking Deleted Successfully", {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                });
             })
             .addCase(delete_booking.rejected, (state, action) => {
                 state.isLoading = false
@@ -293,7 +297,9 @@ export const reservationSlice = createSlice({
                 //console.log(action.payload)
                 state.bookings = state.bookings.map(x => x._id === action.payload._id ? action.payload : x)
                 state.message = null
-                toast.success('Booking Updated Successfully!')
+                toast.success("Booking Updated Successfully!", {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                });
             })
             .addCase(update_booking.rejected, (state, action) => {
                 state.isLoading = false

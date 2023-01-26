@@ -25,56 +25,49 @@ export default function api_docs() {
             </Card.Text>
           </Card.Body>
         </Card>
-        
+
         <Accordion>
           <Accordion.Item eventKey="0">
-            <Accordion.Header>API to login an user</Accordion.Header>
+            <Accordion.Header >API to login an user</Accordion.Header>
             <Accordion.Body>
               <AuthDocs />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
+
           <Accordion.Item eventKey="1">
             <Accordion.Header>API for Getting an User By ID</Accordion.Header>
             <Accordion.Body>
               <GetUserDoc />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
+
           <Accordion.Item eventKey="2">
             <Accordion.Header>API for Getting all users</Accordion.Header>
             <Accordion.Body>
               <GetAllUsersDoc />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
+
           <Accordion.Item eventKey="3">
             <Accordion.Header>API for Creating an User</Accordion.Header>
             <Accordion.Body>
               <CreateUserDoc />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
           <Accordion.Item eventKey="4">
             <Accordion.Header>API for updating an User</Accordion.Header>
             <Accordion.Body>
               <UpdateUserDoc />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
+
           <Accordion.Item eventKey="5">
             <Accordion.Header>API for Deleting an User</Accordion.Header>
             <Accordion.Body>
               <DeleteUserDoc />
             </Accordion.Body>
           </Accordion.Item>
-        </Accordion>
-        <Accordion>
+
           <Accordion.Item eventKey="6">
             <Accordion.Header>API for Client Registration</Accordion.Header>
             <Accordion.Body>
@@ -88,12 +81,12 @@ export default function api_docs() {
           marginTop: "10px",
           color: "black",
           fontStyle: "italic",
-          fontFamily: "arial", 
+          fontFamily: "arial",
           fontSize: "11px"
         }}><strong>&copy;{moment(Date()).format("y")} Md Ahsanul Hoque</strong></p>
-        
+
       </div>
-      
+
     </div>
   );
 }

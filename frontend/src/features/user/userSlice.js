@@ -202,7 +202,12 @@ export const userSlice = createSlice({
                 state.user = action.payload
                 state.users.push(action.payload)
                 //console.log(action.payload)
-                toast.success(`New User Added with a username: ${action.payload.username}`)
+                toast.success(
+                  `New User Added with a username: ${action.payload.username}`,
+                  {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                  }
+                );
             })
             .addCase(create_user.rejected, (state, action) => {
                 state.isLoading = false
@@ -224,7 +229,9 @@ export const userSlice = createSlice({
                 state.users = state.users.map((user) => user._id === action.payload._id ? action.payload : user)
                 //console.log(action.payload)
 
-                toast.success(`User updated successfully!`)
+                toast.success(`User updated successfully!`, {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                });
             })
             .addCase(update_user.rejected, (state, action) => {
                 state.isLoading = false
@@ -298,7 +305,9 @@ export const userSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.singleUserDetails = action.payload
-                toast.success('Profile Added successfully!')
+                toast.success("Profile Added successfully!", {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                });
             })
             .addCase(create_user_profile.rejected, (state, action) => {
                 state.isLoading = false
