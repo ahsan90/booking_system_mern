@@ -59,7 +59,7 @@ function Login() {
       } else {
         setErrors(() => { });
       }
-      toast.error(message.error);
+      toast.error(message?.error);
 
       navigate('/login')
     }
