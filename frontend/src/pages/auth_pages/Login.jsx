@@ -27,7 +27,7 @@ function Login() {
   const [fromPath, setFromPath] = useState({
     from: location.state?.from?.pathname || "/"
   })
-  
+
 
   const { loggedInUser, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -49,18 +49,18 @@ function Login() {
 
   useEffect(() => {
     if (isError) {
-      //console.log(message.errors)
+      //console.log(message?.errors)
 
-      if (message.errors !== undefined) {
+      if (message?.errors !== undefined) {
         //message.errors.forEach(element => {
-        //toast.error(element.msg)
         setErrors(validation_helper.validateFormError({ message }));
         //});
-        
+
       } else {
-        setErrors(() => {});
+        setErrors(() => { });
       }
       toast.error(message.error);
+
       navigate('/login')
     }
     if (isSuccess || loggedInUser !== null) {
@@ -73,7 +73,7 @@ function Login() {
       if (location.state?.from?.pathname) {
         fromPath.from = location.state?.from?.pathname;
       }
-      
+
       navigate(fromPath.from, { replace: true });
     }
     dispatch(resetAuth());
@@ -153,8 +153,8 @@ function Login() {
             </Form.Group>
           </Row>
           <Form.Group className=" mt-3 d-grid gap-2">
-            <Button type="submit" variant="primary" disabled={isLoading? true : false}>
-              {isLoading? 
+            <Button type="submit" variant="primary" disabled={isLoading ? true : false}>
+              {isLoading ?
                 <Spinner
                   as="span"
                   animation="border"
@@ -162,7 +162,7 @@ function Login() {
                   role="status"
                   aria-hidden="true"
                 />
-              : 'Submit'}
+                : 'Submit'}
             </Button>
           </Form.Group>
           <div>
